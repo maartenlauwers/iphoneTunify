@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect
+END
+Connect_Prefix.pch
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/Connect_Prefix.pch
+END
+main.m
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/main.m
+END
+ConnectAppDelegate.m
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/ConnectAppDelegate.m
+END
+SessionViewController.xib
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/SessionViewController.xib
+END
+Info.plist
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/Info.plist
+END
+SessionViewController.h
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/SessionViewController.h
+END
+ConnectAppDelegate.h
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/ConnectAppDelegate.h
+END
+MainWindow.xib
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/MainWindow.xib
+END
+SessionViewController.m
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/samples/Connect/SessionViewController.m
+END

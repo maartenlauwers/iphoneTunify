@@ -1,0 +1,48 @@
+8
+
+dir
+3
+http://Elegia@svn2.assembla.com/svn/TunifyIphone/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd
+http://Elegia@svn2.assembla.com/svn/TunifyIphone
+
+
+
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+
+
+svn:special svn:externals svn:needs-lock
+
+README.mdown
+file
+
+
+
+
+2010-01-15T15:54:38.000000Z
+8e8f78360a8ee2f6ce9844cdf11ec261
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+samples
+dir
+
+.gitignore
+file
+
+
+
+
+2010-01-15T15:54:38.000000Z
+b2d3e03211169c8b146b48383db0f8a7
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+src
+dir
+

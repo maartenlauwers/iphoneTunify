@@ -1,0 +1,108 @@
+8
+
+dir
+3
+http://Elegia@svn2.assembla.com/svn/TunifyIphone/TunifyIPhone/build/TunifyIPhone.build/Debug-iphonesimulator/TunifyIPhone.build
+http://Elegia@svn2.assembla.com/svn/TunifyIphone
+
+
+
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+
+
+svn:special svn:externals svn:needs-lock
+
+Objects-normal
+dir
+
+TunifyIPhone-generated-files.hmap
+file
+
+
+
+
+2010-02-18T13:39:06.000000Z
+fd8314defc70a8778956f026c0ddfd19
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+TunifyIPhone-project-headers.hmap
+file
+
+
+
+
+2010-03-14T15:01:03.000000Z
+6ac77ab549756c355dc3b562de8bd6cd
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+TunifyIPhone-own-target-headers.hmap
+file
+
+
+
+
+2010-02-18T13:39:06.000000Z
+816f47c9d5c16bc00c16545031188ac8
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+TunifyIPhone.hmap
+file
+
+
+
+
+2010-03-14T15:01:03.000000Z
+b9328af763b55787f2f1cbfed8349a42
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+TunifyIPhone~.dep
+file
+
+
+
+
+2010-02-18T16:41:06.000000Z
+248c0e5c937437e659f3d187842b1ac4
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+
+TunifyIPhone-all-target-headers.hmap
+file
+
+
+
+
+2010-02-18T13:39:06.000000Z
+816f47c9d5c16bc00c16545031188ac8
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+
+TunifyIPhone.dep
+file
+
+
+
+
+2010-03-14T15:12:58.000000Z
+09ba0df153304249e1971d3a0d966d52
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+

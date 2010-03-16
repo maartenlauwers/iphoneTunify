@@ -1,0 +1,9 @@
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m: In function '-[musicViewController btnRoute_clicked:]':
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m:39: warning: comparison between pointer and integer
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m: In function '-[musicViewController viewDidLoad]':
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m:86: warning: comparison between pointer and integer
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m: In function '-[musicViewController tableView:cellForRowAtIndexPath:]':
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m:196: warning: initialization from distinct Objective-C type
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m: At top level:
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m:272: warning: property 'dataSource' requires method '-dataSource' to be defined - use @synthesize, @dynamic or provide a method implementation
+/Users/Elegia/Documents/TunifyIphoneRepository/TunifyIPhone/Classes/musicViewController.m:272: warning: property 'dataSource' requires the method 'setDataSource:' to be defined - use @synthesize, @dynamic or provide a method implementation

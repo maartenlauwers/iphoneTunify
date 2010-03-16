@@ -1,0 +1,29 @@
+8
+
+dir
+3
+http://Elegia@svn2.assembla.com/svn/TunifyIphone/TunifyIPhone/build/Debug-iphonesimulator/TunifyIPhone.app.dSYM/Contents/Resources/DWARF
+http://Elegia@svn2.assembla.com/svn/TunifyIphone
+
+
+
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+
+
+svn:special svn:externals svn:needs-lock
+
+TunifyIPhone
+file
+
+
+
+
+2010-03-14T15:01:14.000000Z
+b3fe81f07ecdc548072a509c954d1b32
+2010-03-14T15:16:47.042569Z
+3
+Elegia
+has-props
+

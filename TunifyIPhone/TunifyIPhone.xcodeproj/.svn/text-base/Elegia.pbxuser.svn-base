@@ -1,0 +1,145 @@
+// !$*UTF8*$!
+{
+	1D6058900D05DD3D006BFB54 /* TunifyIPhone */ = {
+		activeExec = 0;
+		executables = (
+			F60C082F114BC4B500ABAD7A /* TunifyIPhone */,
+		);
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = F60C082F114BC4B500ABAD7A /* TunifyIPhone */;
+		activeTarget = 1D6058900D05DD3D006BFB54 /* TunifyIPhone */;
+		addToTargets = (
+			1D6058900D05DD3D006BFB54 /* TunifyIPhone */,
+		);
+		codeSenseManager = F60C0843114BC4D400ABAD7A /* Code sense */;
+		executables = (
+			F60C082F114BC4B500ABAD7A /* TunifyIPhone */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					833,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 290271653;
+			PBXWorkspaceStateSaveDate = 290271653;
+		};
+		perUserProjectItems = {
+			F60C0891114BCD8800ABAD7A /* PBXTextBookmark */ = F60C0891114BCD8800ABAD7A /* PBXTextBookmark */;
+			F60C0893114BCD8800ABAD7A /* PBXTextBookmark */ = F60C0893114BCD8800ABAD7A /* PBXTextBookmark */;
+			F60C0894114BCD8800ABAD7A /* PBXBookmark */ = F60C0894114BCD8800ABAD7A /* PBXBookmark */;
+			F6B3D349114D347A00CE43EA /* PBXBookmark */ = F6B3D349114D347A00CE43EA /* PBXBookmark */;
+		};
+		sourceControlManager = F60C0842114BC4D400ABAD7A /* Source Control */;
+		userBookmarkGroup = F6D74895114BDAA1002A3AA2 /* PBXBookmarkGroup */;
+		userBuildSettings = {
+		};
+	};
+	4E63838C112D9E4500596D03 /* pubVisitViewController.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {936, 6524}}";
+			sepNavSelRange = "{8984, 152}";
+			sepNavVisRange = "{8704, 543}";
+		};
+	};
+	4E64017E11402A4B0025972D /* testicon64x64.jpg */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = image.jpeg;
+		name = testicon64x64.jpg;
+		path = /Users/Elegia/Downloads/icons/testicon64x64.jpg;
+		sourceTree = "<absolute>";
+	};
+	F60C082F114BC4B500ABAD7A /* TunifyIPhone */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = TunifyIPhone;
+		sourceDirectories = (
+		);
+	};
+	F60C0842114BC4D400ABAD7A /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	F60C0843114BC4D400ABAD7A /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	F60C0891114BCD8800ABAD7A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 4E63838C112D9E4500596D03 /* pubVisitViewController.m */;
+		name = "pubVisitViewController.m: 289";
+		rLen = 0;
+		rLoc = 9203;
+		rType = 0;
+		vrLen = 1025;
+		vrLoc = 8538;
+	};
+	F60C0893114BCD8800ABAD7A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 4E63838C112D9E4500596D03 /* pubVisitViewController.m */;
+		name = "pubVisitViewController.m: 289";
+		rLen = 0;
+		rLoc = 9203;
+		rType = 0;
+		vrLen = 1025;
+		vrLoc = 8538;
+	};
+	F60C0894114BCD8800ABAD7A /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F60C088D114BCC6600ABAD7A /* 88-beermug.png */;
+	};
+	F6B3D349114D347A00CE43EA /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = F60C088D114BCC6600ABAD7A /* 88-beermug.png */;
+	};
+	F6D74895114BDAA1002A3AA2 /* PBXBookmarkGroup */ = {
+		isa = PBXBookmarkGroup;
+		children = (
+			F6D7489A114BDAE3002A3AA2 /* PBXBookmark */,
+		);
+		name = Root;
+	};
+	F6D7489A114BDAE3002A3AA2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 4E64017E11402A4B0025972D /* testicon64x64.jpg */;
+	};
+}

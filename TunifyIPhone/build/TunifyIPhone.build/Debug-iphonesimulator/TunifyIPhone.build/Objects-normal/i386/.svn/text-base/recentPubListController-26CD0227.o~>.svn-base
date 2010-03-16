@@ -1,0 +1,18 @@
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController btnFilter_clicked:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:37: warning: class 'recentPubListController' does not implement the 'UIActionSheetDelegate' protocol
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController tableView:cellForRowAtIndexPath:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:166: warning: local declaration of 'tableView' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:166: warning: initialization from distinct Objective-C type
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:181: warning: unused variable 'strPubName'
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController tableView:didSelectRowAtIndexPath:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:191: warning: local declaration of 'tableView' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController searchBarTextDidBeginEditing:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:245: warning: local declaration of 'searchBar' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:246: warning: local declaration of 'searchBar' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController searchBarTextDidEndEditing:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:251: warning: local declaration of 'searchBar' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController searchBarCancelButtonClicked:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:289: warning: local declaration of 'searchBar' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:290: warning: local declaration of 'searchBar' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m: In function '-[recentPubListController searchBarSearchButtonClicked:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/recentPubListController.m:298: warning: local declaration of 'searchBar' hides instance variable
