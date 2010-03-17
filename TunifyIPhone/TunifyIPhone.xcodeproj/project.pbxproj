@@ -113,6 +113,9 @@
 		F6D748A6114BDF37002A3AA2 /* star_light.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D748A0114BDF37002A3AA2 /* star_light.png */; };
 		F6D748A7114BDF37002A3AA2 /* rate_background.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D748A1114BDF37002A3AA2 /* rate_background.png */; };
 		F6D748A8114BDF37002A3AA2 /* twitter2.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D748A2114BDF37002A3AA2 /* twitter2.png */; };
+		F6EAC2C911511F9600150BE6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EAC2C811511F9600150BE6 /* OpenGLES.framework */; };
+		F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAC3FA11513CA700150BE6 /* GLView.m */; };
+		F6EAC3FF11513CA700150BE6 /* GLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAC3FC11513CA700150BE6 /* GLViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -247,6 +250,13 @@
 		F6D748A0114BDF37002A3AA2 /* star_light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_light.png; sourceTree = "<group>"; };
 		F6D748A1114BDF37002A3AA2 /* rate_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rate_background.png; sourceTree = "<group>"; };
 		F6D748A2114BDF37002A3AA2 /* twitter2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twitter2.png; sourceTree = "<group>"; };
+		F6EAC2C811511F9600150BE6 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		F6EAC3F811513CA700150BE6 /* ConstantsAndMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantsAndMacros.h; sourceTree = "<group>"; };
+		F6EAC3F911513CA700150BE6 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
+		F6EAC3FA11513CA700150BE6 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
+		F6EAC3FB11513CA700150BE6 /* GLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewController.h; sourceTree = "<group>"; };
+		F6EAC3FC11513CA700150BE6 /* GLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewController.m; sourceTree = "<group>"; };
+		F6EAC3FD11513CA700150BE6 /* OpenGLCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLCommon.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +272,7 @@
 				4E99F3A411359BF100303DB8 /* QuartzCore.framework in Frameworks */,
 				F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */,
 				F6C2F57C114EB5E00029EC57 /* AudioToolbox.framework in Frameworks */,
+				F6EAC2C911511F9600150BE6 /* OpenGLES.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +377,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6EAC2C811511F9600150BE6 /* OpenGLES.framework */,
 				F6C2F57B114EB5E00029EC57 /* AudioToolbox.framework */,
 				F6C2F577114EB5790029EC57 /* AVFoundation.framework */,
 				4E99F3A311359BF100303DB8 /* QuartzCore.framework */,
@@ -460,6 +472,7 @@
 		4EDDF3EE1132BE7600D1EAF5 /* Maps */ = {
 			isa = PBXGroup;
 			children = (
+				F6EAC2B011511EEA00150BE6 /* OpenGL ES */,
 				4E3396501149500700226465 /* UICGoogleMapsAPI.h */,
 				4E3396511149500700226465 /* UICGoogleMapsAPI.m */,
 				4E8D68CE113E9ACF00E2AD64 /* CSImageAnnotationView.h */,
@@ -516,6 +529,19 @@
 				F60C086F114BC9D300ABAD7A /* FBConnect.bundle */,
 			);
 			name = FBConnect;
+			sourceTree = "<group>";
+		};
+		F6EAC2B011511EEA00150BE6 /* OpenGL ES */ = {
+			isa = PBXGroup;
+			children = (
+				F6EAC3F811513CA700150BE6 /* ConstantsAndMacros.h */,
+				F6EAC3F911513CA700150BE6 /* GLView.h */,
+				F6EAC3FA11513CA700150BE6 /* GLView.m */,
+				F6EAC3FB11513CA700150BE6 /* GLViewController.h */,
+				F6EAC3FC11513CA700150BE6 /* GLViewController.m */,
+				F6EAC3FD11513CA700150BE6 /* OpenGLCommon.h */,
+			);
+			name = "OpenGL ES";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -668,6 +694,8 @@
 				F60C0876114BC9D300ABAD7A /* FBLoginDialog.m in Sources */,
 				F60C0877114BC9D300ABAD7A /* FBPermissionDialog.m in Sources */,
 				F60C0878114BC9D300ABAD7A /* FBStreamDialog.m in Sources */,
+				F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */,
+				F6EAC3FF11513CA700150BE6 /* GLViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

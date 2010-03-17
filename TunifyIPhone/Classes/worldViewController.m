@@ -9,10 +9,13 @@
 #import "worldViewController.h"
 #import "mapViewController.h"
 #import "musicViewController.h"
+#import "ConstantsAndMacros.h"
+#import "OpenGLCommon.h"
 
 @implementation worldViewController
 
 @synthesize strPubName;
+@synthesize glView;
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -98,6 +101,262 @@
 	musicBarButtonItem.action = @selector(btnMusic_clicked:);
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
+	
+	
+	NSLog(@"Creating glview");
+	glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
+	glView.delegate = self;
+	//self.view = glView;
+	[self.view addSubview:glView];
+	NSLog(@"glView created");
+	
+	glView.animationInterval = 1.0 / kRenderingFrequency;
+	[glView startAnimation];
+
+	
+	/*
+	glView = [[EAGLView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	
+	UILabel* distanceLeft = [[UILabel alloc] initWithFrame:CGRectMake(10, 250, 300, 20)];
+	distanceLeft.text = @"254 meters to go";
+	distanceLeft.textAlignment = UITextAlignmentCenter;
+	distanceLeft.font = [UIFont systemFontOfSize:18];
+	distanceLeft.adjustsFontSizeToFitWidth = NO;
+	distanceLeft.textColor = [UIColor blackColor];
+	distanceLeft.backgroundColor = [UIColor clearColor];
+	[glView addSubview:distanceLeft];
+	[distanceLeft release];
+	
+	self.view = glView;
+	*/
+}
+
+
+- (void)drawView:(UIView *)theView
+{
+	
+	NSLog(@"Drawing view");
+    static GLfloat rot = 0.0;
+    
+    // This is the same result as using Vertex3D, just faster to type and
+    // can be made const this way
+	/*
+    static const Vertex3D vertices[]= {
+        {0, -0.525731, 0.850651},             // vertices[0]
+        {0.850651, 0, 0.525731},              // vertices[1]
+        {0.850651, 0, -0.525731},             // vertices[2]
+        {-0.850651, 0, -0.525731},            // vertices[3]
+        {-0.850651, 0, 0.525731},             // vertices[4]
+        {-0.525731, 0.850651, 0},             // vertices[5]
+        {0.525731, 0.850651, 0},              // vertices[6]
+        {0.525731, -0.850651, 0},             // vertices[7]
+        {-0.525731, -0.850651, 0},            // vertices[8]
+        {0, -0.525731, -0.850651},            // vertices[9]
+        {0, 0.525731, -0.850651},             // vertices[10]
+        {0, 0.525731, 0.850651}               // vertices[11]
+    };
+    
+    static const Color3D colors[] = {
+		{1.0, 0.0, 0.0, 1.0},
+		{1.0, 0.5, 0.0, 1.0},
+		{1.0, 1.0, 0.0, 1.0},
+		{0.5, 1.0, 0.0, 1.0},
+		{0.0, 1.0, 0.0, 1.0},
+		{0.0, 1.0, 0.5, 1.0},
+		{0.0, 1.0, 1.0, 1.0},
+		{0.0, 0.5, 1.0, 1.0},
+		{0.0, 0.0, 1.0, 1.0},
+		{0.5, 0.0, 1.0, 1.0},
+		{1.0, 0.0, 1.0, 1.0},
+		{1.0, 0.0, 0.5, 1.0}
+    };
+    
+    static const GLubyte icosahedronFaces[] = {
+        1, 2, 6,
+        1, 7, 2,
+        3, 4, 5,
+        4, 3, 8,
+        6, 5, 11,
+        5, 6, 10,
+        9, 10, 2,
+        10, 9, 3,
+        7, 8, 9,
+        8, 7, 0,
+        11, 0, 1,
+        0, 11, 4,
+        6, 2, 10,
+        1, 6, 11,
+        3, 5, 10,
+        5, 4, 11,
+        2, 7, 9,
+        7, 1, 0,
+        3, 9, 8,
+        4, 8, 0,
+    };
+	 */
+	
+	static const Vertex3D vertices[]= {
+		
+		// pointer sides
+		{0, 0.0f, -1.0f},					// 0
+		{0, -0.3f, -1.0f},					// 1
+		{-0.5f, 0.0f, -0.2f},				// 2
+		{-0.5f, -0.3f, -0.2f},				// 3
+		{0.5f, 0.0f, -0.2f},				// 4
+		{0.5f, -0.3f, -0.2f},				// 5
+		
+		// pointer roof
+		{0, 0.0f, -1.0f},					// 6
+		{-0.5f, 0.0f, -0.2f},				// 7
+		{0.5f, 0.0f, -0.2f},				// 8
+		
+		// box left side	
+		{-0.15f, 0.0f, -0.2f},				// 9
+		{-0.15f, -0.3f, -0.2f},				// 10
+		{-0.15f, 0.0f, 1.5f},				// 11
+		{-0.15f, -0.3f, 1.5f},				// 12
+		
+		// box right side
+		{0.15f, 0.0f, -0.2f},				// 13
+		{0.15f, -0.3f, -0.2f},				// 14
+		{0.15f, 0.0f, 1.5f},				// 15
+		{0.15f, -0.3f, 1.5f},				// 16
+		
+		// box closest side
+		{0.15f, 0.0f, 1.5f},				// 17
+		{0.15f, -0.3f, 1.5f},				// 18
+		{-0.15f, 0.0f, 1.5f},				// 19
+		{-0.15f, -0.3f, 1.5f},				// 20
+		
+		// box top side
+		{0.15f, 0.0f, -0.2f},				// 21
+		{-0.15f, 0.0f, -0.2f},				// 22
+		{0.15f, 0.0f, 1.5f},				// 23
+		{-0.15f, 0.0f, 1.5f}				// 24
+		
+    };
+    
+    static const Color3D colors[] = {
+		// pointer sides
+		{1.0, 0.0, 0.0, 1.0},
+		{1.0, 0.0, 0.0, 1.0},
+		{0.0, 1.0, 0.0, 1.0},
+		{0.0, 1.0, 0.0, 1.0},
+		{0.0, 0.0, 1.0, 1.0},
+		{0.0, 0.0, 1.0, 1.0},
+		
+		// pointer roof
+		{0.5, 0.5, 0.5, 1.0},
+		{0.5, 0.5, 0.5, 1.0},
+		{0.5, 0.5, 0.5, 1.0},
+		
+		//box left side
+		{0.5, 0.5, 0.5, 1.0},
+		{0.5, 0.5, 0.5, 1.0},
+		{0.5, 0.5, 0.5, 1.0},
+		{0.5, 0.5, 0.5, 1.0},
+		
+		//box right side
+		{0.5, 0.5, 0.1, 1.0},
+		{0.5, 0.5, 0.1, 1.0},
+		{0.5, 0.5, 0.1, 1.0},
+		{0.5, 0.5, 0.1, 1.0},
+		
+		//box closest side
+		{0.5, 0.2, 0.5, 1.0},
+		{0.5, 0.2, 0.5, 1.0},
+		{0.5, 0.2, 0.5, 1.0},
+		{0.5, 0.2, 0.5, 1.0},
+		
+		//box top side
+		{0.8, 0.5, 0.5, 1.0},
+		{0.8, 0.5, 0.5, 1.0},
+		{0.8, 0.5, 0.5, 1.0},
+		{0.8, 0.5, 0.5, 1.0}
+		 
+    };
+    
+    static const GLubyte icosahedronFaces[] = {
+		// pointer sides
+		0, 2, 1,
+		2, 1, 3,
+		0, 4, 5,
+		0, 5, 1,
+		4, 2, 3,
+		4, 3, 5,
+		
+		// pointer roof
+		6, 7, 8,
+		
+		// box left side
+		9, 11, 12,
+		9, 12, 10,
+		
+		// box right side
+		13, 15, 14,
+		15, 16, 14,
+		
+		// box closest side
+		17, 19, 20,
+		17, 18, 20,
+		
+		// box top side
+		21, 23, 24,
+		21, 22, 24,
+		
+		/*
+		5, 3, 4,
+		6, 4, 2,
+		5, 1, 6,
+		1, 2, 6,
+		 */
+    };
+    
+    glLoadIdentity();
+    glTranslatef(0.0f,0.0f,-3.0f);
+	glScalef(0.5f, 0.5f, 0.5f);
+    glRotatef(45,1.0f,0.0f,0.0f);
+	glRotatef(rot, 0.0f, 1.0f, 0.0f);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+	
+    glDrawElements(GL_TRIANGLES, 45, GL_UNSIGNED_BYTE, icosahedronFaces);
+    
+    glDisableClientState(GL_VERTEX_ARRAY);
+    glDisableClientState(GL_COLOR_ARRAY);
+	
+    static NSTimeInterval lastDrawTime;
+    if (lastDrawTime)
+    {
+        NSTimeInterval timeSinceLastDraw = [NSDate timeIntervalSinceReferenceDate] - lastDrawTime;
+        rot+=20 * timeSinceLastDraw;                
+    }
+    lastDrawTime = [NSDate timeIntervalSinceReferenceDate];
+	
+	NSLog(@"View drawn");
+    
+}
+-(void)setupView:(GLView*)view
+{
+	NSLog(@"Setup view");
+	const GLfloat zNear = 0.01, zFar = 1000.0, fieldOfView = 45.0; 
+	GLfloat size; 
+	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_PROJECTION); 
+	size = zNear * tanf(DEGREES_TO_RADIANS(fieldOfView) / 2.0); 
+	CGRect rect = view.bounds; 
+	glFrustumf(-size, size, -size / (rect.size.width / rect.size.height), size / 
+			   (rect.size.width / rect.size.height), zNear, zFar); 
+	glViewport(0, 0, rect.size.width, rect.size.height);  
+	glMatrixMode(GL_MODELVIEW);
+	
+	glLoadIdentity(); 
+	
+	NSLog(@"View setup");
 }
 
 
@@ -124,6 +383,7 @@
 
 - (void)dealloc {
 	[strPubName release];
+	[glView release];
     [super dealloc];
 }
 
