@@ -333,7 +333,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>F6EAC49F115150FF00150BE6</string>
+										<string>F6EAC54C115174A400150BE6</string>
 										<key>history</key>
 										<array>
 											<string>F6586B25114D3BC200602BC3</string>
@@ -345,20 +345,20 @@
 											<string>F6C2F594114EBF3B0029EC57</string>
 											<string>F6C2F596114EBF3B0029EC57</string>
 											<string>F6C2F597114EBF3B0029EC57</string>
-											<string>F6C2F598114EBF3B0029EC57</string>
 											<string>F6C2F599114EBF3B0029EC57</string>
 											<string>F6C2F59A114EBF3B0029EC57</string>
 											<string>F6C2F59B114EBF3B0029EC57</string>
 											<string>F6EAC328115126EC00150BE6</string>
 											<string>F6EAC32C115126EC00150BE6</string>
-											<string>F6EAC3681151286500150BE6</string>
 											<string>F6EAC40A11513F7C00150BE6</string>
 											<string>F6EAC40C11513F7C00150BE6</string>
-											<string>F6EAC43011513FD800150BE6</string>
 											<string>F6EAC4401151406F00150BE6</string>
 											<string>F6EAC446115140ED00150BE6</string>
 											<string>F6EAC45D1151430B00150BE6</string>
-											<string>F6EAC49E115150FF00150BE6</string>
+											<string>F6EAC5091151640F00150BE6</string>
+											<string>F6EAC511115164CB00150BE6</string>
+											<string>F6EAC52F1151691700150BE6</string>
+											<string>F6EAC5301151691700150BE6</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -432,6 +432,12 @@
 											<string>F6EAC44B115140ED00150BE6</string>
 											<string>F6EAC45F1151430B00150BE6</string>
 											<string>F6EAC4601151430B00150BE6</string>
+											<string>F6EAC50B1151640F00150BE6</string>
+											<string>F6EAC50C1151640F00150BE6</string>
+											<string>F6EAC513115164CB00150BE6</string>
+											<string>F6EAC514115164CB00150BE6</string>
+											<string>F6EAC5311151691700150BE6</string>
+											<string>F6EAC5321151691700150BE6</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -654,21 +660,21 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>&lt;No Editor&gt;</string>
+								<string>worldViewController.m</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {500, 0}}</string>
+								<string>{{0, 0}, {500, 218}}</string>
 								<key>RubberWindowFrame</key>
 								<string>21 255 500 500 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>0pt</string>
+							<string>218pt</string>
 						</dict>
 						<dict>
 							<key>BecomeActive</key>
@@ -687,14 +693,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 5}, {500, 454}}</string>
+								<string>{{0, 223}, {500, 236}}</string>
 								<key>RubberWindowFrame</key>
 								<string>21 255 500 500 0 0 1280 778 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXBuildResultsModule</string>
 							<key>Proportion</key>
-							<string>454pt</string>
+							<string>236pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
