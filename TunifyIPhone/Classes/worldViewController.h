@@ -14,7 +14,7 @@
 
 //@class EAGLView;
 
-@interface worldViewController : UIViewController <GLViewDelegate, CoordinatesTool> {
+@interface worldViewController : UIViewController <GLViewDelegate, CoordinatesToolDelegate> {
 	NSString *strPubName;
 	IBOutlet UISegmentedControl *capturedToggle;
 	IBOutlet UILabel *lblDistanceToDestination;
@@ -38,7 +38,6 @@
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (assign) CLLocationDistance distance;
 
-- (void) getCoordinates;
 - (void) btnPubs_clicked:(id)sender;
 - (void) btnMusic_clicked:(id)sender;
 - (IBAction) capturedToggleChanged:(id)sender;

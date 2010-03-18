@@ -154,7 +154,6 @@
     if ([EAGLContext currentContext] == context) 
         [EAGLContext setCurrentContext:nil];
     
-
     [context release];  
     [super dealloc];
 }

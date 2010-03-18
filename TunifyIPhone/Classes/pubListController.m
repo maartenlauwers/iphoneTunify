@@ -74,9 +74,9 @@
 
 - (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName {
 
-	
 	mapViewController *mvc = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 	mvc.strPubName = pubName;
+	mvc.strPubAddress = @"Ieperstraat 100 8970 Poperinge"; //TODO: Replace by actual pub address.
 	[self.navigationController pushViewController:mvc animated:YES];
 	[mvc release];
 	mvc = nil;
@@ -179,7 +179,6 @@
 }
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-	NSLog(@"ERROR with theConenction");
 	[connection release];
 	[webData release];
 }

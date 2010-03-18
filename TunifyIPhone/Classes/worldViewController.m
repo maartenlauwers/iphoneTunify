@@ -17,6 +17,7 @@
 
 @synthesize strPubName;
 @synthesize glView;
+@synthesize capturedToggle;
 @synthesize strPubAddress;
 @synthesize pubLocation;
 @synthesize userLocation;
@@ -170,52 +171,24 @@ Color3D colors[] = {
 }
 
 - (void) btnMusic_clicked:(id)sender {
-	musicViewController *mvc = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
-	mvc.strPubName = strPubName;
-	[self.navigationController pushViewController:mvc animated:YES];
-	[mvc release];
-	mvc = nil;
+	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
+	controller.strPubName = strPubName;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
 }
 
 - (IBAction) capturedToggleChanged:(id)sender {
 	
 	if(capturedToggle.selectedSegmentIndex == 0) {
-		mapViewController *mvc = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
-		mvc.strPubName = strPubName;
-		[self.navigationController pushViewController:mvc animated:YES];
-		[mvc release];
-		mvc = nil;
+		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
+		controller.strPubName = self.strPubName;
+		controller.strPubAddress = self.strPubAddress;
+		[self.navigationController pushViewController:controller animated:YES];
+		[controller release];
+		controller = nil;
 	}
-}
-
-// Convert our passed value to Radians
-double ToRad( double nVal )
-{
-	return nVal * (M_PI/180);
-}
-
-double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2 )
-{
-    double nRadius = 6371; // Earth's radius in Kilometers
-    // Get the difference between our two points
-    // then convert the difference into radians
-	
-    double nDLat = ToRad(nLat2 - nLat1);
-    double nDLon = ToRad(nLon2 - nLon1);
-	
-    // Here is the new line
-    nLat1 =  ToRad(nLat1);
-    nLat2 =  ToRad(nLat2);
-	
-    double nA = pow ( sin(nDLat/2), 2 ) + cos(nLat1) * cos(nLat2) * pow ( sin(nDLon/2), 2 );
-	
-    double nC = 2 * atan2( sqrt(nA), sqrt( 1 - nA ));
-    double nD = nRadius * nC;
-	
-    return nD; // Return our calculated distance
-}
- 
-
+} 
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -252,33 +225,19 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
 	
-	//[self getCoordinates];
 	
+	self.lblDistanceToDestination.text = @"";
+	self.distance = -1;
+	self.userLocation = nil;
+	self.pubLocation = nil;
 	
+	// Fetch the user and pub coordinates
 	CoordinatesTool *ct = [[CoordinatesTool alloc] init];
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	self.pubLocation = [ct fetchPubLocation:self.strPubAddress];
+	[ct fetchPubLocation:self.strPubAddress];
 	
-	/*
-	// Calculate the distance between the two points
-	
-	NSRange kommaRange = [pubCoordinates rangeOfString:@","];
-	CLLocationDegrees pubLatitude = [[pubCoordinates substringWithRange:NSMakeRange(0, kommaRange.location)] doubleValue];
-	CLLocationDegrees pubLongitude = [[pubCoordinates substringFromIndex:(kommaRange.location + 1)] doubleValue];
-	
-	kommaRange = [userCoordinates rangeOfString:@","];
-	CLLocationDegrees userLatitude = [[userCoordinates substringWithRange:NSMakeRange(0, kommaRange.location)] doubleValue];
-	CLLocationDegrees userLongitude = [[userCoordinates substringFromIndex:(kommaRange.location + 1)] doubleValue];
-	
-	CLLocation* pubLocation = [[[CLLocation alloc] initWithLatitude:pubLatitude longitude:pubLongitude] autorelease];
-	CLLocation* userLocation = [[[CLLocation alloc] initWithLatitude:userLatitude longitude:userLongitude] autorelease];
-	
-	CLLocationDistance distance = [userLocation getDistanceFrom:pubLocation];
-	 */
-	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
-	
-	
+	// Create the 3D pointer arrow view
 	glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
 	glView.delegate = self;
 	glView.opaque = NO;
@@ -304,55 +263,41 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 	*/
 }
 
-- (void)userCoordinatesFound:(CoordinatesTool *)sender {
+- (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
-	self.distance = [sender fetchDistance];
+	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
+		self.distance = [sender fetchDistance];
+		self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
+	}
 }
 
-- (void)userCoordinatesError:(CoordinatesTool *)sender {
+- (void)userLocationError:(CoordinatesTool *)sender {
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
 														message:NSLocalizedString(@"An error occured while fetching your position.",  
 																				  @"message") 
-													   delegate:self 
-											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
-											  otherButtonTitles:nil]; 
+														delegate:self 
+														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+														otherButtonTitles:nil]; 
 	[alertView show]; 
 }
 
-/*
-- (void) getCoordinates {
-	self.locationManager = [[CLLocationManager alloc] init]; 
-	self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
-	self.locationManager.delegate = self; 
-	[self.locationManager startUpdatingLocation]; 
-	
-	// Store the coordinates of the user
-	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8610959, 2.7315335]; // TODO: Replace by actual user coordinates with 
-																						// self.locationManager.location.coordinate.latitude;
-																						// self.locationManager.location.coordinate.longitude;
-	// Fetch the coordinates of the pub
-	self.strPubAddress = @"Ieperstraat 100 8970 Poperinge"; // TODO: Replace by actual pub address
-	NSString *pubAddress = self.strPubAddress;
-	NSString *pubAddressString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv&sensor=false", [pubAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-	NSString *pubAddressURL = [NSString stringWithContentsOfURL:[NSURL URLWithString:pubAddressString]];
-	NSArray *userLocationAddressResults = [pubAddressURL componentsSeparatedByString:@","];
-	self.pubCoordinates = @"";
-	if([userLocationAddressResults count] >= 4 && [[userLocationAddressResults objectAtIndex:0] isEqualToString:@"200"]) {
-		
-		for(int i=2; i<[userLocationAddressResults count]; i++) {
-			if (i == 3) {
-				self.pubCoordinates = [self.pubCoordinates stringByAppendingString:@","];
-			}
-			self.pubCoordinates = [self.pubCoordinates stringByAppendingString:[userLocationAddressResults objectAtIndex:i]];
-		}
+- (void)pubLocationFound:(CoordinatesTool *)sender {
+	self.pubLocation = sender.pubLocation;
+	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
+		self.distance = [sender fetchDistance];
+		self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
 	}
-	else {
-		//Error handling
-		NSLog(@"Error while getting target address location");
-	}
-	
 }
- */
+
+- (void)pubLocationError:(CoordinatesTool *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while the pub's position.",  
+																				  @"message") 
+														delegate:self 
+														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+														otherButtonTitles:nil]; 
+	[alertView show]; 
+}
 
 - (void)drawView:(UIView *)theView
 {

@@ -37,6 +37,7 @@
 	
 	if (buttonIndex == 0) 
 	{ 
+		[alertView release];
 		[self.navigationController popViewControllerAnimated:YES];
 	}
 }
@@ -72,9 +73,13 @@
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  
 	NSString *twitterUsername = [userDefaults stringForKey:@"twitterUsername"];
 	NSString *twitterPassword = [userDefaults stringForKey:@"twitterPassword"];
-	
+	/*
 	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@@twitter.com/statuses/update.xml", twitterUsername, twitterPassword]] 
 														cachePolicy:NSURLRequestUseProtocolCachePolicy 
+														timeoutInterval:60.0]; 
+	*/
+	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://IphoneTunifyT:tzes88572@twitter.com/statuses/update.xml"] 
+															cachePolicy:NSURLRequestUseProtocolCachePolicy 
 														timeoutInterval:60.0]; 
 	
 	[theRequest setHTTPMethod:@"POST"]; 
@@ -86,8 +91,20 @@
 
 	NSLog(@"%@", [[[NSString alloc] initWithData:result encoding:NSASCIIStringEncoding] autorelease]);
 	
+	
+	[twitterUsername release];
+	[twitterPassword release];
+	
 	[self showSuccess];
+}
 
+-(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+	[connection release];
+}
+-(void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	[connection release];
 }
 
 

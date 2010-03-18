@@ -9,11 +9,23 @@
 #import "CoordinatesTool.h"
 @implementation CoordinatesTool
 @synthesize delegate;
+@synthesize userCoordinates;
 @synthesize userLocation;
+@synthesize pubCoordinates;
 @synthesize pubLocation;
+@synthesize userLocationOK;
+@synthesize pubLocationOK;
 
+
+- (id)init
+{
+    if ((self = [super init])) {
+		self.userLocationOK = FALSE;
+		self.pubLocationOK = FALSE;
+    }
+    return self;
+}
 - (void) fetchUserLocation {
-	
 	locationManager = [[CLLocationManager alloc] init]; 
 	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
 	locationManager.delegate = self; 
@@ -21,39 +33,67 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation { 
-	self.userLocation = [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
+		
+	NSString *userLatitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.latitude];
+	NSString *userLongitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.longitude];
+	//self.userCoordinates = [NSString stringWithFormat:@"%@,%@", userLatitude, userLongitude];
+
+	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8610959, 2.7315335];
 	
-	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(userCoordinatesFound:)]) {
-		[delegate userCoordinatesFound:self];
+	CLLocationDegrees longitude = 2.7315335; //[userLongitude doubleValue];
+	CLLocationDegrees latitude = 50.8610959; //[userLatitude doubleValue];
+	
+	NSLog(@"My Latitude: %f", latitude);
+	NSLog(@"My Longitude: %f", longitude);
+	CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
+	self.userLocation = currentLocation; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
+	[currentLocation release];
+	self.userLocationOK = TRUE;	
+	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(userLocationFound:)]) {
+		[delegate userLocationFound:self];
 	}   
 } 
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error { 
-	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(userCoordinatesError:)]) {
-		[delegate userCoordinatesFound:self];
+	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(userLocationError:)]) {
+		[delegate userLocationError:self];
 	} 
 } 
 
-- (CLLocation *) fetchPubLocation:(NSString *)pubAddress {
+- (void) fetchPubLocation:(NSString *)pubAddress {
 	
-	CLLocationDegrees pubLatitude;
-	CLLocationDegrees pubLongitude;
+	NSString *pubLatitude;
+	NSString *pubLongitude;
 	
 	NSString *pubAddressString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv&sensor=false", [pubAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	NSString *pubAddressURL = [NSString stringWithContentsOfURL:[NSURL URLWithString:pubAddressString]];
-	NSArray *userLocationAddressResults = [pubAddressURL componentsSeparatedByString:@","];
-	if([userLocationAddressResults count] >= 4 && [[userLocationAddressResults objectAtIndex:0] isEqualToString:@"200"]) {
+	NSArray *pubLocationAddressResults = [pubAddressURL componentsSeparatedByString:@","];
+	if([pubLocationAddressResults count] >= 4 && [[pubLocationAddressResults objectAtIndex:0] isEqualToString:@"200"]) {
 		
-		pubLatitude = [[userLocationAddressResults objectAtIndex:2] doubleValue];
-		pubLongitude = [[userLocationAddressResults objectAtIndex:3] doubleValue];
+		pubLatitude = [pubLocationAddressResults objectAtIndex:2];
+		pubLongitude = [pubLocationAddressResults objectAtIndex:3];
+		
+		self.pubCoordinates = [NSString stringWithFormat:@"%@,%@", pubLatitude, pubLongitude];
+		
+		CLLocationDegrees longitude = [pubLongitude doubleValue];
+		CLLocationDegrees latitude = [pubLatitude doubleValue];
+		CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
+		
+		self.pubLocation = currentLocation;
+		[currentLocation release];
+		
+		self.pubLocationOK = TRUE;
 	}
 	else {
 		//Error handling
-		NSLog(@"Error while getting target address location");
+		if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(pubLocationError:)]) {
+			[delegate pubLocationError:self];
+		} 
 	}
 	
-	self.pubLocation = [[[CLLocation alloc] initWithLatitude:pubLatitude longitude:pubLongitude] autorelease];
-	return self.pubLocation;
+	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(pubLocationFound:)]) {
+		[delegate pubLocationFound:self];
+	} 
 }
 
 - (CLLocationDistance) fetchDistance {

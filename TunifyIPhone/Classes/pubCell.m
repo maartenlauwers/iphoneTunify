@@ -98,6 +98,16 @@
 
 
 - (void)dealloc {
+	[nameLabel release];
+	[distanceLabel release];
+	[ratingLabel release];
+	[star1 release];
+	[star2 release];
+	[star3 release];
+	[star4 release];
+	[star5 release];
+	[playButton release];
+	[infoButton release];
     [super dealloc];
 }
 

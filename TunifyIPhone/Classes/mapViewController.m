@@ -28,9 +28,13 @@
 @synthesize pointsArray;
 @synthesize webData;
 @synthesize tempView;
+@synthesize ct;
 @synthesize userCoordinates;
+@synthesize userLocation;
 @synthesize pubCoordinates;
+@synthesize pubLocation;
 @synthesize googleMapsAPI;
+@synthesize webViewDidFinishLoading;
 
 
 /*
@@ -95,11 +99,12 @@
 - (IBAction) capturedToggleChanged:(id)sender {
 	
 	if(capturedToggle.selectedSegmentIndex == 1) {
-		worldViewController *wvc = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
-		wvc.strPubName = strPubName;
-		[self.navigationController pushViewController:wvc animated:YES];
-		[wvc release];
-		wvc = nil;
+		worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
+		controller.strPubName = self.strPubName;
+		controller.strPubAddress = self.strPubAddress;
+		[self.navigationController pushViewController:controller animated:YES];
+		[controller release];
+		controller = nil;
 	}
 }
 
@@ -144,7 +149,20 @@
 	
 	[self.activityIndicator startAnimating];
 	
-	[self getCoordinates];
+	if(self.webViewDidFinishLoading == TRUE) {
+		NSLog(@"WEBVIEWDIDFINISHLOADING STILL TRUE");
+	}
+	self.webViewDidFinishLoading = FALSE;
+	
+	ct = [[CoordinatesTool alloc] init];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	[ct fetchPubLocation:self.strPubAddress];
+
+	
+	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
+	googleMapsAPI.delegate = self;
+	
 	// TODO: The following alert view should only show up when we've reached our destination
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 
 							  message:NSLocalizedString(@"What do you want to do?",  
@@ -156,12 +174,50 @@
 	[alertView show]; 
 	
 }
+- (void)userLocationFound:(CoordinatesTool *)sender {
+	self.userLocation = sender.userLocation;
+	self.userCoordinates = sender.userCoordinates;
+	
+	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
+		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
+	}
+}
 
+- (void)userLocationError:(CoordinatesTool *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while fetching your position.",  
+																				  @"message") 
+														delegate:self 
+														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+														otherButtonTitles:nil]; 
+	[alertView show]; 
+}
+
+- (void)pubLocationFound:(CoordinatesTool *)sender {
+	self.pubLocation = sender.pubLocation;
+	self.pubCoordinates = sender.pubCoordinates;
+	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
+		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
+	}
+}
+
+- (void)pubLocationError:(CoordinatesTool *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while the pub's position.",  
+																				  @"message") 
+														delegate:self 
+														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+														otherButtonTitles:nil]; 
+	[alertView show]; 
+}
+
+
+/*
 - (void) getCoordinates {
-	self.locationManager = [[CLLocationManager alloc] init]; 
-	self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
-	self.locationManager.delegate = self; 
-	[self.locationManager startUpdatingLocation]; 
+	//self.locationManager = [[CLLocationManager alloc] init]; 
+	//self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
+	//self.locationManager.delegate = self; 
+	//[self.locationManager startUpdatingLocation]; 
 	
 	
 	// Store the coordinates of the user
@@ -191,10 +247,11 @@
 		NSLog(@"Error while getting target address location");
 	}
 	
-	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
-	googleMapsAPI.delegate = self;
+	//googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
+	//googleMapsAPI.delegate = self;
 	
 }
+*/
 
 - (void)goolgeMapsAPI:(UICGoogleMapsAPI *)goolgeMapsAPI didGetObject:(NSObject *)object {
 	NSString *html = goolgeMapsAPI.message;
@@ -212,18 +269,23 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
 	NSLog(@"Did finish load");
-	[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
+	self.webViewDidFinishLoading = TRUE;
+	if (self.ct.userLocationOK == TRUE && self.ct.pubLocationOK == TRUE) {
+		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];	
+	}
 }
 
 
 
 -(void)parseCoordinatesHtml:(NSString *)html {
+	NSLog(@"Current user coordinates: %@", self.userCoordinates);
+	NSLog(@"Current pub coordinates: %@", self.pubCoordinates);
+	
 	NSLog(@"html: %@", html);
 	
 	
 	NSString *remainingSubString = html;
 	NSRange coordRange = [remainingSubString rangeOfString:@"<br>"];
-	int i = 0;
 	NSLog(@"starting while");
 	while(coordRange.location != NSNotFound) {
 		NSString *coordPair = [remainingSubString substringWithRange:NSMakeRange(0, coordRange.location)];
@@ -270,6 +332,7 @@
 	[webData release];
 }
 
+/*
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation { 
     NSLog(@"Core location claims to have a position."); 
 } 
@@ -277,6 +340,7 @@
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error { 
 		NSLog(@"Core location says no-go on the position info."); 
 } 
+ */
 
 - (void)setupMap {
 	NSLog(@"So far so good");
@@ -495,8 +559,11 @@
 	[_routeViews release];
 	[_detailsVC release];
 	[googleMapsAPI release];
+	[ct release];
 	[userCoordinates release];
+	[userLocation release];
 	[pubCoordinates release];
+	[pubLocation release];
 	[activityIndicator release];
 	[capturedToggle release];
     [super dealloc];

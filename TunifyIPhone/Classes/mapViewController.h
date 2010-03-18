@@ -10,10 +10,11 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import "UICGoogleMapsAPI.h"
+#import "CoordinatesTool.h"
 
 @class CSWebDetailsViewController;
 
-@interface mapViewController : UIViewController <UIWebViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate> {
+@interface mapViewController : UIViewController <UIWebViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoordinatesToolDelegate> {
 	NSString *strPubName;
 	NSString *strPubAddress;
 	CLLocationManager *locationManager;
@@ -34,8 +35,12 @@
 	UICGoogleMapsAPI *googleMapsAPI;
 	UIWebView *tempView;
 	
+	CoordinatesTool *ct;
 	NSString *userCoordinates;
+	CLLocation *userLocation;
 	NSString *pubCoordinates;
+	CLLocation *pubLocation;
+	BOOL *webViewDidFinishLoading;
 }
 
 @property (nonatomic, retain) NSString *strPubName;
@@ -48,13 +53,15 @@
 
 @property (nonatomic, retain) NSMutableArray *pointsArray;
 @property (nonatomic, retain) NSMutableData *webData;
+@property (nonatomic, retain) CoordinatesTool *ct;
 @property (nonatomic, retain) NSString *userCoordinates;
+@property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) NSString *pubCoordinates;
+@property (nonatomic, retain) CLLocation *pubLocation;
 @property (nonatomic, retain) UICGoogleMapsAPI *googleMapsAPI;
+@property (nonatomic, assign) BOOL *webViewDidFinishLoading;
 
-- (void)getCoordinates;
 - (void)parseCoordinatesHtml:(NSString *)html;
-- (void)parseData:(NSMutableData*)data;
 - (void)setupMap;
 - (void) showWebViewForURL:(NSURL*) url;
 

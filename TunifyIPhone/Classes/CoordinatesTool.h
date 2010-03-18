@@ -9,27 +9,39 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-@protocol CoordinatesTool <NSObject>
+@class CoordinatesTool;
+@protocol CoordinatesToolDelegate <NSObject>
 @optional
-- (void)userCoordinatesFound:(CoordinatesTool *)sender;
-- (void)userCoordinatesError:(CoordinatesTool *)sender;
+- (void) userLocationFound:(CoordinatesTool *)sender;
+- (void) userLocationError:(CoordinatesTool *)sender;
+- (void) pubLocationFound:(CoordinatesTool *)sender;
+- (void) pubLocationError:(CoordinatesTool *)sender;
 @end
 
 @interface CoordinatesTool : NSObject <CLLocationManagerDelegate> {
-	id<CoordinatesTool> delegate;
+	id <CoordinatesToolDelegate> delegate;
 	
 	CLLocationManager *locationManager;
+	NSString *pubCoordinates;
 	CLLocation *pubLocation;
+	NSString *userCoordinates;
 	CLLocation *userLocation;
+	
+	BOOL *pubLocationOK;
+	BOOL *userLocationOK;
 	
 }
 
-@property (assign) id<CoordinatesTool> delegate;
+@property (nonatomic, assign) id <CoordinatesToolDelegate> delegate;
+@property (nonatomic, retain) NSString *pubCoordinates;
 @property (nonatomic, retain) CLLocation *pubLocation;
+@property (nonatomic, retain) NSString *userCoordinates;
 @property (nonatomic, retain) CLLocation *userLocation;
+@property (nonatomic, assign) BOOL *pubLocationOK;
+@property (nonatomic, assign) BOOL *userLocationOK;
 
 - (void) fetchUserLocation;
-- (CLLocation *) fetchPubLocation:(NSString *)pubAddress;
+- (void) fetchPubLocation:(NSString *)pubAddress;
 - (CLLocationDistance) fetchDistance;
 - (CLLocationDistance) fetchDistance:(CLLocation *)locationA locationB:(CLLocation *)locationB;
 
