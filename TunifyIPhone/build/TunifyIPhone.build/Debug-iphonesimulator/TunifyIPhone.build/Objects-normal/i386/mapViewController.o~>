@@ -1,0 +1,9 @@
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController parseCoordinatesHtml:]':
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:226: warning: unused variable 'i'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController mapView:viewForAnnotation:]':
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:401: warning: local declaration of 'mapView' hides instance variable
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:401: warning: local declaration of 'mapView' hides instance variable
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:404: warning: local declaration of 'mapView' hides instance variable
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m: At top level:
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:506: warning: incomplete implementation of class 'mapViewController'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:506: warning: method definition for '-parseData:' not found

@@ -17,6 +17,11 @@
 
 @synthesize strPubName;
 @synthesize glView;
+@synthesize strPubAddress;
+@synthesize pubCoordinates;
+@synthesize userCoordinates;
+@synthesize locationManager;
+@synthesize lblDistanceToDestination;
 
 Vertex3D vertices[]= {
 
@@ -182,6 +187,34 @@ Color3D colors[] = {
 	}
 }
 
+// Convert our passed value to Radians
+double ToRad( double nVal )
+{
+	return nVal * (M_PI/180);
+}
+
+double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2 )
+{
+    double nRadius = 6371; // Earth's radius in Kilometers
+    // Get the difference between our two points
+    // then convert the difference into radians
+	
+    double nDLat = ToRad(nLat2 - nLat1);
+    double nDLon = ToRad(nLon2 - nLon1);
+	
+    // Here is the new line
+    nLat1 =  ToRad(nLat1);
+    nLat2 =  ToRad(nLat2);
+	
+    double nA = pow ( sin(nDLat/2), 2 ) + cos(nLat1) * cos(nLat2) * pow ( sin(nDLon/2), 2 );
+	
+    double nC = 2 * atan2( sqrt(nA), sqrt( 1 - nA ));
+    double nD = nRadius * nC;
+	
+    return nD; // Return our calculated distance
+}
+ 
+
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -218,6 +251,27 @@ Color3D colors[] = {
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
 	
+	[self getCoordinates];
+	
+	// Calculate the distance between the two points
+	NSRange kommaRange = [pubCoordinates rangeOfString:@","];
+	CLLocationDegrees pubLatitude = [[pubCoordinates substringWithRange:NSMakeRange(0, kommaRange.location)] doubleValue];
+	CLLocationDegrees pubLongitude = [[pubCoordinates substringFromIndex:(kommaRange.location + 1)] doubleValue];
+	
+	kommaRange = [userCoordinates rangeOfString:@","];
+	CLLocationDegrees userLatitude = [[userCoordinates substringWithRange:NSMakeRange(0, kommaRange.location)] doubleValue];
+	CLLocationDegrees userLongitude = [[userCoordinates substringFromIndex:(kommaRange.location + 1)] doubleValue];
+	
+	CLLocation* pubLocation = [[[CLLocation alloc] initWithLatitude:pubLatitude longitude:pubLongitude] autorelease];
+	CLLocation* userLocation = [[[CLLocation alloc] initWithLatitude:userLatitude longitude:userLongitude] autorelease];
+	
+	CLLocationDistance distance = [userLocation getDistanceFrom:pubLocation];
+	
+//	NSLog(@"User lat: %d, user lon: %d, Pub lat: %d, pub lon: %d", userLatitude, userLongitude, pubLatitude, pubLongitude);
+//	double distance = CalculateDistance(userLatitude, userLongitude, pubLatitude, pubLongitude);
+	NSLog(@"Distance: %.0f", distance);
+	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", distance];
+	
 	
 	glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
 	glView.delegate = self;
@@ -244,6 +298,38 @@ Color3D colors[] = {
 	*/
 }
 
+- (void) getCoordinates {
+	self.locationManager = [[CLLocationManager alloc] init]; 
+	self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
+	self.locationManager.delegate = self; 
+	[self.locationManager startUpdatingLocation]; 
+	
+	// Store the coordinates of the user
+	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8610959, 2.7315335]; // TODO: Replace by actual user coordinates with 
+																						// self.locationManager.location.coordinate.latitude;
+																						// self.locationManager.location.coordinate.longitude;
+	// Fetch the coordinates of the pub
+	self.strPubAddress = @"Ieperstraat 100 8970 Poperinge"; // TODO: Replace by actual pub address
+	NSString *pubAddress = self.strPubAddress;
+	NSString *pubAddressString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv&sensor=false", [pubAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+	NSString *pubAddressURL = [NSString stringWithContentsOfURL:[NSURL URLWithString:pubAddressString]];
+	NSArray *userLocationAddressResults = [pubAddressURL componentsSeparatedByString:@","];
+	self.pubCoordinates = @"";
+	if([userLocationAddressResults count] >= 4 && [[userLocationAddressResults objectAtIndex:0] isEqualToString:@"200"]) {
+		
+		for(int i=2; i<[userLocationAddressResults count]; i++) {
+			if (i == 3) {
+				self.pubCoordinates = [self.pubCoordinates stringByAppendingString:@","];
+			}
+			self.pubCoordinates = [self.pubCoordinates stringByAppendingString:[userLocationAddressResults objectAtIndex:i]];
+		}
+	}
+	else {
+		//Error handling
+		NSLog(@"Error while getting target address location");
+	}
+	
+}
 
 - (void)drawView:(UIView *)theView
 {
@@ -320,7 +406,9 @@ Color3D colors[] = {
 
 - (void)dealloc {
 	[strPubName release];
+	[lblDistanceToDestination release];
 	[capturedToggle release];
+	[locationManager release];
 	[glView release];
     [super dealloc];
 }

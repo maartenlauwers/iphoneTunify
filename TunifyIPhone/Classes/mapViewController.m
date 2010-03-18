@@ -143,18 +143,31 @@
 	_routeViews = [[NSMutableDictionary alloc] init];
 	
 	[self.activityIndicator startAnimating];
-	// Get the local location info
 	
-	 self.locationManager = [[CLLocationManager alloc] init]; 
-	 self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
-	 self.locationManager.delegate = self; 
-	 [self.locationManager startUpdatingLocation]; 
-	 
+	[self getCoordinates];
+	// TODO: The following alert view should only show up when we've reached our destination
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 
+							  message:NSLocalizedString(@"What do you want to do?",  
+														@"message") 
+							  delegate:self 
+							  cancelButtonTitle:NSLocalizedString(@"Keep walking", @"cancel") 
+							  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
+							  nil]; 
+	[alertView show]; 
+	
+}
+
+- (void) getCoordinates {
+	self.locationManager = [[CLLocationManager alloc] init]; 
+	self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
+	self.locationManager.delegate = self; 
+	[self.locationManager startUpdatingLocation]; 
+	
 	
 	// Store the coordinates of the user
 	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8610959, 2.7315335]; // TODO: Replace by actual user coordinates with 
-																						// self.locationManager.location.coordinate.latitude;
-																						// self.locationManager.location.coordinate.longitude;
+	// self.locationManager.location.coordinate.latitude;
+	// self.locationManager.location.coordinate.longitude;
 	NSLog(@"userCoordinates: %@", userCoordinates);
 	// Fetch the coordinates of the pub
 	self.strPubAddress = @"Ieperstraat 100 8970 Poperinge"; // TODO: Replace by actual pub address
@@ -164,7 +177,7 @@
 	NSArray *userLocationAddressResults = [pubAddressURL componentsSeparatedByString:@","];
 	self.pubCoordinates = @"";
 	if([userLocationAddressResults count] >= 4 && [[userLocationAddressResults objectAtIndex:0] isEqualToString:@"200"]) {
-				
+		
 		for(int i=2; i<[userLocationAddressResults count]; i++) {
 			if (i == 3) {
 				self.pubCoordinates = [self.pubCoordinates stringByAppendingString:@","];
@@ -178,32 +191,8 @@
 		NSLog(@"Error while getting target address location");
 	}
 	
-	
-	
 	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
 	googleMapsAPI.delegate = self;
-
-	/*
-	NSString *path = [[NSBundle mainBundle] pathForResource:@"mapcontainer" ofType:@"html"];
-	
-	NSLog(@"Creating webview");
-	tempView = [[UIWebView alloc] initWithFrame:CGRectMake(0,0,300,300)];
-	tempView.delegate = self;
-	[self.view addSubview:tempView];
-	[tempView loadRequest:[NSURLRequest requestWithURL:[NSURL fileURLWithPath:path]]];
-	NSLog(@"tempView released");
-	*/
-	
-	
-	// The following alert view should only show up when we've reached our destination
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 
-							  message:NSLocalizedString(@"What do you want to do?",  
-														@"message") 
-							  delegate:self 
-							  cancelButtonTitle:NSLocalizedString(@"Keep walking", @"cancel") 
-							  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
-							  nil]; 
-	[alertView show]; 
 	
 }
 

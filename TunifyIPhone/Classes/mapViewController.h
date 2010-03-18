@@ -52,6 +52,7 @@
 @property (nonatomic, retain) NSString *pubCoordinates;
 @property (nonatomic, retain) UICGoogleMapsAPI *googleMapsAPI;
 
+- (void)getCoordinates;
 - (void)parseCoordinatesHtml:(NSString *)html;
 - (void)parseData:(NSMutableData*)data;
 - (void)setupMap;
