@@ -42,7 +42,7 @@
 		// Get the layer
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         
-        eaglLayer.opaque = YES;
+        eaglLayer.opaque = NO;
         eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                         [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
         
@@ -66,38 +66,6 @@
 	
 	return self;	
 }
-
-/*
-- (id)initWithCoder:(NSCoder*)coder {
-    
-    if ((self = [super initWithCoder:coder])) {
-        // Get the layer
-        CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-        
-        eaglLayer.opaque = YES;
-        eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
-        
-#if kAttemptToUseOpenGLES2
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        if (context == NULL)
-        {
-#endif
-            context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
-            
-            if (!context || ![EAGLContext setCurrentContext:context]) {
-                [self release];
-                return nil;
-            }
-#if kAttemptToUseOpenGLES2
-        }
-#endif
-        
-        animationInterval = 1.0 / kRenderingFrequency;
-    }
-    return self;
-}
- */
 
 - (void)drawView 
 {
@@ -181,10 +149,12 @@
 - (void)dealloc 
 {
     [self stopAnimation];
+	[self destroyFramebuffer];
     
     if ([EAGLContext currentContext] == context) 
         [EAGLContext setCurrentContext:nil];
     
+
     [context release];  
     [super dealloc];
 }

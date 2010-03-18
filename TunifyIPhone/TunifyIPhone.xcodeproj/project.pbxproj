@@ -102,6 +102,7 @@
 		F60C0878114BC9D300ABAD7A /* FBStreamDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = F60C086E114BC9D300ABAD7A /* FBStreamDialog.m */; };
 		F60C0879114BC9D300ABAD7A /* FBConnect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F60C086F114BC9D300ABAD7A /* FBConnect.bundle */; };
 		F60C088E114BCC6600ABAD7A /* 88-beermug.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C088D114BCC6600ABAD7A /* 88-beermug.png */; };
+		F672E5C911523DB6003DA448 /* ivqzntu6b.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F672E5C811523DB6003DA448 /* ivqzntu6b.jpg */; };
 		F6C2F541114E99970029EC57 /* star_light_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F53F114E99970029EC57 /* star_light_small.png */; };
 		F6C2F542114E99970029EC57 /* star_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F540114E99970029EC57 /* star_small.png */; };
 		F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C2F577114EB5790029EC57 /* AVFoundation.framework */; };
@@ -115,7 +116,6 @@
 		F6D748A8114BDF37002A3AA2 /* twitter2.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D748A2114BDF37002A3AA2 /* twitter2.png */; };
 		F6EAC2C911511F9600150BE6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EAC2C811511F9600150BE6 /* OpenGLES.framework */; };
 		F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAC3FA11513CA700150BE6 /* GLView.m */; };
-		F6EAC3FF11513CA700150BE6 /* GLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAC3FC11513CA700150BE6 /* GLViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -239,6 +239,7 @@
 		F60C086E114BC9D300ABAD7A /* FBStreamDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBStreamDialog.m; path = "facebook-facebook-iphone-sdk-5382dcd/src/FBStreamDialog.m"; sourceTree = SOURCE_ROOT; };
 		F60C086F114BC9D300ABAD7A /* FBConnect.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBConnect.bundle; path = "facebook-facebook-iphone-sdk-5382dcd/src/FBConnect.bundle"; sourceTree = SOURCE_ROOT; };
 		F60C088D114BCC6600ABAD7A /* 88-beermug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "88-beermug.png"; sourceTree = "<group>"; };
+		F672E5C811523DB6003DA448 /* ivqzntu6b.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ivqzntu6b.jpg; sourceTree = "<group>"; };
 		F6C2F53F114E99970029EC57 /* star_light_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_light_small.png; sourceTree = "<group>"; };
 		F6C2F540114E99970029EC57 /* star_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_small.png; sourceTree = "<group>"; };
 		F6C2F577114EB5790029EC57 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -254,8 +255,6 @@
 		F6EAC3F811513CA700150BE6 /* ConstantsAndMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstantsAndMacros.h; sourceTree = "<group>"; };
 		F6EAC3F911513CA700150BE6 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		F6EAC3FA11513CA700150BE6 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
-		F6EAC3FB11513CA700150BE6 /* GLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewController.h; sourceTree = "<group>"; };
-		F6EAC3FC11513CA700150BE6 /* GLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewController.m; sourceTree = "<group>"; };
 		F6EAC3FD11513CA700150BE6 /* OpenGLCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLCommon.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -335,6 +334,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F672E5C811523DB6003DA448 /* ivqzntu6b.jpg */,
 				F6C2F57F114EB6A00029EC57 /* Equus.mp3 */,
 				F6C2F53F114E99970029EC57 /* star_light_small.png */,
 				F6C2F540114E99970029EC57 /* star_small.png */,
@@ -537,8 +537,6 @@
 				F6EAC3F811513CA700150BE6 /* ConstantsAndMacros.h */,
 				F6EAC3F911513CA700150BE6 /* GLView.h */,
 				F6EAC3FA11513CA700150BE6 /* GLView.m */,
-				F6EAC3FB11513CA700150BE6 /* GLViewController.h */,
-				F6EAC3FC11513CA700150BE6 /* GLViewController.m */,
 				F6EAC3FD11513CA700150BE6 /* OpenGLCommon.h */,
 			);
 			name = "OpenGL ES";
@@ -632,6 +630,7 @@
 				F6C2F541114E99970029EC57 /* star_light_small.png in Resources */,
 				F6C2F542114E99970029EC57 /* star_small.png in Resources */,
 				F6C2F580114EB6A00029EC57 /* Equus.mp3 in Resources */,
+				F672E5C911523DB6003DA448 /* ivqzntu6b.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,7 +694,6 @@
 				F60C0877114BC9D300ABAD7A /* FBPermissionDialog.m in Sources */,
 				F60C0878114BC9D300ABAD7A /* FBStreamDialog.m in Sources */,
 				F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */,
-				F6EAC3FF11513CA700150BE6 /* GLViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
