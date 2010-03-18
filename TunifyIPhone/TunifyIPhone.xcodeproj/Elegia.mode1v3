@@ -267,8 +267,6 @@
 								<string>080E96DDFE201D6D7F000001</string>
 								<string>4E63839D112D9E6700596D03</string>
 								<string>4EDDF3EE1132BE7600D1EAF5</string>
-								<string>F6EAC2B011511EEA00150BE6</string>
-								<string>4EDDF3EC1132BE6900D1EAF5</string>
 								<string>29B97317FDCFA39411CA2CEA</string>
 								<string>29B97323FDCFA39411CA2CEA</string>
 								<string>1C37FABC05509CD000000102</string>
@@ -277,7 +275,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>28</integer>
+									<integer>9</integer>
 									<integer>7</integer>
 									<integer>4</integer>
 									<integer>1</integer>
@@ -285,7 +283,7 @@
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 227}, {186, 573}}</string>
+							<string>{{0, 0}, {186, 573}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -322,7 +320,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>worldViewController.m</string>
+								<string>CoordinatesTool.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -330,23 +328,19 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>worldViewController.m</string>
+										<string>CoordinatesTool.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>F672E68811524D97003DA448</string>
+										<string>F672E77211525CB7003DA448</string>
 										<key>history</key>
 										<array>
 											<string>F6586B25114D3BC200602BC3</string>
 											<string>F6C2F590114EBF3B0029EC57</string>
-											<string>F6C2F591114EBF3B0029EC57</string>
-											<string>F6C2F592114EBF3B0029EC57</string>
-											<string>F6C2F593114EBF3B0029EC57</string>
 											<string>F6C2F594114EBF3B0029EC57</string>
 											<string>F6C2F596114EBF3B0029EC57</string>
 											<string>F6C2F597114EBF3B0029EC57</string>
 											<string>F6C2F599114EBF3B0029EC57</string>
-											<string>F6C2F59A114EBF3B0029EC57</string>
 											<string>F6C2F59B114EBF3B0029EC57</string>
 											<string>F6EAC328115126EC00150BE6</string>
 											<string>F6EAC5091151640F00150BE6</string>
@@ -357,10 +351,17 @@
 											<string>F672E5EA1152404C003DA448</string>
 											<string>F672E5F41152446F003DA448</string>
 											<string>F672E61011524561003DA448</string>
-											<string>F672E66D11524B2F003DA448</string>
-											<string>F672E66E11524B2F003DA448</string>
-											<string>F672E66F11524B2F003DA448</string>
-											<string>F672E67011524B2F003DA448</string>
+											<string>F672E6AF11525447003DA448</string>
+											<string>F672E6EF1152592B003DA448</string>
+											<string>F672E72211525C66003DA448</string>
+											<string>F672E72311525C66003DA448</string>
+											<string>F672E72411525C66003DA448</string>
+											<string>F672E72511525C66003DA448</string>
+											<string>F672E72611525C66003DA448</string>
+											<string>F672E72711525C66003DA448</string>
+											<string>F672E72811525C66003DA448</string>
+											<string>F672E72911525C66003DA448</string>
+											<string>F672E72A11525C66003DA448</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -486,6 +487,144 @@
 											<string>F672E67711524B2F003DA448</string>
 											<string>F672E67811524B2F003DA448</string>
 											<string>F672E67911524B2F003DA448</string>
+											<string>F672E68D11524EFA003DA448</string>
+											<string>F672E6B511525448003DA448</string>
+											<string>F672E6B611525448003DA448</string>
+											<string>F672E6B711525448003DA448</string>
+											<string>F672E6B811525448003DA448</string>
+											<string>F672E6B911525448003DA448</string>
+											<string>F672E6BA11525448003DA448</string>
+											<string>F672E6BB11525448003DA448</string>
+											<string>F672E6BC11525448003DA448</string>
+											<string>F672E6BD11525448003DA448</string>
+											<string>F672E6BE11525448003DA448</string>
+											<string>F672E6BF11525448003DA448</string>
+											<string>F672E6C011525448003DA448</string>
+											<string>F672E6C111525448003DA448</string>
+											<string>F672E6C211525448003DA448</string>
+											<string>F672E6C311525448003DA448</string>
+											<string>F672E6C411525448003DA448</string>
+											<string>F672E6C511525448003DA448</string>
+											<string>F672E6C611525448003DA448</string>
+											<string>F672E6C711525448003DA448</string>
+											<string>F672E6C811525448003DA448</string>
+											<string>F672E6C911525448003DA448</string>
+											<string>F672E6CA11525448003DA448</string>
+											<string>F672E6CB11525448003DA448</string>
+											<string>F672E6CC11525448003DA448</string>
+											<string>F672E6CD11525448003DA448</string>
+											<string>F672E6CE11525448003DA448</string>
+											<string>F672E6CF11525448003DA448</string>
+											<string>F672E6D011525448003DA448</string>
+											<string>F672E6D111525448003DA448</string>
+											<string>F672E6D211525448003DA448</string>
+											<string>F672E6D311525448003DA448</string>
+											<string>F672E6D411525448003DA448</string>
+											<string>F672E6D511525448003DA448</string>
+											<string>F672E6D611525448003DA448</string>
+											<string>F672E6D711525448003DA448</string>
+											<string>F672E6D811525448003DA448</string>
+											<string>F672E6D911525448003DA448</string>
+											<string>F672E6DA11525448003DA448</string>
+											<string>F672E6DB11525448003DA448</string>
+											<string>F672E6DC11525448003DA448</string>
+											<string>F672E6DD11525448003DA448</string>
+											<string>F672E6DE11525448003DA448</string>
+											<string>F672E6DF11525448003DA448</string>
+											<string>F672E6E011525448003DA448</string>
+											<string>F672E6E111525448003DA448</string>
+											<string>F672E6E211525448003DA448</string>
+											<string>F672E6E311525448003DA448</string>
+											<string>F672E6E411525448003DA448</string>
+											<string>F672E6E511525448003DA448</string>
+											<string>F672E6E611525448003DA448</string>
+											<string>F672E6E711525448003DA448</string>
+											<string>F672E6E811525448003DA448</string>
+											<string>F672E6E911525448003DA448</string>
+											<string>F672E6EA11525448003DA448</string>
+											<string>F672E6EB11525448003DA448</string>
+											<string>F672E6EC11525448003DA448</string>
+											<string>F672E6F41152592B003DA448</string>
+											<string>F672E6F51152592B003DA448</string>
+											<string>F672E6F61152592B003DA448</string>
+											<string>F672E6F71152592B003DA448</string>
+											<string>F672E6F81152592B003DA448</string>
+											<string>F672E6F91152592B003DA448</string>
+											<string>F672E6FA1152592B003DA448</string>
+											<string>F672E6FB1152592B003DA448</string>
+											<string>F672E6FC1152592B003DA448</string>
+											<string>F672E6FD1152592B003DA448</string>
+											<string>F672E6FE1152592B003DA448</string>
+											<string>F672E6FF1152592B003DA448</string>
+											<string>F672E7001152592B003DA448</string>
+											<string>F672E7011152592B003DA448</string>
+											<string>F672E72B11525C66003DA448</string>
+											<string>F672E72C11525C66003DA448</string>
+											<string>F672E72D11525C66003DA448</string>
+											<string>F672E72E11525C66003DA448</string>
+											<string>F672E72F11525C66003DA448</string>
+											<string>F672E73011525C66003DA448</string>
+											<string>F672E73111525C66003DA448</string>
+											<string>F672E73211525C66003DA448</string>
+											<string>F672E73311525C66003DA448</string>
+											<string>F672E73411525C66003DA448</string>
+											<string>F672E73511525C66003DA448</string>
+											<string>F672E73611525C66003DA448</string>
+											<string>F672E73711525C66003DA448</string>
+											<string>F672E73811525C66003DA448</string>
+											<string>F672E73911525C66003DA448</string>
+											<string>F672E73A11525C66003DA448</string>
+											<string>F672E73B11525C66003DA448</string>
+											<string>F672E73C11525C66003DA448</string>
+											<string>F672E73D11525C66003DA448</string>
+											<string>F672E73E11525C66003DA448</string>
+											<string>F672E73F11525C66003DA448</string>
+											<string>F672E74011525C66003DA448</string>
+											<string>F672E74111525C66003DA448</string>
+											<string>F672E74211525C66003DA448</string>
+											<string>F672E74311525C66003DA448</string>
+											<string>F672E74411525C66003DA448</string>
+											<string>F672E74511525C66003DA448</string>
+											<string>F672E74611525C66003DA448</string>
+											<string>F672E74711525C66003DA448</string>
+											<string>F672E74811525C66003DA448</string>
+											<string>F672E74911525C66003DA448</string>
+											<string>F672E74A11525C66003DA448</string>
+											<string>F672E74B11525C66003DA448</string>
+											<string>F672E74C11525C66003DA448</string>
+											<string>F672E74D11525C66003DA448</string>
+											<string>F672E74E11525C66003DA448</string>
+											<string>F672E74F11525C66003DA448</string>
+											<string>F672E75011525C66003DA448</string>
+											<string>F672E75111525C66003DA448</string>
+											<string>F672E75211525C66003DA448</string>
+											<string>F672E75311525C66003DA448</string>
+											<string>F672E75411525C66003DA448</string>
+											<string>F672E75511525C66003DA448</string>
+											<string>F672E75611525C66003DA448</string>
+											<string>F672E75711525C66003DA448</string>
+											<string>F672E75811525C66003DA448</string>
+											<string>F672E75911525C66003DA448</string>
+											<string>F672E75A11525C66003DA448</string>
+											<string>F672E75B11525C66003DA448</string>
+											<string>F672E75C11525C66003DA448</string>
+											<string>F672E75D11525C66003DA448</string>
+											<string>F672E75E11525C66003DA448</string>
+											<string>F672E75F11525C66003DA448</string>
+											<string>F672E76011525C66003DA448</string>
+											<string>F672E76111525C66003DA448</string>
+											<string>F672E76211525C66003DA448</string>
+											<string>F672E76311525C66003DA448</string>
+											<string>F672E76411525C66003DA448</string>
+											<string>F672E76511525C66003DA448</string>
+											<string>F672E76611525C66003DA448</string>
+											<string>F672E76711525C66003DA448</string>
+											<string>F672E76811525C66003DA448</string>
+											<string>F672E76911525C66003DA448</string>
+											<string>F672E76A11525C66003DA448</string>
+											<string>F672E76B11525C66003DA448</string>
+											<string>F672E76C11525C66003DA448</string>
+											<string>F672E76D11525C66003DA448</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -708,7 +847,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CD0528F0623707200166675</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>worldViewController.m</string>
+								<string>CoordinatesTool.h</string>
 								<key>StatusBarVisibility</key>
 								<true/>
 							</dict>

@@ -103,6 +103,7 @@
 		F60C0879114BC9D300ABAD7A /* FBConnect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F60C086F114BC9D300ABAD7A /* FBConnect.bundle */; };
 		F60C088E114BCC6600ABAD7A /* 88-beermug.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C088D114BCC6600ABAD7A /* 88-beermug.png */; };
 		F672E5C911523DB6003DA448 /* ivqzntu6b.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F672E5C811523DB6003DA448 /* ivqzntu6b.jpg */; };
+		F672E69311524F43003DA448 /* CoordinatesTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F672E69211524F43003DA448 /* CoordinatesTool.m */; };
 		F6C2F541114E99970029EC57 /* star_light_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F53F114E99970029EC57 /* star_light_small.png */; };
 		F6C2F542114E99970029EC57 /* star_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F540114E99970029EC57 /* star_small.png */; };
 		F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C2F577114EB5790029EC57 /* AVFoundation.framework */; };
@@ -240,6 +241,8 @@
 		F60C086F114BC9D300ABAD7A /* FBConnect.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBConnect.bundle; path = "facebook-facebook-iphone-sdk-5382dcd/src/FBConnect.bundle"; sourceTree = SOURCE_ROOT; };
 		F60C088D114BCC6600ABAD7A /* 88-beermug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "88-beermug.png"; sourceTree = "<group>"; };
 		F672E5C811523DB6003DA448 /* ivqzntu6b.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = ivqzntu6b.jpg; sourceTree = "<group>"; };
+		F672E69111524F43003DA448 /* CoordinatesTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoordinatesTool.h; sourceTree = "<group>"; };
+		F672E69211524F43003DA448 /* CoordinatesTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoordinatesTool.m; sourceTree = "<group>"; };
 		F6C2F53F114E99970029EC57 /* star_light_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_light_small.png; sourceTree = "<group>"; };
 		F6C2F540114E99970029EC57 /* star_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_small.png; sourceTree = "<group>"; };
 		F6C2F577114EB5790029EC57 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -472,19 +475,10 @@
 		4EDDF3EE1132BE7600D1EAF5 /* Maps */ = {
 			isa = PBXGroup;
 			children = (
+				F672E69111524F43003DA448 /* CoordinatesTool.h */,
+				F672E69211524F43003DA448 /* CoordinatesTool.m */,
+				F672E68A11524EE2003DA448 /* RouteOverlay */,
 				F6EAC2B011511EEA00150BE6 /* OpenGL ES */,
-				4E3396501149500700226465 /* UICGoogleMapsAPI.h */,
-				4E3396511149500700226465 /* UICGoogleMapsAPI.m */,
-				4E8D68CE113E9ACF00E2AD64 /* CSImageAnnotationView.h */,
-				4E8D68CF113E9ACF00E2AD64 /* CSImageAnnotationView.m */,
-				4E8D68D0113E9ACF00E2AD64 /* CSWebDetailsViewController.h */,
-				4E8D68D1113E9ACF00E2AD64 /* CSWebDetailsViewController.m */,
-				4E8D68CA113E9A3500E2AD64 /* CSRouteView.h */,
-				4E8D68CB113E9A3500E2AD64 /* CSRouteView.m */,
-				4E8D686E113E918E00E2AD64 /* CSMapAnnotation.h */,
-				4E8D686F113E918E00E2AD64 /* CSMapAnnotation.m */,
-				4E8D6870113E918E00E2AD64 /* CSRouteAnnotation.h */,
-				4E8D6871113E918E00E2AD64 /* CSRouteAnnotation.m */,
 				4E341CD01136BF5A0001A7C5 /* mapViewController.h */,
 				4E341CD11136BF5A0001A7C5 /* mapViewController.m */,
 				4EB28363112C4CE5007F1F24 /* worldViewController.h */,
@@ -529,6 +523,25 @@
 				F60C086F114BC9D300ABAD7A /* FBConnect.bundle */,
 			);
 			name = FBConnect;
+			sourceTree = "<group>";
+		};
+		F672E68A11524EE2003DA448 /* RouteOverlay */ = {
+			isa = PBXGroup;
+			children = (
+				4E3396501149500700226465 /* UICGoogleMapsAPI.h */,
+				4E3396511149500700226465 /* UICGoogleMapsAPI.m */,
+				4E8D68CE113E9ACF00E2AD64 /* CSImageAnnotationView.h */,
+				4E8D68CF113E9ACF00E2AD64 /* CSImageAnnotationView.m */,
+				4E8D68D0113E9ACF00E2AD64 /* CSWebDetailsViewController.h */,
+				4E8D68D1113E9ACF00E2AD64 /* CSWebDetailsViewController.m */,
+				4E8D68CA113E9A3500E2AD64 /* CSRouteView.h */,
+				4E8D68CB113E9A3500E2AD64 /* CSRouteView.m */,
+				4E8D686E113E918E00E2AD64 /* CSMapAnnotation.h */,
+				4E8D686F113E918E00E2AD64 /* CSMapAnnotation.m */,
+				4E8D6870113E918E00E2AD64 /* CSRouteAnnotation.h */,
+				4E8D6871113E918E00E2AD64 /* CSRouteAnnotation.m */,
+			);
+			name = RouteOverlay;
 			sourceTree = "<group>";
 		};
 		F6EAC2B011511EEA00150BE6 /* OpenGL ES */ = {
@@ -694,6 +707,7 @@
 				F60C0877114BC9D300ABAD7A /* FBPermissionDialog.m in Sources */,
 				F60C0878114BC9D300ABAD7A /* FBStreamDialog.m in Sources */,
 				F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */,
+				F672E69311524F43003DA448 /* CoordinatesTool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -18,8 +18,9 @@
 @synthesize strPubName;
 @synthesize glView;
 @synthesize strPubAddress;
-@synthesize pubCoordinates;
-@synthesize userCoordinates;
+@synthesize pubLocation;
+@synthesize userLocation;
+@synthesize distance;
 @synthesize locationManager;
 @synthesize lblDistanceToDestination;
 
@@ -251,9 +252,17 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
 	
-	[self getCoordinates];
+	//[self getCoordinates];
 	
+	
+	CoordinatesTool *ct = [[CoordinatesTool alloc] init];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	self.pubLocation = [ct fetchPubLocation:self.strPubAddress];
+	
+	/*
 	// Calculate the distance between the two points
+	
 	NSRange kommaRange = [pubCoordinates rangeOfString:@","];
 	CLLocationDegrees pubLatitude = [[pubCoordinates substringWithRange:NSMakeRange(0, kommaRange.location)] doubleValue];
 	CLLocationDegrees pubLongitude = [[pubCoordinates substringFromIndex:(kommaRange.location + 1)] doubleValue];
@@ -266,11 +275,8 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 	CLLocation* userLocation = [[[CLLocation alloc] initWithLatitude:userLatitude longitude:userLongitude] autorelease];
 	
 	CLLocationDistance distance = [userLocation getDistanceFrom:pubLocation];
-	
-//	NSLog(@"User lat: %d, user lon: %d, Pub lat: %d, pub lon: %d", userLatitude, userLongitude, pubLatitude, pubLongitude);
-//	double distance = CalculateDistance(userLatitude, userLongitude, pubLatitude, pubLongitude);
-	NSLog(@"Distance: %.0f", distance);
-	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", distance];
+	 */
+	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
 	
 	
 	glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
@@ -298,6 +304,22 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 	*/
 }
 
+- (void)userCoordinatesFound:(CoordinatesTool *)sender {
+	self.userLocation = sender.userLocation;
+	self.distance = [sender fetchDistance];
+}
+
+- (void)userCoordinatesError:(CoordinatesTool *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while fetching your position.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	[alertView show]; 
+}
+
+/*
 - (void) getCoordinates {
 	self.locationManager = [[CLLocationManager alloc] init]; 
 	self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
@@ -330,6 +352,7 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 	}
 	
 }
+ */
 
 - (void)drawView:(UIView *)theView
 {
@@ -407,6 +430,8 @@ double CalculateDistance( double nLat1, double nLon1, double nLat2, double nLon2
 - (void)dealloc {
 	[strPubName release];
 	[lblDistanceToDestination release];
+	[userLocation release];
+	[pubLocation release];
 	[capturedToggle release];
 	[locationManager release];
 	[glView release];

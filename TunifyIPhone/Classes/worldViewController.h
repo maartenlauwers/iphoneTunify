@@ -9,11 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "GLView.h"
 #import <CoreLocation/CoreLocation.h>
+#import "CoordinatesTool.h"
 
 
 //@class EAGLView;
 
-@interface worldViewController : UIViewController <GLViewDelegate> {
+@interface worldViewController : UIViewController <GLViewDelegate, CoordinatesTool> {
 	NSString *strPubName;
 	IBOutlet UISegmentedControl *capturedToggle;
 	IBOutlet UILabel *lblDistanceToDestination;
@@ -21,8 +22,9 @@
 	
 	CLLocationManager *locationManager;
 	NSString *strPubAddress;
-	NSString *userCoordinates;
-	NSString *pubCoordinates;
+	CLLocation *userLocation;
+	CLLocation *pubLocation;
+	CLLocationDistance distance;
 }
 
 @property (nonatomic, retain) NSString *strPubName;
@@ -32,8 +34,9 @@
 
 @property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) NSString *strPubAddress;
-@property (nonatomic, retain) NSString *userCoordinates;
-@property (nonatomic, retain) NSString *pubCoordinates;
+@property (nonatomic, retain) CLLocation *userLocation;
+@property (nonatomic, retain) CLLocation *pubLocation;
+@property (assign) CLLocationDistance distance;
 
 - (void) getCoordinates;
 - (void) btnPubs_clicked:(id)sender;

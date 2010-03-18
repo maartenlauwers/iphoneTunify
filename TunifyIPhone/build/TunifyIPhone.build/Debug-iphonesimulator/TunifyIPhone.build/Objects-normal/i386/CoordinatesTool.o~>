@@ -1,0 +1,6 @@
+In file included from /Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:9:
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.h:14: error: expected ')' before 'CoordinatesTool'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.h:15: error: expected ')' before 'CoordinatesTool'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:67: warning: incomplete implementation of class 'CoordinatesTool'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:67: warning: method definition for '-fetchPubCoordinates:' not found
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:67: warning: method definition for '-fetchUserCoordinates' not found
