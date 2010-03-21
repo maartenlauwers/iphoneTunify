@@ -1,9 +1,27 @@
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController parseCoordinatesHtml:]':
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:226: warning: unused variable 'i'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController mapView:viewForAnnotation:]':
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:401: warning: local declaration of 'mapView' hides instance variable
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:401: warning: local declaration of 'mapView' hides instance variable
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:404: warning: local declaration of 'mapView' hides instance variable
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m: At top level:
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:506: warning: incomplete implementation of class 'mapViewController'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/mapViewController.m:506: warning: method definition for '-parseData:' not found
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController btnPubs_clicked:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:66: warning: 'CoordinatesTool' may not respond to '-stop'
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:66: warning: (Messages without a matching method signature
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:66: warning: will be assumed to return 'id' and accept
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:66: warning: '...' as arguments.)
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController btnMusic_clicked:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:73: warning: 'CoordinatesTool' may not respond to '-stop'
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController loadPubView]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:95: warning: 'CoordinatesTool' may not respond to '-stop'
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController capturedToggleChanged:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:108: warning: 'CoordinatesTool' may not respond to '-stop'
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController userLocationFound:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:201: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:201: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:201: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController pubLocationFound:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:219: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:219: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:219: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController webViewDidFinishLoad:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:292: warning: passing argument 1 of 'setWebViewDidFinishLoading:' makes pointer from integer without a cast
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:293: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:293: warning: comparison between pointer and integer
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m: In function '-[mapViewController mapView:viewForAnnotation:]':
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:472: warning: local declaration of 'mapView' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:472: warning: local declaration of 'mapView' hides instance variable
+/Users/thesis/Documents/TunifyIPhone/Classes/mapViewController.m:475: warning: local declaration of 'mapView' hides instance variable

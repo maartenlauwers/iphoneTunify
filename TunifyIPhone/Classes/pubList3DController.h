@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import "PubCard.h"
+#import "CustomUIImagePickerController.h"
 
 @interface pubList3DController : UIViewController <UIActionSheetDelegate> {
 	IBOutlet UISearchBar *searchBar;
@@ -21,7 +23,6 @@
 @property (nonatomic, retain) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, retain) NSString *genre;
 @property (nonatomic, retain) UIView *overlayView;
-
 
 - (void) btnFilter_clicked:(id)sender;
 - (void) btnList_clicked:(id)sender;

@@ -17,7 +17,6 @@
 @interface mapViewController : UIViewController <UIWebViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoordinatesToolDelegate> {
 	NSString *strPubName;
 	NSString *strPubAddress;
-	CLLocationManager *locationManager;
 	
 	IBOutlet MKMapView *mapView;
 	IBOutlet UISegmentedControl *capturedToggle;
@@ -45,11 +44,9 @@
 
 @property (nonatomic, retain) NSString *strPubName;
 @property (nonatomic, retain) NSString *strPubAddress;
-@property (nonatomic, retain) CLLocationManager *locationManager;
 @property (nonatomic, retain) MKMapView *mapView;
 @property (nonatomic, retain) IBOutlet UISegmentedControl *capturedToggle;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
-@property (nonatomic, retain) UIWebView *tempView;
 
 @property (nonatomic, retain) NSMutableArray *pointsArray;
 @property (nonatomic, retain) NSMutableData *webData;
@@ -61,6 +58,7 @@
 @property (nonatomic, retain) UICGoogleMapsAPI *googleMapsAPI;
 @property (nonatomic, assign) BOOL *webViewDidFinishLoading;
 
+- (void)initAll;
 - (void)parseCoordinatesHtml:(NSString *)html;
 - (void)setupMap;
 - (void) showWebViewForURL:(NSURL*) url;

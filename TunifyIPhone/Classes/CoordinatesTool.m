@@ -49,13 +49,13 @@
 	self.userLocation = currentLocation; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
 	[currentLocation release];
 	self.userLocationOK = TRUE;	
-	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(userLocationFound:)]) {
+	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(userLocationFound:)]) {
 		[delegate userLocationFound:self];
 	}   
 } 
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error { 
-	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(userLocationError:)]) {
+	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(userLocationError:)]) {
 		[delegate userLocationError:self];
 	} 
 } 
@@ -86,12 +86,12 @@
 	}
 	else {
 		//Error handling
-		if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(pubLocationError:)]) {
+		if (self.delegate != nil && [self.delegate respondsToSelector:@selector(pubLocationError:)]) {
 			[delegate pubLocationError:self];
 		} 
 	}
 	
-	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(pubLocationFound:)]) {
+	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(pubLocationFound:)]) {
 		[delegate pubLocationFound:self];
 	} 
 }
@@ -102,6 +102,11 @@
 
 - (CLLocationDistance) fetchDistance:(CLLocation *)locationA locationB:(CLLocation *)locationB {
 	return [locationA getDistanceFrom:locationB];
+}
+
+- (void) stop {
+	self.delegate = nil;
+	[locationManager stopUpdatingLocation];
 }
 
 @end

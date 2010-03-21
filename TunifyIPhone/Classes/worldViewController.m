@@ -22,8 +22,8 @@
 @synthesize pubLocation;
 @synthesize userLocation;
 @synthesize distance;
-@synthesize locationManager;
 @synthesize lblDistanceToDestination;
+@synthesize ct;
 
 Vertex3D vertices[]= {
 
@@ -155,8 +155,6 @@ Color3D colors[] = {
 
 - (void) btnPubs_clicked:(id)sender {
 	
-	[glView stopAnimation];
-	
 	// Show the tab bar (because the pubs view needs it)
 	if ( self.tabBarController.view.subviews.count >= 2 )
     {
@@ -167,10 +165,24 @@ Color3D colors[] = {
 		tabBar.hidden = FALSE;
 	}
 	
+	[ct stop];
+	self.glView.delegate = nil;
+
+	[glView stopAnimation];
+	[self.glView removeFromSuperview];
+	[self.glView release];
+	
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void) btnMusic_clicked:(id)sender {
+	
+	[ct stop];
+	self.glView.delegate = nil;
+	[glView stopAnimation];
+	[self.glView removeFromSuperview];
+	[self.glView release];
+	
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.strPubName = strPubName;
 	[self.navigationController pushViewController:controller animated:YES];
@@ -181,12 +193,20 @@ Color3D colors[] = {
 - (IBAction) capturedToggleChanged:(id)sender {
 	
 	if(capturedToggle.selectedSegmentIndex == 0) {
+		
+		[ct stop];
+		self.glView.delegate = nil;
+		[glView stopAnimation];
+		[self.glView removeFromSuperview];
+		[self.glView release];
+		
 		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 		controller.strPubName = self.strPubName;
 		controller.strPubAddress = self.strPubAddress;
 		[self.navigationController pushViewController:controller animated:YES];
 		[controller release];
 		controller = nil;
+		
 	}
 } 
 
@@ -225,42 +245,32 @@ Color3D colors[] = {
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
 	
-	
+}
+
+-(void) viewDidAppear:(BOOL)animated { 
+	[super viewDidAppear:animated]; 
+	[self initAll];
+} 
+
+-(void)initAll {
 	self.lblDistanceToDestination.text = @"";
 	self.distance = -1;
 	self.userLocation = nil;
 	self.pubLocation = nil;
 	
 	// Fetch the user and pub coordinates
-	CoordinatesTool *ct = [[CoordinatesTool alloc] init];
+	ct = [[CoordinatesTool alloc] init];
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	[ct fetchPubLocation:self.strPubAddress];
 	
 	// Create the 3D pointer arrow view
-	glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
-	glView.delegate = self;
-	glView.opaque = NO;
-	[self.view addSubview:glView];
-	glView.animationInterval = 1.0 / kRenderingFrequency;
-	[glView startAnimation];
-
-	
-	/*
-	glView = [[EAGLView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	
-	UILabel* distanceLeft = [[UILabel alloc] initWithFrame:CGRectMake(10, 250, 300, 20)];
-	distanceLeft.text = @"254 meters to go";
-	distanceLeft.textAlignment = UITextAlignmentCenter;
-	distanceLeft.font = [UIFont systemFontOfSize:18];
-	distanceLeft.adjustsFontSizeToFitWidth = NO;
-	distanceLeft.textColor = [UIColor blackColor];
-	distanceLeft.backgroundColor = [UIColor clearColor];
-	[glView addSubview:distanceLeft];
-	[distanceLeft release];
-	
-	self.view = glView;
-	*/
+	self.glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
+	self.glView.delegate = self;
+	self.glView.opaque = NO;
+	[self.view addSubview:self.glView];
+	self.glView.animationInterval = 1.0 / kRenderingFrequency;
+	[self.glView startAnimation];
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
@@ -369,17 +379,23 @@ Color3D colors[] = {
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
+	
+	ct.delegate = nil;
+	self.glView.delegate = nil;
+	[self.glView stopAnimation];
+	[self.glView removeFromSuperview];
+	[self.glView release];
 }
 
 
 - (void)dealloc {
+	
 	[strPubName release];
 	[lblDistanceToDestination release];
 	[userLocation release];
 	[pubLocation release];
+	[ct release];
 	[capturedToggle release];
-	[locationManager release];
-	[glView release];
     [super dealloc];
 }
 

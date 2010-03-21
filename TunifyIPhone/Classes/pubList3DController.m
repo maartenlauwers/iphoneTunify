@@ -144,76 +144,39 @@
 	self.navigationItem.rightBarButtonItem = listBarButtonItem;
 	[listBarButtonItem release];
 	
-	// Create some test overlays
-	UIView* pub1view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 90)];
-	pub1view.center = CGPointMake(160, 250);
-	pub1view.backgroundColor = [UIColor lightGrayColor];
 	
-	//UIImageView *binocs = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"binocs.png"]] autorelease];
-	//binocs.tag = BINOCS_TAG;
-	//[self.overlayView addSubview:binocs];
+	//Create a number of test cards
+	PubCard *card1 = [[PubCard alloc] initWithPub:@"De Werf" pubAddress:@"Tiensestraat 49 3000 Leuven" pubVisitors:45 pubRating:3];
+	[card1 setPosition:300 y:100];
 	
-	UILabel* pub1name = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 20)];
-	pub1name.text = @"De Werf";
-	pub1name.textAlignment = UITextAlignmentLeft;
-	pub1name.font = [UIFont systemFontOfSize:14];
-	pub1name.adjustsFontSizeToFitWidth = NO;
-	pub1name.textColor = [UIColor blackColor];
-	pub1name.backgroundColor = [UIColor lightGrayColor];
-
 	
-	UILabel* pub1address = [[UILabel alloc] initWithFrame:CGRectMake(5, 21, 190, 20)];
-	pub1address.text = @"Tiensestraat 45 3000 Leuven";
-	pub1address.textAlignment = UITextAlignmentLeft;
-	pub1address.font = [UIFont systemFontOfSize:12];
-	pub1address.adjustsFontSizeToFitWidth = NO;
-	pub1address.textColor = [UIColor blackColor];
-	pub1address.backgroundColor = [UIColor lightGrayColor];
+	/*
+	UIView *card2 = [self createPubCard:@"De Kouter" pubAddress:@"Tervuursesteenweg 433 3001 Heverlee" pubVisitors:100 pubRating:4];
+	UIView *card3 = [self createPubCard:@"Passevit" pubAddress:@"Veurnestraat 130 8970 Poperinge" pubVisitors:20 pubRating:2];
+	*/
+	[self.overlayView insertSubview:card1 atIndex:0];
+	//[self.overlayView insertSubview:card2 atIndex:1];
+	//[self.overlayView insertSubview:card3 atIndex:2];
 	
-	UILabel* pub1visitors = [[UILabel alloc] initWithFrame:CGRectMake(5, 37, 190, 20)];
-	pub1visitors.text = @"Visitors: 24";
-	pub1visitors.textAlignment = UITextAlignmentLeft;
-	pub1visitors.font = [UIFont systemFontOfSize:12];
-	pub1visitors.adjustsFontSizeToFitWidth = NO;
-	pub1visitors.textColor = [UIColor blackColor];
-	pub1visitors.backgroundColor = [UIColor lightGrayColor];
 	
-	UIImageView *star1 = [[UIImageView alloc] initWithFrame:CGRectMake(5, 60, 13, 13)];
-	star1.image = [UIImage imageNamed:@"star_small.png"];
-	[pub1view addSubview:star1];
-	UIImageView *star2 = [[UIImageView alloc] initWithFrame:CGRectMake(20, 60, 13, 13)];
-	star2.image = [UIImage imageNamed:@"star_small.png"];
-	[pub1view addSubview:star2];
-	UIImageView *star3 = [[UIImageView alloc] initWithFrame:CGRectMake(35, 60, 13, 13)];
-	star3.image = [UIImage imageNamed:@"star_small.png"];
-	[pub1view addSubview:star3];
-	UIImageView *star4 = [[UIImageView alloc] initWithFrame:CGRectMake(50, 60, 13, 13)];
-	star4.image = [UIImage imageNamed:@"star_light_small.png"];
-	[pub1view addSubview:star4];
-	UIImageView *star5 = [[UIImageView alloc] initWithFrame:CGRectMake(65, 60, 13, 13)];
-	star5.image = [UIImage imageNamed:@"star_light_small.png"];
-	[pub1view addSubview:star5];
-	
-	[pub1view addSubview:pub1visitors];
-	[pub1view addSubview:pub1address];
-	[pub1view addSubview:pub1name];
-	 
-	[self.overlayView addSubview:pub1view];
-	
-
-	UIImagePickerController *picker;
+	//UIImagePickerController *picker;
+	CustomUIImagePickerController *picker;
 	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		
-		picker = [[UIImagePickerController alloc] init];
+		picker = [[CustomUIImagePickerController alloc] init];
 		picker.sourceType = UIImagePickerControllerSourceTypeCamera;
 		
 		picker.delegate = self;
 		picker.allowsImageEditing = NO;
+		picker.showsCameraControls = NO;
+		
+		[self presentModalViewController:picker animated:YES];
 	}
 	else if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
 		
-		picker = [[UIImagePickerController alloc] init];
-		picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+		picker = [[CustomUIImagePickerController alloc] init];
+		//picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+		picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
 		
 		picker.delegate = self;
 		picker.allowsImageEditing = NO;
@@ -231,7 +194,8 @@
 		[alertView show];
 		[alertView release];
 	}
-
+	 
+	
 	/*
 	UIImagePickerController *picker = [[UIImagePickerController alloc] init];
 	picker.delegate = self;
@@ -251,10 +215,12 @@
 	
 }
 
+/*
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
 	NSLog(@"Did finish picking image");
 	[picker dismissModalViewControllerAnimated:YES];
 }
+ */
 
 
 /*

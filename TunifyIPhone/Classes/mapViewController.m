@@ -23,11 +23,9 @@
 @synthesize strPubAddress;
 @synthesize capturedToggle;
 @synthesize activityIndicator;
-@synthesize locationManager;
 @synthesize mapView;
 @synthesize pointsArray;
 @synthesize webData;
-@synthesize tempView;
 @synthesize ct;
 @synthesize userCoordinates;
 @synthesize userLocation;
@@ -64,11 +62,16 @@
 		[view sizeToFit];
 		tabBar.hidden = FALSE;
 	}
+	
+	[ct stop];
 		
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void) btnMusic_clicked:(id)sender {
+	
+	[ct stop];
+	
 	musicViewController *mvc = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	mvc.strPubName = strPubName;
 	mvc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -89,6 +92,8 @@
 		tabBar.hidden = FALSE;
 	}
 	
+	[ct stop];
+	
 	pubVisitViewController *pvvc = [[pubVisitViewController alloc] initWithNibName:@"pubVisitView" bundle:[NSBundle mainBundle]];
 	pvvc.strPubName = strPubName;
 	[self.navigationController pushViewController:pvvc animated:YES];
@@ -99,6 +104,9 @@
 - (IBAction) capturedToggleChanged:(id)sender {
 	
 	if(capturedToggle.selectedSegmentIndex == 1) {
+		
+		[ct stop];
+		
 		worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
 		controller.strPubName = self.strPubName;
 		controller.strPubAddress = self.strPubAddress;
@@ -141,39 +149,51 @@
 	musicBarButtonItem.action = @selector(btnMusic_clicked:);
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
+		
+}
+
+-(void) viewDidAppear:(BOOL)animated { 
+	[super viewDidAppear:animated]; 
+	
+	/*
+	 We re-initialize the map here. We might have left this view by pushing another view over it. When we move back to this view, our location may have changed.
+	 Also, if we didn't get our location previously, we need to fix this now.
+	*/
+	[self initAll];
+} 
+
+- (void)initAll {
+	
+	[self.activityIndicator startAnimating];
 	
 	pointsArray = [[NSMutableArray alloc] init];
 	
 	// dictionary to keep track of route views that get generated. 
 	_routeViews = [[NSMutableDictionary alloc] init];
 	
-	[self.activityIndicator startAnimating];
-	
-	if(self.webViewDidFinishLoading == TRUE) {
-		NSLog(@"WEBVIEWDIDFINISHLOADING STILL TRUE");
-	}
 	self.webViewDidFinishLoading = FALSE;
 	
 	ct = [[CoordinatesTool alloc] init];
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	[ct fetchPubLocation:self.strPubAddress];
-
+	
 	
 	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
 	googleMapsAPI.delegate = self;
 	
 	// TODO: The following alert view should only show up when we've reached our destination
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 
-							  message:NSLocalizedString(@"What do you want to do?",  
-														@"message") 
-							  delegate:self 
-							  cancelButtonTitle:NSLocalizedString(@"Keep walking", @"cancel") 
-							  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
+														message:NSLocalizedString(@"What do you want to do?",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Keep walking", @"cancel") 
+											  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
 							  nil]; 
 	[alertView show]; 
 	
 }
+
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
 	self.userCoordinates = sender.userCoordinates;
@@ -268,7 +288,7 @@
 
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
-	NSLog(@"Did finish load");
+	
 	self.webViewDidFinishLoading = TRUE;
 	if (self.ct.userLocationOK == TRUE && self.ct.pubLocationOK == TRUE) {
 		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];	
@@ -278,29 +298,21 @@
 
 
 -(void)parseCoordinatesHtml:(NSString *)html {
-	NSLog(@"Current user coordinates: %@", self.userCoordinates);
-	NSLog(@"Current pub coordinates: %@", self.pubCoordinates);
-	
-	NSLog(@"html: %@", html);
 	
 	
 	NSString *remainingSubString = html;
 	NSRange coordRange = [remainingSubString rangeOfString:@"<br>"];
-	NSLog(@"starting while");
+
 	while(coordRange.location != NSNotFound) {
 		NSString *coordPair = [remainingSubString substringWithRange:NSMakeRange(0, coordRange.location)];
-		NSLog(@"CoordPair: %@", coordPair);
 
 		NSRange kommaRange = [coordPair rangeOfString:@","];
 		CLLocationDegrees longitude  = [[coordPair substringWithRange:NSMakeRange(0, kommaRange.location)] doubleValue];
 		CLLocationDegrees latitude  = [[coordPair substringFromIndex:(kommaRange.location + 1)] doubleValue];
-		NSLog(@"My Latitude: %d", latitude);
-		NSLog(@"My Longitude: %d", longitude);
 		CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:longitude longitude:latitude] autorelease];
 		[pointsArray addObject:currentLocation];
 		
 		remainingSubString = [remainingSubString substringFromIndex:(coordRange.location + 4)];
-		NSLog(@"Remaining: %@", remainingSubString);
 		
 		coordRange = [remainingSubString rangeOfString:@"<br>"];
 	}		
@@ -343,10 +355,8 @@
  */
 
 - (void)setupMap {
-	NSLog(@"So far so good");
-	NSLog(@"point amount: %d", pointsArray.count);
 	
-	// CREATE THE ANNO1TATIONS AND ADD THEM TO THE MAP
+	// CREATE THE ANNOTATIONS AND ADD THEM TO THE MAP
 	
 	// first create the route annotation, so it does not draw on top of the other annotations. 
 	CSRouteAnnotation* routeAnnotation = [[[CSRouteAnnotation alloc] initWithPoints:pointsArray] autorelease];
@@ -383,7 +393,6 @@
 
 - (void)mapView:(MKMapView *)mapView
 {
-	NSLog(@"regionWillChangeAnimated");
 	// turn off the view of the route as the map is chaning regions. This prevents
 	// the line from being displayed at an incorrect positoin on the map during the
 	// transition. 
@@ -399,7 +408,6 @@
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-	NSLog(@"regionDidChangeAnimated");
 	// re-enable and re-poosition the route display. 
 	for(NSObject* key in [_routeViews allKeys])
 	{
@@ -413,7 +421,6 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-	NSLog(@"viewForAnnotation");
 	MKAnnotationView* annotationView = nil;
 	
 	
@@ -480,8 +487,6 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
-	NSLog(@"annotationView");
-	NSLog(@"calloutAccessoryControlTapped");
 	
 	CSImageAnnotationView* imageAnnotationView = (CSImageAnnotationView*) view;
 	CSMapAnnotation* annotation = (CSMapAnnotation*)[imageAnnotationView annotation];
@@ -500,7 +505,6 @@
 
 -(void) showWebViewForURL:(NSURL*) url
 {
-	NSLog(@"showWebViewForURL");
 	CSWebDetailsViewController* webViewController = [[CSWebDetailsViewController alloc] initWithNibName:@"CSWebDetailsViewController" bundle:nil];
 	[webViewController setUrl:url];
 	
@@ -511,7 +515,6 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 	
-	NSLog(@"Button clicked");
 	if (buttonIndex == 1) 
 	{ 
 		[self loadPubView];
@@ -534,13 +537,12 @@
 	// Release any cached data, images, etc that aren't in use.
 }
 
-
 -(void) viewWillDisappear:(BOOL)animated { 
 	[super viewWillDisappear:animated]; 
 	
 	NSLog(@"Shutting down core location..."); 
-	[self.locationManager stopUpdatingLocation]; 
-	self.locationManager = nil;
+	//[self.locationManager stopUpdatingLocation]; 
+	//self.locationManager = nil;
 } 
 
 - (void)viewDidUnload {
@@ -553,8 +555,6 @@
 	[strPubName release];
 	[strPubAddress release];
 	[pointsArray release];
-	[locationManager release];
-	[tempView release];
 	[mapView release];
 	[_routeViews release];
 	[_detailsVC release];

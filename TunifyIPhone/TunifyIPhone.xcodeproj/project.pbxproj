@@ -71,6 +71,9 @@
 		4E63824F112D7F4A00596D03 /* pubList3D.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E63824E112D7F4A00596D03 /* pubList3D.xib */; };
 		4E638288112D827A00596D03 /* musicView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E638287112D827A00596D03 /* musicView.xib */; };
 		4E6383A7112D9EB700596D03 /* pubVisitView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E6383A6112D9EB700596D03 /* pubVisitView.xib */; };
+		4E728DA3115512B900A3EDA4 /* PubCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E728DA2115512B900A3EDA4 /* PubCard.m */; };
+		4E728E02115534B000A3EDA4 /* StarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E728E01115534B000A3EDA4 /* StarView.m */; };
+		4E728E561155466A00A3EDA4 /* CustomUIImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E728E551155466A00A3EDA4 /* CustomUIImagePickerController.m */; };
 		4E8D6872113E918E00E2AD64 /* CSMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D686F113E918E00E2AD64 /* CSMapAnnotation.m */; };
 		4E8D6873113E918E00E2AD64 /* CSRouteAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D6871113E918E00E2AD64 /* CSRouteAnnotation.m */; };
 		4E8D68CC113E9A3500E2AD64 /* CSRouteView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D68CB113E9A3500E2AD64 /* CSRouteView.m */; };
@@ -187,6 +190,12 @@
 		4E63838B112D9E4500596D03 /* pubVisitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pubVisitViewController.h; sourceTree = "<group>"; };
 		4E63838C112D9E4500596D03 /* pubVisitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = pubVisitViewController.m; sourceTree = "<group>"; };
 		4E6383A6112D9EB700596D03 /* pubVisitView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = pubVisitView.xib; sourceTree = "<group>"; };
+		4E728DA1115512B900A3EDA4 /* PubCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PubCard.h; sourceTree = "<group>"; };
+		4E728DA2115512B900A3EDA4 /* PubCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PubCard.m; sourceTree = "<group>"; };
+		4E728E00115534B000A3EDA4 /* StarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StarView.h; sourceTree = "<group>"; };
+		4E728E01115534B000A3EDA4 /* StarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StarView.m; sourceTree = "<group>"; };
+		4E728E541155466A00A3EDA4 /* CustomUIImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomUIImagePickerController.h; sourceTree = "<group>"; };
+		4E728E551155466A00A3EDA4 /* CustomUIImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomUIImagePickerController.m; sourceTree = "<group>"; };
 		4E8D686E113E918E00E2AD64 /* CSMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSMapAnnotation.h; sourceTree = "<group>"; };
 		4E8D686F113E918E00E2AD64 /* CSMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CSMapAnnotation.m; sourceTree = "<group>"; };
 		4E8D6870113E918E00E2AD64 /* CSRouteAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CSRouteAnnotation.h; sourceTree = "<group>"; };
@@ -431,34 +440,56 @@
 		4E63839D112D9E6700596D03 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4E728E531155461B00A3EDA4 /* Visit */,
 				4E61C4E51147EADE000379C8 /* Achievements */,
 				4EDDF3EF1132BE7B00D1EAF5 /* Social */,
 				4EDDF3EE1132BE7600D1EAF5 /* Maps */,
 				4EDDF3ED1132BE7100D1EAF5 /* Music */,
 				4EDDF3EC1132BE6900D1EAF5 /* Pubs */,
-				4E63838B112D9E4500596D03 /* pubVisitViewController.h */,
-				4E63838C112D9E4500596D03 /* pubVisitViewController.m */,
 				4E264F28112EBF3200C667DB /* infoViewController.h */,
 				4E264F29112EBF3200C667DB /* infoViewController.m */,
 				4E264FF8112ED76900C667DB /* genreViewController.h */,
 				4E264FF9112ED76900C667DB /* genreViewController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		4E728E521155460100A3EDA4 /* 3DList */ = {
+			isa = PBXGroup;
+			children = (
+				4E728E00115534B000A3EDA4 /* StarView.h */,
+				4E728E01115534B000A3EDA4 /* StarView.m */,
+				4E638249112D7F2300596D03 /* pubList3DController.h */,
+				4E63824A112D7F2300596D03 /* pubList3DController.m */,
+				4E728DA1115512B900A3EDA4 /* PubCard.h */,
+				4E728DA2115512B900A3EDA4 /* PubCard.m */,
+				4E728E541155466A00A3EDA4 /* CustomUIImagePickerController.h */,
+				4E728E551155466A00A3EDA4 /* CustomUIImagePickerController.m */,
+			);
+			name = 3DList;
+			sourceTree = "<group>";
+		};
+		4E728E531155461B00A3EDA4 /* Visit */ = {
+			isa = PBXGroup;
+			children = (
+				4E63838B112D9E4500596D03 /* pubVisitViewController.h */,
+				4E63838C112D9E4500596D03 /* pubVisitViewController.m */,
 				4E8D69F6113EB09500E2AD64 /* rateViewController.h */,
 				4E8D69F7113EB09500E2AD64 /* rateViewController.m */,
 				4E8D6A6F113EBEA500E2AD64 /* rateStar.h */,
 				4E8D6A70113EBEA500E2AD64 /* rateStar.m */,
 			);
-			name = "View Controllers";
+			name = Visit;
 			sourceTree = "<group>";
 		};
 		4EDDF3EC1132BE6900D1EAF5 /* Pubs */ = {
 			isa = PBXGroup;
 			children = (
+				4E728E521155460100A3EDA4 /* 3DList */,
 				4E14C4511129921E001234F1 /* pubListController.h */,
 				4E14C4521129921E001234F1 /* pubListController.m */,
 				4E14C4561129922C001234F1 /* recentPubListController.h */,
 				4E14C4571129922C001234F1 /* recentPubListController.m */,
-				4E638249112D7F2300596D03 /* pubList3DController.h */,
-				4E63824A112D7F2300596D03 /* pubList3DController.m */,
 			);
 			name = Pubs;
 			sourceTree = "<group>";
@@ -708,6 +739,9 @@
 				F60C0878114BC9D300ABAD7A /* FBStreamDialog.m in Sources */,
 				F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */,
 				F672E69311524F43003DA448 /* CoordinatesTool.m in Sources */,
+				4E728DA3115512B900A3EDA4 /* PubCard.m in Sources */,
+				4E728E02115534B000A3EDA4 /* StarView.m in Sources */,
+				4E728E561155466A00A3EDA4 /* CustomUIImagePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,7 +782,7 @@
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "/Users/Elegia/Downloads/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src";
+				HEADER_SEARCH_PATHS = "facebook-facebook-iphone-sdk-5382dcd/src";
 				PREBINDING = NO;
 				SDKROOT = iphoneos3.1.2;
 			};

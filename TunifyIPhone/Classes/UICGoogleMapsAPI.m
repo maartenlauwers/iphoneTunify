@@ -20,7 +20,6 @@
 - (id)init {
     if (self = [super initWithFrame:CGRectZero]) {
 		self.delegate = self;
-		NSLog(@"MAKING AVAILABLE");
 		[self makeAvailable];
     }
     return self;

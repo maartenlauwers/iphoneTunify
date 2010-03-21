@@ -37,7 +37,6 @@
 
 - (id)initWithFrame:(CGRect)aRect
 {
-	NSLog(@"init with frame");
 	if ((self = [super initWithFrame:aRect])) {
 		// Get the layer
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;

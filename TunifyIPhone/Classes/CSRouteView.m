@@ -47,8 +47,6 @@
 			CLLocation* location = [routeAnnotation.points objectAtIndex:idx];
 			CGPoint point = [self.routeView.mapView convertCoordinate:location.coordinate toPointToView:self];
 			
-			NSLog(@"Point: %lf, %lf", point.x, point.y);
-			
 			if(idx == 0)
 			{
 				// move to the first point

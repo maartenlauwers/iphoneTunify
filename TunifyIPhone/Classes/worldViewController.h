@@ -20,7 +20,7 @@
 	IBOutlet UILabel *lblDistanceToDestination;
 	GLView *glView;
 	
-	CLLocationManager *locationManager;
+	CoordinatesTool *ct;
 	NSString *strPubAddress;
 	CLLocation *userLocation;
 	CLLocation *pubLocation;
@@ -32,12 +32,13 @@
 @property (nonatomic, retain) IBOutlet UILabel *lblDistanceToDestination;
 @property (nonatomic, retain) GLView *glView;
 
-@property (nonatomic, retain) CLLocationManager *locationManager;
+@property (nonatomic, retain) CoordinatesTool *ct;
 @property (nonatomic, retain) NSString *strPubAddress;
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (assign) CLLocationDistance distance;
 
+- (void) initAll;
 - (void) btnPubs_clicked:(id)sender;
 - (void) btnMusic_clicked:(id)sender;
 - (IBAction) capturedToggleChanged:(id)sender;

@@ -53,7 +53,6 @@
 	_center.longitude = minLon + _span.longitudeDelta / 2;
 	
 	self.lineColor = [UIColor blueColor];
-	NSLog(@"Found center of new Route Annotation at %lf, %ld", _center.latitude, _center.longitude);
 	
 	return self;
 }

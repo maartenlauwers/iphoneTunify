@@ -40,6 +40,7 @@
 @property (nonatomic, assign) BOOL *pubLocationOK;
 @property (nonatomic, assign) BOOL *userLocationOK;
 
+- (void) stop;
 - (void) fetchUserLocation;
 - (void) fetchPubLocation:(NSString *)pubAddress;
 - (CLLocationDistance) fetchDistance;
