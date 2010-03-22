@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <AudioToolbox/AudioToolbox.h> 
+#import <AVFoundation/AVFoundation.h> 
 
 @interface recentPubListController : UITableViewController {
 	NSMutableArray *dataSource;		// stores all data
@@ -18,11 +19,15 @@
 	IBOutlet UISearchBar *searchBar;
 	
 	NSString *genre;
+	
+	AVAudioPlayer *player; 
+	NSIndexPath *rowPlayingIndexPath;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) NSString *genre;
+@property (assign) NSIndexPath *rowPlayingIndexPath;
 
 - (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName;
 - (void) btnFilter_clicked:(id)sender;

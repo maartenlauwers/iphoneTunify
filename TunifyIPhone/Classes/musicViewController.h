@@ -21,7 +21,6 @@
 	
 	NSInteger *source;
 	
-	SystemSoundID burpSoundID;  
 	AVAudioPlayer *player; 
 
 }

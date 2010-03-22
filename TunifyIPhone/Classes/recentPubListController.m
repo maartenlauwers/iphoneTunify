@@ -9,6 +9,7 @@
 #import "recentPubListController.h"
 #import "mapViewController.h"
 #import "pubCell.h"
+#import "CellButton.h"
 #import "genreViewController.h"
 
 @implementation recentPubListController
@@ -16,6 +17,7 @@
 @synthesize genre;
 @synthesize dataSource;
 @synthesize tableView;
+@synthesize rowPlayingIndexPath;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -63,7 +65,64 @@
 - (void) playMusic:(id)sender {
 	NSLog(@"Playing the sound of the pub");
 	
+	CellButton *button = (UIButton *)sender;
+	
+	if (self.rowPlayingIndexPath == nil ) {
+		// Nothing is playing yet
+		self.rowPlayingIndexPath = button.indexPath;
+		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+		
+		NSError *error = nil; 
+		player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
+		player.delegate = self; 
+		if(error != NULL) { 
+			NSLog([error description]);  
+			[error release]; 
+		} 
+		
+		[player play]; 
+	} else {
+		if (self.rowPlayingIndexPath.row == button.indexPath.row) {
+			// Our current cell is playing
+			self.rowPlayingIndexPath = nil;
+			[button setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+			[player stop];
+			player.delegate = nil;
+			[player release];
+			
+		} else {
+			// Another cell is playing. We need to stop it and play our current one.
+			[player stop];
+			player.delegate = nil;
+			[player release];
+			
+			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:self.rowPlayingIndexPath];
+			pubCell *c = (pubCell *)cell;
+			[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+			
+			// Now update our current cell
+			self.rowPlayingIndexPath = button.indexPath;
+			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+			
+			NSError *error = nil; 
+			player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
+			player.delegate = self; 
+			if(error != NULL) { 
+				NSLog([error description]);  
+				[error release]; 
+			} 
+			
+			[player play]; 
+			
+		}
+	}
+	
 }
+
+- (void) audioPlayerDidFinishPlaying: (AVAudioPlayer *)theplayer successfully:(BOOL)flag { 
+	NSLog(@"Song played");
+	[theplayer release]; 
+} 
 
 - (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName {
 	mapViewController *mvc = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
@@ -99,6 +158,8 @@
 	tableData = [[NSMutableArray alloc] init];
 	searchedData = [[NSMutableArray alloc] init];
 	[tableData addObjectsFromArray:dataSource];
+	
+	self.rowPlayingIndexPath = nil;
 }
 
 
@@ -178,8 +239,9 @@
 	cell.star4.image = [UIImage imageNamed:@"28-star.png"];
 	cell.star5.image = [UIImage imageNamed:@"28-star.png"];
 		
-	NSString *strPubName = [dataSource objectAtIndex:indexPath.row];
+	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
+	cell.playButton.indexPath = indexPath;
 	
     return cell;
 	
@@ -301,6 +363,7 @@
 
 - (void)dealloc {
 	[genre release];
+	[rowPlayingIndexPath release];
 	[dataSource release];
 	[tableView release];
     [super dealloc];

@@ -194,33 +194,7 @@
 		[alertView show];
 		[alertView release];
 	}
-	 
-	
-	/*
-	UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-	picker.delegate = self;
-	picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-	picker.allowsImageEditing = NO;
-	[self presentModalViewController:picker animated:YES];
-	 */
-	/*
-	UIImagePickerController *ipc = [[UIImagePickerController alloc] init];
-	ipc.sourceType =  UIImagePickerControllerSourceTypePhotoLibrary;
-	ipc.mediaTypes =[UIImagePickerController availableMediaTypesForSourceType:ipc.sourceType];     
-	ipc.delegate = self;
-	ipc.allowsImageEditing = NO;
-	[self presentModalViewController:ipc animated:YES];
-	*/
-	
-	
 }
-
-/*
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo {
-	NSLog(@"Did finish picking image");
-	[picker dismissModalViewControllerAnimated:YES];
-}
- */
 
 
 /*

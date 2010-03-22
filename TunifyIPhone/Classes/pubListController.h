@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "mapViewController.h"
+#import <AudioToolbox/AudioToolbox.h> 
+#import <AVFoundation/AVFoundation.h> 
 
-@interface pubListController : UITableViewController <UIActionSheetDelegate> {
+@interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate> {
 	mapViewController *mapViewController;
 	NSMutableArray *dataSource;		// stores all data
 	NSMutableArray *tableData;		// stores data displayed in the table
@@ -24,14 +26,18 @@
 	BOOL *recordResults;
 	
 	NSString *genre;
+	
+	AVAudioPlayer *player; 
+	NSIndexPath *rowPlayingIndexPath;
 }
 
 @property (nonatomic, retain) NSMutableData *webData;
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) NSString *genre;
-@property(nonatomic, retain) NSMutableString *soapResults;
-@property(nonatomic, retain) NSXMLParser *xmlParser;
+@property (nonatomic, retain) NSMutableString *soapResults;
+@property (nonatomic, retain) NSXMLParser *xmlParser;
+@property (assign) NSIndexPath *rowPlayingIndexPath;
 
 - (void) tunify_login;
 - (void) btnFilter_clicked:(id)sender;

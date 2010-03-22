@@ -40,8 +40,8 @@
 		star4 = [[UIImageView alloc]init];
 		star5 = [[UIImageView alloc]init];
 		
-		playButton = [[UIButton buttonWithType:UIButtonTypeCustom] init];
-		infoButton = [[UIButton buttonWithType:UIButtonTypeInfoDark] init];
+		playButton = [[CellButton buttonWithType:UIButtonTypeCustom] init];
+		infoButton = [[CellButton buttonWithType:UIButtonTypeInfoDark] init];
 		
 		[self.contentView addSubview:nameLabel];
 		[self.contentView addSubview:distanceLabel];
