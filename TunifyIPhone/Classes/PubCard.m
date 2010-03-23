@@ -46,7 +46,7 @@
 		self.center = CGPointMake(160, 250);
 		self.backgroundColor = [UIColor lightGrayColor];
 		
-		UILabel* pubName = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 20)];
+		UILabel* pubName = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 25)];
 		pubName.text = self.name;
 		pubName.textAlignment = UITextAlignmentLeft;
 		pubName.font = [UIFont systemFontOfSize:14];
@@ -54,7 +54,7 @@
 		pubName.textColor = [UIColor blackColor];
 		pubName.backgroundColor = [UIColor lightGrayColor];
 		
-		UILabel* pubAddress = [[UILabel alloc] initWithFrame:CGRectMake(5, 21, 190, 20)];
+		UILabel* pubAddress = [[UILabel alloc] initWithFrame:CGRectMake(5, 26, 190, 25)];
 		pubAddress.text = self.address;
 		pubAddress.textAlignment = UITextAlignmentLeft;
 		pubAddress.font = [UIFont systemFontOfSize:12];
@@ -62,7 +62,7 @@
 		pubAddress.textColor = [UIColor blackColor];
 		pubAddress.backgroundColor = [UIColor lightGrayColor];
 		
-		UILabel* pubVisitors = [[UILabel alloc] initWithFrame:CGRectMake(5, 37, 190, 20)];
+		UILabel* pubVisitors = [[UILabel alloc] initWithFrame:CGRectMake(5, 45, 190, 25)];
 		pubVisitors.text = [NSString stringWithFormat:@"Visitors: %d", self.visitors];
 		pubVisitors.textAlignment = UITextAlignmentLeft;
 		pubVisitors.font = [UIFont systemFontOfSize:12];
@@ -70,7 +70,7 @@
 		pubVisitors.textColor = [UIColor blackColor];
 		pubVisitors.backgroundColor = [UIColor lightGrayColor];
 		
-		StarView *stars = [[StarView alloc] initWithRating:CGRectMake(0, 60, 190, 25) rating:self.rating];
+		StarView *stars = [[StarView alloc] initWithRating:CGRectMake(0, 65, 190, 25) rating:self.rating];
 		stars.backgroundColor = [UIColor lightGrayColor];
 		
 		[self addSubview:pubName];	

@@ -149,12 +149,16 @@
 	PubCard *card1 = [[PubCard alloc] initWithPub:@"De Werf" pubAddress:@"Tiensestraat 49 3000 Leuven" pubVisitors:45 pubRating:3];
 	[card1 setPosition:300 y:100];
 	
+	PubCard *card2 = [[PubCard alloc] initWithPub:@"Passevit" pubAddress:@"Veurnestraat 123 8970 Poperinge" pubVisitors:12 pubRating:4];
+	[card2 setPosition:100 y:300];
+	
 	
 	/*
 	UIView *card2 = [self createPubCard:@"De Kouter" pubAddress:@"Tervuursesteenweg 433 3001 Heverlee" pubVisitors:100 pubRating:4];
 	UIView *card3 = [self createPubCard:@"Passevit" pubAddress:@"Veurnestraat 130 8970 Poperinge" pubVisitors:20 pubRating:2];
 	*/
 	[self.overlayView insertSubview:card1 atIndex:0];
+	[self.overlayView insertSubview:card2 atIndex:1];
 	//[self.overlayView insertSubview:card2 atIndex:1];
 	//[self.overlayView insertSubview:card3 atIndex:2];
 	

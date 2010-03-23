@@ -2,9 +2,9 @@
 <archive type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="7.03">
 	<data>
 		<int key="IBDocument.SystemTarget">784</int>
-		<string key="IBDocument.SystemVersion">9J61</string>
+		<string key="IBDocument.SystemVersion">9L31a</string>
 		<string key="IBDocument.InterfaceBuilderVersion">680</string>
-		<string key="IBDocument.AppKitVersion">949.46</string>
+		<string key="IBDocument.AppKitVersion">949.54</string>
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -45,7 +45,7 @@
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<bool key="IBUIUserInteractionEnabled">NO</bool>
 						<string key="IBUIText">Destination at 215 meters</string>
-						<object class="NSColor" key="IBUITextColor" id="664899036">
+						<object class="NSColor" key="IBUITextColor">
 							<int key="NSColorSpace">1</int>
 							<bytes key="NSRGB">MCAwIDAAA</bytes>
 						</object>
@@ -88,21 +88,6 @@
 							<object class="NSNull" id="4"/>
 							<reference ref="4"/>
 						</object>
-					</object>
-					<object class="IBUILabel" id="736619244">
-						<reference key="NSNextResponder" ref="191373211"/>
-						<int key="NSvFlags">292</int>
-						<string key="NSFrame">{{20, 291}, {280, 21}}</string>
-						<reference key="NSSuperview" ref="191373211"/>
-						<bool key="IBUIOpaque">NO</bool>
-						<bool key="IBUIClipsSubviews">YES</bool>
-						<bool key="IBUIUserInteractionEnabled">NO</bool>
-						<string key="IBUIText">Next waypoint at 40 meters</string>
-						<reference key="IBUITextColor" ref="664899036"/>
-						<nil key="IBUIHighlightedColor"/>
-						<int key="IBUIBaselineAdjustment">1</int>
-						<float key="IBUIMinimumFontSize">1.000000e+01</float>
-						<int key="IBUITextAlignment">1</int>
 					</object>
 				</object>
 				<string key="NSFrameSize">{320, 416}</string>
@@ -175,7 +160,6 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<reference ref="199411148"/>
 							<reference ref="164138016"/>
-							<reference ref="736619244"/>
 						</object>
 						<reference key="parent" ref="10252879"/>
 					</object>
@@ -200,11 +184,6 @@
 						<reference key="object" ref="199411148"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
-					<object class="IBObjectRecord">
-						<int key="objectID">9</int>
-						<reference key="object" ref="736619244"/>
-						<reference key="parent" ref="191373211"/>
-					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -217,14 +196,12 @@
 					<string>1.IBPluginDependency</string>
 					<string>3.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
-					<string>9.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>worldViewController</string>
 					<string>UIResponder</string>
 					<string>{{195, 276}, {320, 480}}</string>
-					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
