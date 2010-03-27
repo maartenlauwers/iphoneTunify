@@ -12,6 +12,8 @@
 #import "pubCell.h"
 #import "CellButton.h"
 #import "genreViewController.h"
+#import "AudioPlayer.h"
+#import "TunifyIPhoneAppDelegate.h"
 
 @implementation pubListController
 
@@ -194,6 +196,42 @@
 	[self tunify_login];
 	
 	self.rowPlayingIndexPath = nil;
+	
+	//AudioPlayer *audioPlayer = [[AudioPlayer alloc] init];
+	//[audioPlayer play:@"http://localhost/H.mp3"];
+	
+	
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate *)[[UIApplication sharedApplication] delegate];
+	[appDelegate.audioPlayer play:@"http://localhost/H.mp3"];
+	
+	
+	/*
+	NSError *activationError = nil;
+	[[AVAudioSession sharedInstance] setActive: YES error: &activationError];
+	NSError *setCategoryError = nil;
+	[[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error: &setCategoryError];
+	
+	if (setCategoryError) { 
+		NSLog(@"You got screwed");
+	}
+	 */
+	
+	
+	
+	
+	//AVAudioSession *session = [AVAudioSession sharedInstance];
+	
+	
+	/*
+	NSString *streamURL = @"http://localhost:1935/live/mp4:asi.m4a/playlist.m3u8";
+	NSString *escapedValue = [(NSString *)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)streamURL, NULL, NULL, kCFStringEncodingUTF8)autorelease];  
+	
+	NSURL *url = [NSURL URLWithString:escapedValue];  
+	streamer = [[AudioStreamer alloc] initWithURL:url];  
+	//[streamer addObserver:self forKeyPath:@"isPlaying" options:0 context:nil];  
+	[streamer start];  
+	 */
+	
 }
 
 -(void)tunify_login {

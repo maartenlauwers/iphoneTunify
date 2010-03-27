@@ -109,6 +109,10 @@
 		F60C0879114BC9D300ABAD7A /* FBConnect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F60C086F114BC9D300ABAD7A /* FBConnect.bundle */; };
 		F60C088E114BCC6600ABAD7A /* 88-beermug.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C088D114BCC6600ABAD7A /* 88-beermug.png */; };
 		F672E69311524F43003DA448 /* CoordinatesTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F672E69211524F43003DA448 /* CoordinatesTool.m */; };
+		F6B58981115E50A400C15017 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58980115E50A400C15017 /* AudioPlayer.m */; };
+		F6B58985115E50DF00C15017 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58984115E50DF00C15017 /* AudioStreamer.m */; };
+		F6B589DB115E553D00C15017 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B589DA115E553D00C15017 /* MediaPlayer.framework */; };
+		F6B589E8115E555200C15017 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B589E7115E555200C15017 /* CFNetwork.framework */; };
 		F6C2F541114E99970029EC57 /* star_light_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F53F114E99970029EC57 /* star_light_small.png */; };
 		F6C2F542114E99970029EC57 /* star_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F540114E99970029EC57 /* star_small.png */; };
 		F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C2F577114EB5790029EC57 /* AVFoundation.framework */; };
@@ -257,6 +261,12 @@
 		F60C088D114BCC6600ABAD7A /* 88-beermug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "88-beermug.png"; sourceTree = "<group>"; };
 		F672E69111524F43003DA448 /* CoordinatesTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoordinatesTool.h; sourceTree = "<group>"; };
 		F672E69211524F43003DA448 /* CoordinatesTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoordinatesTool.m; sourceTree = "<group>"; };
+		F6B5897F115E50A400C15017 /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
+		F6B58980115E50A400C15017 /* AudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPlayer.m; sourceTree = "<group>"; };
+		F6B58983115E50DF00C15017 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
+		F6B58984115E50DF00C15017 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
+		F6B589DA115E553D00C15017 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		F6B589E7115E555200C15017 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		F6C2F53F114E99970029EC57 /* star_light_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_light_small.png; sourceTree = "<group>"; };
 		F6C2F540114E99970029EC57 /* star_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_small.png; sourceTree = "<group>"; };
 		F6C2F577114EB5790029EC57 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -289,6 +299,8 @@
 				F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */,
 				F6C2F57C114EB5E00029EC57 /* AudioToolbox.framework in Frameworks */,
 				F6EAC2C911511F9600150BE6 /* OpenGLES.framework in Frameworks */,
+				F6B589DB115E553D00C15017 /* MediaPlayer.framework in Frameworks */,
+				F6B589E8115E555200C15017 /* CFNetwork.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +310,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				F6B58986115E50E300C15017 /* Audio */,
 				F60C085B114BC9D300ABAD7A /* FBConnect */,
 				4E264EAB112EAD6000C667DB /* Annotation */,
 				4E63839D112D9E6700596D03 /* View Controllers */,
@@ -395,6 +408,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6B589E7115E555200C15017 /* CFNetwork.framework */,
+				F6B589DA115E553D00C15017 /* MediaPlayer.framework */,
 				F6EAC2C811511F9600150BE6 /* OpenGLES.framework */,
 				F6C2F57B114EB5E00029EC57 /* AudioToolbox.framework */,
 				F6C2F577114EB5790029EC57 /* AVFoundation.framework */,
@@ -583,6 +598,17 @@
 			name = RouteOverlay;
 			sourceTree = "<group>";
 		};
+		F6B58986115E50E300C15017 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				F6B5897F115E50A400C15017 /* AudioPlayer.h */,
+				F6B58980115E50A400C15017 /* AudioPlayer.m */,
+				F6B58983115E50DF00C15017 /* AudioStreamer.h */,
+				F6B58984115E50DF00C15017 /* AudioStreamer.m */,
+			);
+			name = Audio;
+			sourceTree = "<group>";
+		};
 		F6EAC2B011511EEA00150BE6 /* OpenGL ES */ = {
 			isa = PBXGroup;
 			children = (
@@ -752,6 +778,8 @@
 				4E728E02115534B000A3EDA4 /* StarView.m in Sources */,
 				4E728E561155466A00A3EDA4 /* CustomUIImagePickerController.m in Sources */,
 				4EFB709711567C9900876197 /* CellButton.m in Sources */,
+				F6B58981115E50A400C15017 /* AudioPlayer.m in Sources */,
+				F6B58985115E50DF00C15017 /* AudioStreamer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -793,6 +821,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "facebook-facebook-iphone-sdk-5382dcd/src";
+				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = iphoneos3.1.2;
 			};

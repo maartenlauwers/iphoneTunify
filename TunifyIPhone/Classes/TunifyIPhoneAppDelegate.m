@@ -12,16 +12,18 @@
 
 @synthesize window;
 @synthesize tabController;
-
+@synthesize audioPlayer;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
-
+	
+	self.audioPlayer = [[AudioPlayer alloc] init];
     [window addSubview:tabController.view];
     [window makeKeyAndVisible];
 }
 
 
 - (void)dealloc {
+	[audioPlayer release];
 	[tabController release];
     [window release];
     [super dealloc];
