@@ -12,8 +12,6 @@
 #import "pubCell.h"
 #import "CellButton.h"
 #import "genreViewController.h"
-#import "AudioPlayer.h"
-#import "TunifyIPhoneAppDelegate.h"
 
 @implementation pubListController
 
@@ -197,42 +195,24 @@
 	
 	self.rowPlayingIndexPath = nil;
 	
-	//AudioPlayer *audioPlayer = [[AudioPlayer alloc] init];
-	//[audioPlayer play:@"http://localhost/H.mp3"];
-	
-	
-	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate *)[[UIApplication sharedApplication] delegate];
-	[appDelegate.audioPlayer play:@"http://localhost/H.mp3"];
-	
-	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer play:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
 	/*
-	NSError *activationError = nil;
-	[[AVAudioSession sharedInstance] setActive: YES error: &activationError];
-	NSError *setCategoryError = nil;
-	[[AVAudioSession sharedInstance] setCategory: AVAudioSessionCategoryAmbient error: &setCategoryError];
-	
-	if (setCategoryError) { 
-		NSLog(@"You got screwed");
-	}
-	 */
-	
-	
-	
-	
-	//AVAudioSession *session = [AVAudioSession sharedInstance];
-	
-	
-	/*
-	NSString *streamURL = @"http://localhost:1935/live/mp4:asi.m4a/playlist.m3u8";
-	NSString *escapedValue = [(NSString *)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)streamURL, NULL, NULL, kCFStringEncodingUTF8)autorelease];  
-	
-	NSURL *url = [NSURL URLWithString:escapedValue];  
-	streamer = [[AudioStreamer alloc] initWithURL:url];  
-	//[streamer addObserver:self forKeyPath:@"isPlaying" options:0 context:nil];  
-	[streamer start];  
-	 */
+	M3U8Handler *handler = [[M3U8Handler alloc] init];
+	handler.delegate = self;
+	[handler parseUrl:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
+	*/
+}
+
+/*
+- (void)playlistAvailable:(M3U8Handler *)sender {
+
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	M3U8SegmentInfo *segment = [sender.playlist getSegment:0];
+	[audioPlayer play:[NSString stringWithFormat:@"http://localhost:1935/live/mp3:H.mp3/%@", segment.location]];
 	
 }
+ */
 
 -(void)tunify_login {
 	// Log in the user

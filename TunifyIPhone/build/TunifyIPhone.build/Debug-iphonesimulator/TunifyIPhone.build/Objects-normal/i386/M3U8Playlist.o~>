@@ -1,0 +1,6 @@
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Playlist.m: In function '-[M3U8Playlist initWithSegments:]':
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Playlist.m:21: warning: passing argument 1 of 'setLength:' makes pointer from integer without a cast
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Playlist.m: In function '-[M3U8Playlist getSegment:]':
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Playlist.m:27: warning: conflicting types for '-(M3U8SegmentInfo *)getSegment:(NSInteger *)index'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Playlist.h:21: warning: previous declaration of '-(M3U8SegmentInfo *)getSegment:(NSUInteger *)index'
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Playlist.m:28: warning: passing argument 1 of 'objectAtIndex:' makes integer from pointer without a cast

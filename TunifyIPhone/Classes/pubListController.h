@@ -10,8 +10,12 @@
 #import "mapViewController.h"
 #import <AudioToolbox/AudioToolbox.h> 
 #import <AVFoundation/AVFoundation.h> 
+#import "AudioPlayer.h"
+#import "M3U8Handler.h"
+#import "M3U8SegmentInfo.h"
+#import "M3U8Playlist.h"
 
-@interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate> {
+@interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate, M3U8HandlerDelegate> {
 	mapViewController *mapViewController;
 	NSMutableArray *dataSource;		// stores all data
 	NSMutableArray *tableData;		// stores data displayed in the table

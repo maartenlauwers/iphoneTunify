@@ -7,15 +7,27 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AudioStreamer.h"
+#import "M3U8Handler.h"
+#import "M3U8SegmentInfo.h"
+#import "M3U8Playlist.h"
 
 @class AudioStreamer;
 
-@interface AudioPlayer : NSObject {
+@interface AudioPlayer : NSObject <M3U8HandlerDelegate, AudioStreamerDelegate> {
 	BOOL *isPlaying;
 	AudioStreamer *streamer;
+	NSString *baseUrl;
+	M3U8Playlist *playlist;
+	//NSInteger *currentSegment;
 }
 
 @property (nonatomic, retain) AudioStreamer *streamer;
+@property (nonatomic, retain) NSString *baseUrl;
+@property (nonatomic, retain) M3U8Playlist *playlist;
+//@property (assign) NSInteger *currentSegment;
+
++ (AudioPlayer*)sharedInstance;
 - (void)play:(NSString *)path;
 - (void)stop;
 - (void)createStreamer:(NSString*)path;

@@ -113,6 +113,9 @@
 		F6B58985115E50DF00C15017 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58984115E50DF00C15017 /* AudioStreamer.m */; };
 		F6B589DB115E553D00C15017 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B589DA115E553D00C15017 /* MediaPlayer.framework */; };
 		F6B589E8115E555200C15017 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B589E7115E555200C15017 /* CFNetwork.framework */; };
+		F6B58A5A115E80D700C15017 /* M3U8Handler.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58A59115E80D700C15017 /* M3U8Handler.m */; };
+		F6B58A72115E83E200C15017 /* M3U8SegmentInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58A71115E83E200C15017 /* M3U8SegmentInfo.m */; };
+		F6B58AB9115E9B7800C15017 /* M3U8Playlist.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58AB8115E9B7800C15017 /* M3U8Playlist.m */; };
 		F6C2F541114E99970029EC57 /* star_light_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F53F114E99970029EC57 /* star_light_small.png */; };
 		F6C2F542114E99970029EC57 /* star_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F540114E99970029EC57 /* star_small.png */; };
 		F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C2F577114EB5790029EC57 /* AVFoundation.framework */; };
@@ -267,6 +270,12 @@
 		F6B58984115E50DF00C15017 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		F6B589DA115E553D00C15017 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		F6B589E7115E555200C15017 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		F6B58A58115E80D700C15017 /* M3U8Handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M3U8Handler.h; sourceTree = "<group>"; };
+		F6B58A59115E80D700C15017 /* M3U8Handler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M3U8Handler.m; sourceTree = "<group>"; };
+		F6B58A70115E83E200C15017 /* M3U8SegmentInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M3U8SegmentInfo.h; sourceTree = "<group>"; };
+		F6B58A71115E83E200C15017 /* M3U8SegmentInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M3U8SegmentInfo.m; sourceTree = "<group>"; };
+		F6B58AB7115E9B7800C15017 /* M3U8Playlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M3U8Playlist.h; sourceTree = "<group>"; };
+		F6B58AB8115E9B7800C15017 /* M3U8Playlist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = M3U8Playlist.m; sourceTree = "<group>"; };
 		F6C2F53F114E99970029EC57 /* star_light_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_light_small.png; sourceTree = "<group>"; };
 		F6C2F540114E99970029EC57 /* star_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_small.png; sourceTree = "<group>"; };
 		F6C2F577114EB5790029EC57 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -605,6 +614,12 @@
 				F6B58980115E50A400C15017 /* AudioPlayer.m */,
 				F6B58983115E50DF00C15017 /* AudioStreamer.h */,
 				F6B58984115E50DF00C15017 /* AudioStreamer.m */,
+				F6B58A58115E80D700C15017 /* M3U8Handler.h */,
+				F6B58A59115E80D700C15017 /* M3U8Handler.m */,
+				F6B58A70115E83E200C15017 /* M3U8SegmentInfo.h */,
+				F6B58A71115E83E200C15017 /* M3U8SegmentInfo.m */,
+				F6B58AB7115E9B7800C15017 /* M3U8Playlist.h */,
+				F6B58AB8115E9B7800C15017 /* M3U8Playlist.m */,
 			);
 			name = Audio;
 			sourceTree = "<group>";
@@ -780,6 +795,9 @@
 				4EFB709711567C9900876197 /* CellButton.m in Sources */,
 				F6B58981115E50A400C15017 /* AudioPlayer.m in Sources */,
 				F6B58985115E50DF00C15017 /* AudioStreamer.m in Sources */,
+				F6B58A5A115E80D700C15017 /* M3U8Handler.m in Sources */,
+				F6B58A72115E83E200C15017 /* M3U8SegmentInfo.m in Sources */,
+				F6B58AB9115E9B7800C15017 /* M3U8Playlist.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

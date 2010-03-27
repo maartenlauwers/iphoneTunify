@@ -198,6 +198,7 @@ void ASReadStreamCallBack
 
 @implementation AudioStreamer
 
+@synthesize delegate;
 @synthesize errorCode;
 @synthesize state;
 @synthesize bitRate;
@@ -225,6 +226,7 @@ void ASReadStreamCallBack
 //
 - (void)dealloc
 {
+	self.delegate = nil;
 	[self stop];
 	[notificationCenter release];
 	[url release];
@@ -804,6 +806,13 @@ cleanup:
 		seekTime = 0;
 		seekNeeded = NO;
 		self.state = AS_INITIALIZED;
+		
+		// CALL TO DELEGATE HERE
+		if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(streamFinished:)]) {
+			NSLog(@"stream finished");
+			[delegate streamFinished:self];
+			self.delegate = nil;
+		}   
 	}
 
 	[pool release];
@@ -824,8 +833,8 @@ cleanup:
 		}
 		else if (state == AS_INITIALIZED)
 		{
-			NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]],
-				@"Playback can only be started from the main thread.");
+			//NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]],
+			//	@"Playback can only be started from the main thread.");
 			notificationCenter =
 				[[NSNotificationCenter defaultCenter] retain];
 			self.state = AS_STARTING_FILE_THREAD;
