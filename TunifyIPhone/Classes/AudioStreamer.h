@@ -16,6 +16,8 @@
 #import <UIKit/UIKit.h>	
 #include <pthread.h>
 #include <AudioToolbox/AudioToolbox.h>
+#include "M3U8SegmentInfo.h"
+#include "M3U8Playlist.h"
 
 #define LOG_QUEUED_BUFFERS 0
 
@@ -103,7 +105,10 @@ extern NSString * const ASStatusChangedNotification;
 {
 	id<AudioStreamerDelegate> delegate;
 	
+	
+	NSString *baseURL;
 	NSURL *url;
+	M3U8Playlist *playlist;
 
 	//
 	// Special threading consideration:
@@ -150,6 +155,7 @@ extern NSString * const ASStatusChangedNotification;
 @property (readwrite) UInt32 bitRate;
 
 - (id)initWithURL:(NSURL *)aURL;
+- (id)initWithPlaylist:(M3U8Playlist*)aPlaylist andBaseURL:(NSString *)baseURL;
 - (void)start;
 - (void)stop;
 - (void)pause;

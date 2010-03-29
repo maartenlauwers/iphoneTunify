@@ -204,6 +204,9 @@ void ASReadStreamCallBack
 @synthesize bitRate;
 @dynamic progress;
 
+int currentSegment;
+int maxSegment;
+
 //
 // initWithURL
 //
@@ -215,6 +218,19 @@ void ASReadStreamCallBack
 	if (self != nil)
 	{
 		url = [aURL retain];
+	}
+	return self;
+}
+
+- (id)initWithPlaylist:(M3U8Playlist *)aPlaylist andBaseURL:(NSString *)aBaseURL
+{
+	self = [super init];
+	if (self != nil)
+	{
+		playlist = [aPlaylist retain];
+		baseURL = aBaseURL;
+		currentSegment = 0;
+		maxSegment = aPlaylist.length;
 	}
 	return self;
 }
@@ -499,6 +515,138 @@ void ASReadStreamCallBack
 	return NO;
 }
 
+- (NSURL *)translateToURL:(NSString *)path {
+	NSString *escapedValue =
+	[(NSString *)CFURLCreateStringByAddingPercentEscapes(
+														 nil,
+														 (CFStringRef)path,
+														 NULL,
+														 NULL,
+														 kCFStringEncodingUTF8)
+	 autorelease];
+	
+	NSURL *url = [NSURL URLWithString:escapedValue];
+	return url;
+}
+
+- (BOOL)updateStream {
+	
+		
+	@synchronized(self) 
+	{
+		if(currentSegment >= maxSegment) {
+			NSLog(@"Max segments reached");
+			return;
+		}
+		currentSegment = currentSegment + 1;
+		NSLog(@"updateStream: currentSegment: %d", currentSegment);
+		M3U8SegmentInfo *segment = [playlist getSegment:currentSegment];
+		url = [self translateToURL:[NSString stringWithFormat:@"%@/%@", baseURL, segment.location]];
+
+		/*
+		if (stream)
+		{
+			CFReadStreamClose(stream);
+			CFRelease(stream);
+			stream = nil;
+		}
+		*/
+		//
+		// Create the GET request
+		//
+		CFHTTPMessageRef message= CFHTTPMessageCreateRequest(NULL, (CFStringRef)@"GET", (CFURLRef)url, kCFHTTPVersion1_1);
+		stream = CFReadStreamCreateForHTTPRequest(NULL, message);
+		CFRelease(message);
+		
+		//
+		// Enable stream redirection
+		//
+		/*
+		if (CFReadStreamSetProperty(
+									stream,
+									kCFStreamPropertyHTTPShouldAutoredirect,
+									kCFBooleanTrue) == false)
+		{
+			
+			UIAlertView *alert =
+			[[UIAlertView alloc]
+			 initWithTitle:NSLocalizedStringFromTable(@"File Error", @"Errors", nil)
+			 message:NSLocalizedStringFromTable(@"Unable to configure network read stream.", @"Errors", nil)
+			 delegate:self
+			 cancelButtonTitle:@"OK"
+			 otherButtonTitles: nil];
+			[alert
+			 performSelector:@selector(show)
+			 onThread:[NSThread mainThread]
+			 withObject:nil
+			 waitUntilDone:YES];
+			[alert release];
+			
+			return NO;
+		}
+		
+		//
+		// Handle SSL connections
+		//
+		if( [[url absoluteString] rangeOfString:@"https"].location != NSNotFound )
+		{
+			NSDictionary *sslSettings =
+			[NSDictionary dictionaryWithObjectsAndKeys:
+			 (NSString *)kCFStreamSocketSecurityLevelNegotiatedSSL, kCFStreamSSLLevel,
+			 [NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredCertificates,
+			 [NSNumber numberWithBool:YES], kCFStreamSSLAllowsExpiredRoots,
+			 [NSNumber numberWithBool:YES], kCFStreamSSLAllowsAnyRoot,
+			 [NSNumber numberWithBool:NO], kCFStreamSSLValidatesCertificateChain,
+			 [NSNull null], kCFStreamSSLPeerName,
+			 nil];
+			
+			CFReadStreamSetProperty(stream, kCFStreamPropertySSLSettings, sslSettings);
+		}
+		*/
+		//
+		// Open the stream
+		//
+		if (!CFReadStreamOpen(stream))
+		{
+			CFRelease(stream);
+			
+			UIAlertView *alert =
+			[[UIAlertView alloc]
+			 initWithTitle:NSLocalizedStringFromTable(@"File Error", @"Errors", nil)
+			 message:NSLocalizedStringFromTable(@"Unable to configure network read stream.", @"Errors", nil)
+			 delegate:self
+			 cancelButtonTitle:@"OK"
+			 otherButtonTitles: nil];
+			[alert
+			 performSelector:@selector(show)
+			 onThread:[NSThread mainThread]
+			 withObject:nil
+			 waitUntilDone:YES];
+			[alert release];
+			
+			return NO;
+		}
+		
+		//
+		// Set our callback function to receive the data
+		//
+		
+		
+		CFStreamClientContext context = {0, self, NULL, NULL, NULL};
+		CFReadStreamSetClient(
+							  stream,
+							  kCFStreamEventHasBytesAvailable | kCFStreamEventErrorOccurred | kCFStreamEventEndEncountered,
+							  ASReadStreamCallBack,
+							  &context);
+		
+		CFReadStreamScheduleWithRunLoop(stream, CFRunLoopGetCurrent(), kCFRunLoopCommonModes);
+		
+	}
+	
+	return YES;
+	
+}
+
 //
 // openFileStream
 //
@@ -511,7 +659,12 @@ void ASReadStreamCallBack
 	{
 		NSAssert(stream == nil && audioFileStream == nil,
 			@"audioFileStream already initialized");
+
+		NSLog(@"openFileStream: currentSegment: %d", currentSegment);
 		
+		M3U8SegmentInfo *segment = [playlist getSegment:currentSegment];
+		url = [self translateToURL:[NSString stringWithFormat:@"%@/%@", baseURL, segment.location]];
+		NSLog(@"openFileStream: %@", url);
 		//
 		// Attempt to guess the file type from the URL. Reading the MIME type
 		// from the CFReadStream would be a better approach since lots of
@@ -734,10 +887,10 @@ void ASReadStreamCallBack
 	BOOL isRunning = YES;
 	do
 	{
+		
 		isRunning = [[NSRunLoop currentRunLoop]
 			runMode:NSDefaultRunLoopMode
-			beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.25]];
-		
+			beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.001]];
 		//
 		// If there are no queued buffers, we need to check here since the
 		// handleBufferCompleteForQueue:buffer: should not change the state
@@ -757,6 +910,7 @@ void ASReadStreamCallBack
 	
 cleanup:
 
+	NSLog(@"CLEANING UP");
 	@synchronized(self)
 	{
 		//
@@ -808,11 +962,13 @@ cleanup:
 		self.state = AS_INITIALIZED;
 		
 		// CALL TO DELEGATE HERE
+		/*
 		if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(streamFinished:)]) {
 			NSLog(@"stream finished");
 			[delegate streamFinished:self];
 			self.delegate = nil;
 		}   
+		 */
 	}
 
 	[pool release];
@@ -1014,43 +1170,51 @@ cleanup:
 
 		@synchronized(self)
 		{
-			if (state == AS_WAITING_FOR_DATA)
-			{
-				[self failWithErrorCode:AS_AUDIO_DATA_NOT_FOUND];
-			}
-			
-			//
-			// We left the synchronized section to enqueue the buffer so we
-			// must check that we are !finished again before touching the
-			// audioQueue
-			//
-			else if (![self isFinishing])
-			{
-				if (audioQueue)
-				{
-					//
-					// Set the progress at the end of the stream
-					//
-					err = AudioQueueFlush(audioQueue);
-					if (err)
-					{
-						[self failWithErrorCode:AS_AUDIO_QUEUE_FLUSH_FAILED];
-						return;
-					}
-
-					self.state = AS_STOPPING;
-					stopReason = AS_STOPPING_EOF;
-					err = AudioQueueStop(audioQueue, false);
-					if (err)
-					{
-						[self failWithErrorCode:AS_AUDIO_QUEUE_FLUSH_FAILED];
-						return;
-					}
+			if(currentSegment < maxSegment) {
+				if (![self updateStream]) {
+					NSLog(@"self updateStream failed");
 				}
-				else
+			} else {
+				currentSegment = 0;
+				
+				if (state == AS_WAITING_FOR_DATA)
 				{
-					self.state = AS_STOPPED;
-					stopReason = AS_STOPPING_EOF;
+					[self failWithErrorCode:AS_AUDIO_DATA_NOT_FOUND];
+				}
+				
+				//
+				// We left the synchronized section to enqueue the buffer so we
+				// must check that we are !finished again before touching the
+				// audioQueue
+				//
+				else if (![self isFinishing])
+				{
+					if (audioQueue)
+					{
+						//
+						// Set the progress at the end of the stream
+						//
+						err = AudioQueueFlush(audioQueue);
+						if (err)
+						{
+							[self failWithErrorCode:AS_AUDIO_QUEUE_FLUSH_FAILED];
+							return;
+						}
+						
+						self.state = AS_STOPPING;
+						stopReason = AS_STOPPING_EOF;
+						err = AudioQueueStop(audioQueue, false);
+						if (err)
+						{
+							[self failWithErrorCode:AS_AUDIO_QUEUE_FLUSH_FAILED];
+							return;
+						}
+					}
+					else
+					{
+						self.state = AS_STOPPED;
+						stopReason = AS_STOPPING_EOF;
+					}
 				}
 			}
 		}

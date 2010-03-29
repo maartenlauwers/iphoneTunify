@@ -108,9 +108,9 @@
 		F60C0878114BC9D300ABAD7A /* FBStreamDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = F60C086E114BC9D300ABAD7A /* FBStreamDialog.m */; };
 		F60C0879114BC9D300ABAD7A /* FBConnect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F60C086F114BC9D300ABAD7A /* FBConnect.bundle */; };
 		F60C088E114BCC6600ABAD7A /* 88-beermug.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C088D114BCC6600ABAD7A /* 88-beermug.png */; };
+		F618F28E1160D9D900DE4720 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = F618F28D1160D9D900DE4720 /* AudioStreamer.m */; };
 		F672E69311524F43003DA448 /* CoordinatesTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F672E69211524F43003DA448 /* CoordinatesTool.m */; };
 		F6B58981115E50A400C15017 /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58980115E50A400C15017 /* AudioPlayer.m */; };
-		F6B58985115E50DF00C15017 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58984115E50DF00C15017 /* AudioStreamer.m */; };
 		F6B589DB115E553D00C15017 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B589DA115E553D00C15017 /* MediaPlayer.framework */; };
 		F6B589E8115E555200C15017 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B589E7115E555200C15017 /* CFNetwork.framework */; };
 		F6B58A5A115E80D700C15017 /* M3U8Handler.m in Sources */ = {isa = PBXBuildFile; fileRef = F6B58A59115E80D700C15017 /* M3U8Handler.m */; };
@@ -262,12 +262,12 @@
 		F60C086E114BC9D300ABAD7A /* FBStreamDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBStreamDialog.m; path = "facebook-facebook-iphone-sdk-5382dcd/src/FBStreamDialog.m"; sourceTree = SOURCE_ROOT; };
 		F60C086F114BC9D300ABAD7A /* FBConnect.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FBConnect.bundle; path = "facebook-facebook-iphone-sdk-5382dcd/src/FBConnect.bundle"; sourceTree = SOURCE_ROOT; };
 		F60C088D114BCC6600ABAD7A /* 88-beermug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "88-beermug.png"; sourceTree = "<group>"; };
+		F618F28C1160D9D900DE4720 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
+		F618F28D1160D9D900DE4720 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		F672E69111524F43003DA448 /* CoordinatesTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoordinatesTool.h; sourceTree = "<group>"; };
 		F672E69211524F43003DA448 /* CoordinatesTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoordinatesTool.m; sourceTree = "<group>"; };
 		F6B5897F115E50A400C15017 /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
 		F6B58980115E50A400C15017 /* AudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPlayer.m; sourceTree = "<group>"; };
-		F6B58983115E50DF00C15017 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
-		F6B58984115E50DF00C15017 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
 		F6B589DA115E553D00C15017 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		F6B589E7115E555200C15017 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		F6B58A58115E80D700C15017 /* M3U8Handler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = M3U8Handler.h; sourceTree = "<group>"; };
@@ -610,10 +610,10 @@
 		F6B58986115E50E300C15017 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				F618F28C1160D9D900DE4720 /* AudioStreamer.h */,
+				F618F28D1160D9D900DE4720 /* AudioStreamer.m */,
 				F6B5897F115E50A400C15017 /* AudioPlayer.h */,
 				F6B58980115E50A400C15017 /* AudioPlayer.m */,
-				F6B58983115E50DF00C15017 /* AudioStreamer.h */,
-				F6B58984115E50DF00C15017 /* AudioStreamer.m */,
 				F6B58A58115E80D700C15017 /* M3U8Handler.h */,
 				F6B58A59115E80D700C15017 /* M3U8Handler.m */,
 				F6B58A70115E83E200C15017 /* M3U8SegmentInfo.h */,
@@ -794,10 +794,10 @@
 				4E728E561155466A00A3EDA4 /* CustomUIImagePickerController.m in Sources */,
 				4EFB709711567C9900876197 /* CellButton.m in Sources */,
 				F6B58981115E50A400C15017 /* AudioPlayer.m in Sources */,
-				F6B58985115E50DF00C15017 /* AudioStreamer.m in Sources */,
 				F6B58A5A115E80D700C15017 /* M3U8Handler.m in Sources */,
 				F6B58A72115E83E200C15017 /* M3U8SegmentInfo.m in Sources */,
 				F6B58AB9115E9B7800C15017 /* M3U8Playlist.m in Sources */,
+				F618F28E1160D9D900DE4720 /* AudioStreamer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

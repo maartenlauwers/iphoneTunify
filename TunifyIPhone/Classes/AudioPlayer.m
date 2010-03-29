@@ -89,11 +89,13 @@ int currentSegment;
 
 	M3U8SegmentInfo *segment = [self.playlist getSegment:currentSegment];
 	
-	[self createStreamer:[NSString stringWithFormat:@"%@/%@", self.baseUrl, segment.location]];
+	streamer = [[AudioStreamer alloc] initWithPlaylist:self.playlist andBaseURL:self.baseUrl];
+	streamer.delegate = self;
 	[streamer start];
 }
 
 - (void)streamFinished:(AudioStreamer *)sender {
+	/*
 	NSLog(@"stream finished: %d", currentSegment);
 	NSLog(@"a: %d", currentSegment);
 	[self destroyStreamer];
@@ -116,7 +118,7 @@ int currentSegment;
 		NSLog(@"h: %d", currentSegment);
 	}	
 	NSLog(@"i: %d", currentSegment);
-	
+	*/
 }
 
 - (void)stop {
