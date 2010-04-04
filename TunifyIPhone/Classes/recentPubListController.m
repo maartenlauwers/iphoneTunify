@@ -18,6 +18,7 @@
 @synthesize dataSource;
 @synthesize tableView;
 @synthesize rowPlayingIndexPath;
+@synthesize userLocation;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -56,7 +57,37 @@
     } else if (buttonIndex == 1) {
 		// Sort by song similarity
     } else if (buttonIndex == 2) {
-		// Sort by rating
+		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+		
+		for(NSArray *pub in dataSource) {
+			NSLog(@"Pub name: %@", [pub objectAtIndex:0]);
+			
+			// Initial entry
+			if ([sortedArray count] == 0) {
+				[sortedArray addObject:pub];
+			} else {
+				// Further entries
+				if ([[pub objectAtIndex:6] intValue] <= [[[sortedArray lastObject] objectAtIndex:6] intValue]) {
+					[sortedArray addObject:pub];
+				} else if ([[pub objectAtIndex:6] intValue] >= [[[sortedArray objectAtIndex:0] objectAtIndex:6] intValue]) {
+					[sortedArray insertObject:pub atIndex:0];
+				} else {
+					for(int i=1; i<[sortedArray count]-1; i++) {
+						if ([[pub objectAtIndex:6] intValue] == [[[sortedArray objectAtIndex:i] objectAtIndex:6] intValue]) {
+							[sortedArray insertObject:pub atIndex:i];
+							break;
+						}
+					} // end for loop
+				}				
+			}
+		} // end for loop
+		
+		[dataSource removeAllObjects];
+		dataSource = sortedArray;
+		[tableData removeAllObjects];
+		[tableData addObjectsFromArray:dataSource];
+		[tableView reloadData];
+		
 	} else if (buttonIndex == 3) {
 		// Sort by visitors
 	}
@@ -147,19 +178,45 @@
 	self.navigationItem.leftBarButtonItem = filterBarButtonItem;
 	[filterBarButtonItem release];
 	
-	
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+	NSLog(@"VIEWDIDAPPEAR");
 	// Create some test data for the table
 	dataSource = [[NSMutableArray alloc] init];
 	
-	[dataSource addObject:@"De Werf"];
-	[dataSource addObject:@"Plaza"];
-	[dataSource addObject:@"De Moete"];
+	// Get the recently visited pubs
+	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
+	NSLog(@"Fetching recent pubs");
+	dataSource = [rv getRecentPubs];
+	NSLog(@"End fetching recent pubs");
 	
 	tableData = [[NSMutableArray alloc] init];
 	searchedData = [[NSMutableArray alloc] init];
 	[tableData addObjectsFromArray:dataSource];
 	
 	self.rowPlayingIndexPath = nil;
+	
+	ct = [[CoordinatesTool alloc] init];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	
+	[tableView reloadData];
+}
+
+- (void)userLocationFound:(CoordinatesTool *)sender {
+	self.userLocation = sender.userLocation;
+	[tableView reloadData];
+}
+
+- (void)userLocationError:(CoordinatesTool *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while fetching your position.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	[alertView show]; 
 }
 
 
@@ -229,22 +286,31 @@
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-	cell.nameLabel.text = [tableData objectAtIndex:indexPath.row];
-	cell.distanceLabel.text = @"801 meters east";
+	NSArray *pub = [tableData objectAtIndex:indexPath.row];
+	cell.nameLabel.text = [pub objectAtIndex:0];
+	
+	if (self.userLocation != nil) {
+		CLLocationDegrees longitude= [[pub objectAtIndex:8] doubleValue];
+		CLLocationDegrees latitude = [[pub objectAtIndex:7] doubleValue];
+		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
+		[pubLocation release];
+		NSString *strDistance = [NSString stringWithFormat:@"%f", distance/1000];
+		NSRange commaRange = [strDistance rangeOfString:@"."];
+		strDistance = [strDistance substringToIndex:commaRange.location + 2];
+		cell.distanceLabel.text = [NSString stringWithFormat:@"%@ km", strDistance];
+	} else {
+		cell.distanceLabel.text = @"Distance unknown";
+	}
+
 	cell.ratingLabel.text = @"Rating:";
-		
-	cell.star1.image = [UIImage imageNamed:@"28-star.png"];
-	cell.star2.image = [UIImage imageNamed:@"28-star.png"];
-	cell.star3.image = [UIImage imageNamed:@"28-star.png"];
-	cell.star4.image = [UIImage imageNamed:@"28-star.png"];
-	cell.star5.image = [UIImage imageNamed:@"28-star.png"];
-		
+	[cell.stars setRating:[[pub objectAtIndex:6] intValue]];
+
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
 	cell.playButton.indexPath = indexPath;
 	
-    return cell;
-	
+    return cell;	
 }
 
 
@@ -301,16 +367,17 @@
 
 #pragma mark UISearchBarDelegate
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar
 {
+	
 	// only show the status bar’s cancel button while in edit mode
-	searchBar.showsCancelButton = YES;
-	searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+	theSearchBar.showsCancelButton = YES;
+	theSearchBar.autocorrectionType = UITextAutocorrectionTypeNo;
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidEndEditing:(UISearchBar *)theSearchBar
 {
-	searchBar.showsCancelButton = NO;
+	theSearchBar.showsCancelButton = NO;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -323,22 +390,24 @@
 	}
 	
 	NSInteger counter = 0;
-	for(NSString *name in dataSource)
+	for(NSArray *pub in dataSource) 
 	{
+		NSString *name = [pub objectAtIndex:0];
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc]init];
 		NSRange r = [name rangeOfString:searchText options:NSCaseInsensitiveSearch];
 		if(r.location != NSNotFound)
 		{
-			[tableData addObject:name];
+			[tableData addObject:pub];
 		}
 		counter++;
 		[pool release];
+		
 	}
 	
 	[tableView reloadData];
 }
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+- (void)searchBarCancelButtonClicked:(UISearchBar *)theSearchBar
 {
 	// if a valid search was entered but the user wanted to cancel, bring back the main list content
 	[tableData removeAllObjects];
@@ -348,16 +417,15 @@
 	}
 	@catch(NSException *e){
 	}
-	[searchBar resignFirstResponder];
-	searchBar.text = @"";
+	[theSearchBar resignFirstResponder];
+	theSearchBar.text = @"";
 	[tableView reloadData];
-	
 }
 
 //called when Search (in our case “Done”) button pressed
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+- (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar
 {
-	[searchBar resignFirstResponder];
+	[theSearchBar resignFirstResponder];
 }
 
 
@@ -366,6 +434,7 @@
 	[rowPlayingIndexPath release];
 	[dataSource release];
 	[tableView release];
+	[userLocation release];
     [super dealloc];
 }
 

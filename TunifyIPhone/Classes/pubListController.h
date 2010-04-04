@@ -14,6 +14,8 @@
 #import "M3U8Handler.h"
 #import "M3U8SegmentInfo.h"
 #import "M3U8Playlist.h"
+#import "CoordinatesTool.h"
+#import "RecentlyVisited.h"
 
 @interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate, M3U8HandlerDelegate> {
 	mapViewController *mapViewController;
@@ -33,6 +35,9 @@
 	
 	AVAudioPlayer *player; 
 	NSIndexPath *rowPlayingIndexPath;
+	
+	CoordinatesTool *ct;
+	CLLocation *userLocation;
 }
 
 @property (nonatomic, retain) NSMutableData *webData;
@@ -42,11 +47,12 @@
 @property (nonatomic, retain) NSMutableString *soapResults;
 @property (nonatomic, retain) NSXMLParser *xmlParser;
 @property (assign) NSIndexPath *rowPlayingIndexPath;
+@property (nonatomic, retain) CLLocation *userLocation;
 
 - (void) tunify_login;
 - (void) btnFilter_clicked:(id)sender;
 - (void) btnLookAround_clicked:(id)sender;
-- (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName;
+- (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow;
 - (IBAction) searchFieldDoneEditing:(id)sender;
 - (void) playMusic:(id)sender;
 

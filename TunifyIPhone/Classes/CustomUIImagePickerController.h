@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PubCard.h"
 
 @interface CustomUIImagePickerController : UIImagePickerController <UIAccelerometerDelegate> {
 

@@ -120,6 +120,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	NSLog(@"map viewdidload");
 	// Hide the tab bar
 	if ( self.tabBarController.view.subviews.count >= 2 )
     {
@@ -149,6 +150,7 @@
 	musicBarButtonItem.action = @selector(btnMusic_clicked:);
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
+	
 		
 }
 
@@ -164,6 +166,7 @@
 
 - (void)initAll {
 	
+	NSLog(@"maps: initAll");
 	[self.activityIndicator startAnimating];
 	
 	pointsArray = [[NSMutableArray alloc] init];
@@ -191,16 +194,20 @@
 											  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
 							  nil]; 
 	[alertView show]; 
-	
+	NSLog(@"maps: end initAll");
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
+	NSLog(@"maps: userLocationFound");
 	self.userLocation = sender.userLocation;
 	self.userCoordinates = sender.userCoordinates;
 	
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
+		NSLog(@"in userLocationFound: calling javascript");
 		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
+		NSLog(@"javascript called");
 	}
+	NSLog(@"maps: end userLocationFound");
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {
@@ -214,11 +221,15 @@
 }
 
 - (void)pubLocationFound:(CoordinatesTool *)sender {
+	NSLog(@"maps: pubLocationFound");
 	self.pubLocation = sender.pubLocation;
 	self.pubCoordinates = sender.pubCoordinates;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
+		NSLog(@"in pubLocationFound: calling javascript");
 		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
+		NSLog(@"javascript called");
 	}
+	NSLog(@"maps: end pubLocationFound");
 }
 
 - (void)pubLocationError:(CoordinatesTool *)sender {
@@ -274,6 +285,7 @@
 */
 
 - (void)goolgeMapsAPI:(UICGoogleMapsAPI *)goolgeMapsAPI didGetObject:(NSObject *)object {
+	NSLog(@"maps: googleMapsAPI didgetobject");
 	NSString *html = goolgeMapsAPI.message;
 	[self parseCoordinatesHtml:html];
 }
@@ -288,7 +300,7 @@
 
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
-	
+	NSLog(@"webViewDidFinishLoad");
 	self.webViewDidFinishLoading = TRUE;
 	if (self.ct.userLocationOK == TRUE && self.ct.pubLocationOK == TRUE) {
 		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];	
@@ -299,7 +311,7 @@
 
 -(void)parseCoordinatesHtml:(NSString *)html {
 	
-	
+	NSLog(@"parseCoordinatesHtml");
 	NSString *remainingSubString = html;
 	NSRange coordRange = [remainingSubString rangeOfString:@"<br>"];
 
@@ -317,6 +329,7 @@
 		coordRange = [remainingSubString rangeOfString:@"<br>"];
 	}		
 	
+	NSLog(@"end parseCoordinatesHtml");
 	[self setupMap];
 	
 }
@@ -356,6 +369,7 @@
 
 - (void)setupMap {
 	
+	NSLog(@"setupMap");
 	// CREATE THE ANNOTATIONS AND ADD THEM TO THE MAP
 	
 	// first create the route annotation, so it does not draw on top of the other annotations. 
@@ -387,6 +401,7 @@
 	[mapView setRegion:routeAnnotation.region];
 	
 	[self.activityIndicator stopAnimating];
+	NSLog(@"end setupMap");
 }
 
 #pragma mark mapView delegate functions

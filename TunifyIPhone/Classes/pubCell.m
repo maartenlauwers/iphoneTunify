@@ -14,11 +14,7 @@
 @synthesize nameLabel;
 @synthesize distanceLabel;
 @synthesize ratingLabel;
-@synthesize star1;
-@synthesize star2;
-@synthesize star3;
-@synthesize star4;
-@synthesize star5;
+@synthesize stars;
 @synthesize playButton;
 @synthesize infoButton;
 
@@ -34,11 +30,9 @@
 		ratingLabel.textAlignment = UITextAlignmentLeft;
 		ratingLabel.font = [UIFont systemFontOfSize:16];
 		
-		star1 = [[UIImageView alloc]init];
-		star2 = [[UIImageView alloc]init];
-		star3 = [[UIImageView alloc]init];
-		star4 = [[UIImageView alloc]init];
-		star5 = [[UIImageView alloc]init];
+		
+		stars = [[StarView alloc] initWithFrame:CGRectMake(65 ,57, 100, 17.3)];
+		[stars setBackgroundColor:[UIColor whiteColor]];
 		
 		playButton = [[CellButton buttonWithType:UIButtonTypeCustom] init];
 		infoButton = [[CellButton buttonWithType:UIButtonTypeInfoDark] init];
@@ -46,11 +40,7 @@
 		[self.contentView addSubview:nameLabel];
 		[self.contentView addSubview:distanceLabel];
 		[self.contentView addSubview:ratingLabel];
-		[self.contentView addSubview:star1];
-		[self.contentView addSubview:star2];
-		[self.contentView addSubview:star3];
-		[self.contentView addSubview:star4];
-		[self.contentView addSubview:star5];
+		[self.contentView addSubview:stars];
 		[self.contentView addSubview:playButton];
 		[self.contentView addSubview:infoButton];
     }
@@ -69,17 +59,6 @@
 	distanceLabel.frame = frame;
 	frame = CGRectMake(boundsX+10 ,55, 60, 25);
 	ratingLabel.frame = frame;
-	
-	frame = CGRectMake(boundsX+70 ,60, 17.3, 17.3);
-	star1.frame = frame;
-	frame = CGRectMake(boundsX+90 ,60, 17.3, 17.3);
-	star2.frame = frame;
-	frame = CGRectMake(boundsX+110 ,60, 17.3, 17.3);
-	star3.frame = frame;
-	frame = CGRectMake(boundsX+130 ,60, 17.3, 17.3);
-	star4.frame = frame;
-	frame = CGRectMake(boundsX+150 ,60, 17.3, 17.3);
-	star5.frame = frame;
 	
 	frame = CGRectMake(boundsX+230 ,40, 25, 25);
 	playButton.frame = frame;
@@ -101,11 +80,7 @@
 	[nameLabel release];
 	[distanceLabel release];
 	[ratingLabel release];
-	[star1 release];
-	[star2 release];
-	[star3 release];
-	[star4 release];
-	[star5 release];
+	[stars release];
 	[playButton release];
 	[infoButton release];
     [super dealloc];

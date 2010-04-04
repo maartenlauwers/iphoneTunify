@@ -38,8 +38,11 @@
     return self;
 }
 
-- (id)initWithRating:(CGRect)frame rating:(NSInteger *)rating {
+- (id)initWithRating:(CGRect)frame rating:(NSInteger *)theRating {
     if (self = [super initWithFrame:frame]) {
+		
+		rating = theRating;
+		
         self.star1 = [[UIImageView alloc] initWithFrame:CGRectMake(5, 5, 13, 13)];
 		self.star2 = [[UIImageView alloc] initWithFrame:CGRectMake(20, 5, 13, 13)];
 		self.star3 = [[UIImageView alloc] initWithFrame:CGRectMake(35, 5, 13, 13)];
@@ -52,12 +55,14 @@
 		[self addSubview:self.star4];
 		[self addSubview:self.star5];
 		
-		[self setRating:rating];
+		[self setRating:theRating];
     }
     return self;
 }
 
-- (void)setRating:(NSInteger *)rating {
+- (void)setRating:(NSInteger *)theRating {
+	rating = theRating;
+	
 	if (rating == 0) {
 		self.star1.image = [UIImage imageNamed:@"star_light_small.png"];
 		self.star2.image = [UIImage imageNamed:@"star_light_small.png"];
@@ -95,6 +100,10 @@
 		self.star4.image = [UIImage imageNamed:@"star_small.png"];
 		self.star5.image = [UIImage imageNamed:@"star_small.png"];
 	}
+}
+
+- (NSInteger *)getRating {
+	return rating;
 }
 
 - (void)drawRect:(CGRect)rect {

@@ -26,29 +26,34 @@
     return self;
 }
 - (void) fetchUserLocation {
+	NSLog(@"fetchUserLocation");
 	locationManager = [[CLLocationManager alloc] init]; 
 	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
 	locationManager.delegate = self; 
 	[locationManager startUpdatingLocation]; 
+	NSLog(@"end fetchUserLocation");
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation { 
-		
+	NSLog(@"didUpdateToLocation");
 	NSString *userLatitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.latitude];
 	NSString *userLongitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.longitude];
-	//self.userCoordinates = [NSString stringWithFormat:@"%@,%@", userLatitude, userLongitude];
 
-	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8610959, 2.7315335];
+	//self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8610959, 2.7315335];
+	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8728119, 4.6644344];
 	
-	CLLocationDegrees longitude = 2.7315335; //[userLongitude doubleValue];
-	CLLocationDegrees latitude = 50.8610959; //[userLatitude doubleValue];
-	
-	NSLog(@"My Latitude: %f", latitude);
-	NSLog(@"My Longitude: %f", longitude);
+	//CLLocationDegrees longitude = 2.7315335; //[userLongitude doubleValue];
+	//CLLocationDegrees latitude = 50.8610959; //[userLatitude doubleValue];
+	CLLocationDegrees longitude = 4.6644344; //[userLongitude doubleValue];
+	CLLocationDegrees latitude = 50.8728119; //[userLatitude doubleValue];
+	//CLLocationDegrees longitude = [userLongitude doubleValue];
+	//CLLocationDegrees latitude = [userLatitude doubleValue];
+
 	CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
 	self.userLocation = currentLocation; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
 	[currentLocation release];
 	self.userLocationOK = TRUE;	
+	[locationManager stopUpdatingLocation];
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(userLocationFound:)]) {
 		[delegate userLocationFound:self];
 	}   
@@ -61,7 +66,6 @@
 } 
 
 - (void) fetchPubLocation:(NSString *)pubAddress {
-	
 	NSString *pubLatitude;
 	NSString *pubLongitude;
 	

@@ -14,6 +14,7 @@
 
 @synthesize searchBar;
 @synthesize genre;
+@synthesize picker;
 @synthesize overlayView;
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -28,12 +29,12 @@
 
 // Implement loadView to create a view hierarchy programmatically, without using a nib.
 - (void)loadView {
-	
+	/*
 	self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
 	//overlayView.center = CGPointMake(160, 250);
 	self.overlayView.opaque = YES;
 	//overlayView.alpha = OVERLAY_ALPHA;
-	
+	*/
 	//UIImageView *binocs = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"binocs.png"]] autorelease];
 	//binocs.tag = BINOCS_TAG;
 	//[self.overlayView addSubview:binocs];
@@ -49,7 +50,7 @@
 	
 	[overlayView addSubview:overlayLabel];
 	*/
-	self.view = self.overlayView;
+	//self.view = self.overlayView;
 
 }
 
@@ -71,6 +72,7 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+	
 	if (buttonIndex == 0) {
 		// Sort by genre
 		genreViewController *gvc = [[genreViewController alloc] initWithNibName:@"genreView" bundle:[NSBundle mainBundle]];
@@ -87,6 +89,7 @@
 	} else if (buttonIndex == 3) {
 		// Sort by visitors
 	}
+	
 }
 
 - (IBAction)btnList_clicked:(id)sender {
@@ -104,7 +107,6 @@
 	
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
-
 
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
@@ -144,8 +146,17 @@
 	self.navigationItem.rightBarButtonItem = listBarButtonItem;
 	[listBarButtonItem release];
 	
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+	self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+	//overlayView.center = CGPointMake(160, 250);
+	self.overlayView.opaque = YES;
+	//overlayView.alpha = OVERLAY_ALPHA;
+	
 	
 	//Create a number of test cards
+	
 	PubCard *card1 = [[PubCard alloc] initWithPub:@"De Werf" pubAddress:@"Tiensestraat 49 3000 Leuven" pubVisitors:45 pubRating:3];
 	[card1 setPosition:300 y:100];
 	
@@ -154,40 +165,34 @@
 	
 	
 	/*
-	UIView *card2 = [self createPubCard:@"De Kouter" pubAddress:@"Tervuursesteenweg 433 3001 Heverlee" pubVisitors:100 pubRating:4];
-	UIView *card3 = [self createPubCard:@"Passevit" pubAddress:@"Veurnestraat 130 8970 Poperinge" pubVisitors:20 pubRating:2];
-	*/
+	 UIView *card2 = [self createPubCard:@"De Kouter" pubAddress:@"Tervuursesteenweg 433 3001 Heverlee" pubVisitors:100 pubRating:4];
+	 UIView *card3 = [self createPubCard:@"Passevit" pubAddress:@"Veurnestraat 130 8970 Poperinge" pubVisitors:20 pubRating:2];
+	 */
 	[self.overlayView insertSubview:card1 atIndex:0];
 	[self.overlayView insertSubview:card2 atIndex:1];
+	
 	//[self.overlayView insertSubview:card2 atIndex:1];
 	//[self.overlayView insertSubview:card3 atIndex:2];
 	
 	
-	//UIImagePickerController *picker;
-	CustomUIImagePickerController *picker;
 	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		
-		picker = [[CustomUIImagePickerController alloc] init];
-		picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+		self.picker = [[CustomUIImagePickerController alloc] init];
+		self.picker.sourceType = UIImagePickerControllerSourceTypeCamera;
 		
-		picker.delegate = self;
-		picker.allowsImageEditing = NO;
-		picker.showsCameraControls = NO;
+		//picker.delegate = self;
+		//picker.allowsImageEditing = NO;
+		self.picker.showsCameraControls = NO;
+		self.picker.cameraOverlayView = self.overlayView;
+		CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.0, 1.132);
+		self.picker.cameraViewTransform = cameraTransform;
+		self.picker.navigationBar.barStyle = UIBarStyleBlackOpaque;
+		[self presentModalViewController:self.picker animated:YES];
+		//[picker release];
 		
-		[self presentModalViewController:picker animated:YES];
-	}
-	else if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-		
-		picker = [[CustomUIImagePickerController alloc] init];
-		//picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-		picker.sourceType = UIImagePickerControllerSourceTypeSavedPhotosAlbum;
-		
-		picker.delegate = self;
-		picker.allowsImageEditing = NO;
-		[self presentModalViewController:picker animated:YES];
-	}
-	else {
-		picker = nil;
+	} else {
+		NSLog(@"error with picker");
+		self.picker = nil;
 		
 		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No Camera Found"
 															message:@"You need an iPhone with a camera to use this application."
@@ -198,6 +203,7 @@
 		[alertView show];
 		[alertView release];
 	}
+	NSLog(@"end 3d view did load");
 }
 
 
@@ -210,6 +216,7 @@
 */
 
 - (void)didReceiveMemoryWarning {
+	NSLog(@"Memory warning received");
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
 	
@@ -224,20 +231,20 @@
 
 #pragma mark UISearchBarDelegate
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar
 {
-	searching = YES;
+	//theSearchBar = YES;
 	
 	// only show the status bar’s cancel button while in edit mode
-	searchBar.showsCancelButton = YES;
-	searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+	theSearchBar.showsCancelButton = YES;
+	theSearchBar.autocorrectionType = UITextAutocorrectionTypeNo;
 	// flush the previous search content
 	//[tableData removeAllObjects];
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidEndEditing:(UISearchBar *)theSearchBar
 {
-	searchBar.showsCancelButton = NO;
+	theSearchBar.showsCancelButton = NO;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -267,7 +274,7 @@
 	//[tableView reloadData];
 }
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+- (void)searchBarCancelButtonClicked:(UISearchBar *)theSearchBar
 {
 	// if a valid search was entered but the user wanted to cancel, bring back the main list content
 	//[tableData removeAllObjects];
@@ -277,15 +284,15 @@
 	}
 	@catch(NSException *e){
 	}
-	[searchBar resignFirstResponder];
-	searchBar.text = @"";
+	[theSearchBar resignFirstResponder];
+	theSearchBar.text = @"";
 }
 
 //called when Search (in our case “Done”) button pressed
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+- (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar
 {
 	searching = NO;
-	[searchBar resignFirstResponder];
+	[theSearchBar resignFirstResponder];
 }
 
 
@@ -293,6 +300,7 @@
 	[genre release];
 	[searchBar release];
 	[overlayView release];
+	[picker release];
 	[super dealloc];
 }
 

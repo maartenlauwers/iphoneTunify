@@ -36,15 +36,33 @@
 	accel.delegate = self;
 	accel.updateInterval = 1.0f/60.0f;
 	NSLog(@"accelerometer configured");
+	/*
+	NSLog(@"picker viewDidLoad");
+	//UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+	//accel.delegate = self;
+	//accel.updateInterval = 1.0f/60.0f;
+	//NSLog(@"accelerometer configured");
+	
+	PubCard *card1 = [[PubCard alloc] initWithPub:@"De Werf" pubAddress:@"Tiensestraat 49 3000 Leuven" pubVisitors:45 pubRating:3];
+	[card1 setPosition:300 y:100];	
+	PubCard *card2 = [[PubCard alloc] initWithPub:@"Passevit" pubAddress:@"Veurnestraat 123 8970 Poperinge" pubVisitors:12 pubRating:4];
+	[card2 setPosition:100 y:300];
+	
+	NSLog(@"picker cards created");
+	
+	//[self.view insertSubview:card1 atIndex:0];
+	NSLog(@"picker inserted subview");
+	//[self.view insertSubview:card2 atIndex:1];
+	*/
 } 
 
 - (void)accelerometer:(UIAccelerometer *)acel didAccelerate:(UIAcceleration *)acceleration {
 	
-	NSLog(@"X: %d, Y: %d, Z: %d", acceleration.x, acceleration.y, acceleration.z);
+	
 	
 	if (fabsf(acceleration.x) > 1.5 || fabsf(acceleration.y) > 1.5 || fabsf(acceleration.z) > 1.5)
 	{
-		
+		NSLog(@"X: %d, Y: %d, Z: %d", acceleration.x, acceleration.y, acceleration.z);
 	}
 }
 

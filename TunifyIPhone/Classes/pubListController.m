@@ -22,6 +22,7 @@
 @synthesize xmlParser;
 @synthesize webData;
 @synthesize rowPlayingIndexPath;
+@synthesize userLocation;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -59,30 +60,68 @@
     } else if (buttonIndex == 1) {
 		// Sort by song similarity
     } else if (buttonIndex == 2) {
-		// Sort by rating
+		
+		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+		
+		for(NSArray *pub in dataSource) {
+			NSLog(@"Pub name: %@", [pub objectAtIndex:0]);
+			
+			// Initial entry
+			if ([sortedArray count] == 0) {
+				[sortedArray addObject:pub];
+			} else {
+				// Further entries
+				if ([[pub objectAtIndex:6] intValue] <= [[[sortedArray lastObject] objectAtIndex:6] intValue]) {
+					[sortedArray addObject:pub];
+				} else if ([[pub objectAtIndex:6] intValue] >= [[[sortedArray objectAtIndex:0] objectAtIndex:6] intValue]) {
+					[sortedArray insertObject:pub atIndex:0];
+				} else {
+					for(int i=1; i<[sortedArray count]-1; i++) {
+						if ([[pub objectAtIndex:6] intValue] == [[[sortedArray objectAtIndex:i] objectAtIndex:6] intValue]) {
+							[sortedArray insertObject:pub atIndex:i];
+							break;
+						}
+					} // end for loop
+				}				
+			}
+		} // end for loop
+		
+		[dataSource removeAllObjects];
+		dataSource = sortedArray;
+		[tableData removeAllObjects];
+		[tableData addObjectsFromArray:dataSource];
+		[tableView reloadData];
+		
 	} else if (buttonIndex == 3) {
 		// Sort by visitors
 	}
 }
 
 - (IBAction)btnLookAround_clicked:(id)sender {
-	
 	pubList3DController *controller = [[pubList3DController alloc] initWithNibName:@"pubList3D" bundle:[NSBundle mainBundle]];
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
-	 
 }
 
-- (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName {
-
-	mapViewController *mvc = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
-	mvc.strPubName = pubName;
-	mvc.strPubAddress = @"Ieperstraat 100 8970 Poperinge"; //TODO: Replace by actual pub address.
-	[self.navigationController pushViewController:mvc animated:YES];
-	[mvc release];
-	mvc = nil;
-	 
+- (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow {
+	
+	NSArray *pub = [dataSource objectAtIndex:theRow];
+	
+	// Add the pub to the recently visited pub list
+	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
+	[rv addPub:pub];
+	
+	mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
+	controller.strPubName = [pub objectAtIndex:0];
+	
+	NSString *address = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub objectAtIndex:1], [pub objectAtIndex:2], [pub objectAtIndex:3], [pub objectAtIndex:4]];
+	controller.strPubAddress = address;
+	
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
+	
 }
 
 - (IBAction) searchFieldDoneEditing:(id)sender {
@@ -90,7 +129,6 @@
 }
 
 - (void) playMusic:(id)sender {
-	NSLog(@"Playing the sound of the pub");
 
 	CellButton *button = (UIButton *)sender;
 	
@@ -147,7 +185,6 @@
 }
 
 - (void) audioPlayerDidFinishPlaying: (AVAudioPlayer *)theplayer successfully:(BOOL)flag { 
-	NSLog(@"Song played");
 	[theplayer release]; 
 } 
 
@@ -177,13 +214,22 @@
 	
 	// Create some test data for the table
 	dataSource = [[NSMutableArray alloc] init];
+
+	NSArray *pub1 = [[NSArray alloc] initWithObjects:@"De zoete bron", @"M.Noestraat", 	@"15", @"3050", @"oud heverlee", @"418090", @"4", @"50.8236691", @"4.6626304", nil];
+	NSArray *pub2 = [[NSArray alloc] initWithObjects:@"Fitforyou", @"Mechelsesteenweg", @"763", @"3020", @"Herent", @"418012", @"3",@"50.9204853", @"4.6479286", nil];
+	NSArray *pub3 = [[NSArray alloc] initWithObjects:@"Cafe Mezza", @"Mathieu de Layensplein", @"119", @"3000", @"Leuven", @"416197", @"5",@"50.8799430", @"4.7002825", nil];
+	NSArray *pub4 = [[NSArray alloc] initWithObjects:@"Linx", @"Vismarkt", 	@"17", @"3000", @"Leuven", @"416665", @"1", @"50.8817091", @"4.6998039",nil];
+	NSArray *pub5 = [[NSArray alloc] initWithObjects:@"Mundo", @"Martelarenplein", @"14", @"3000", @"Leuven", @"418090", @"0", @"50.8814212", @"4.7145274",nil];
+	NSArray *pub6 = [[NSArray alloc] initWithObjects:@"Mephisto", @"Oude Markt", @"2", @"3000", @"Leuven", @"315056", @"2", @"50.8783624", @"4.6996464",nil];
+	NSArray *pub7 = [[NSArray alloc] initWithObjects:@"Cafe de Zappa", @"Emile Carelsstraat", @"1", @"3090", @"Overijse", @"413875", @"3",@"50.7709673", @"4.5401609", nil];
 	
-	[dataSource addObject:@"De Werf"];
-	[dataSource addObject:@"Plaza"];
-	[dataSource addObject:@"De Moete"];
-	[dataSource addObject:@"De Kouter"];
-	[dataSource addObject:@"Passevit"];
-	[dataSource addObject:@"Letteren"];
+	[dataSource addObject:pub1];
+	[dataSource addObject:pub2];
+	[dataSource addObject:pub3];
+	[dataSource addObject:pub4];
+	[dataSource addObject:pub5];
+	[dataSource addObject:pub6];
+	[dataSource addObject:pub7];
 
 	tableData = [[NSMutableArray alloc] init];
 	searchedData = [[NSMutableArray alloc] init];
@@ -191,17 +237,36 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	
+	ct = [[CoordinatesTool alloc] init];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	
 	[self tunify_login];
 	
 	self.rowPlayingIndexPath = nil;
 	
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer play:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
+	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	//[audioPlayer play:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
 	/*
 	M3U8Handler *handler = [[M3U8Handler alloc] init];
 	handler.delegate = self;
 	[handler parseUrl:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
 	*/
+}
+
+- (void)userLocationFound:(CoordinatesTool *)sender {
+	self.userLocation = sender.userLocation;
+	[tableView reloadData];
+}
+
+- (void)userLocationError:(CoordinatesTool *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while fetching your position.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	[alertView show]; 
 }
 
 /*
@@ -263,7 +328,6 @@
 }
 -(void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-	NSLog(@"DONE. Received Bytes: %d", [webData length]);
 	NSString *theXML = [[NSString alloc] initWithBytes: [webData mutableBytes] length:[webData length] encoding:NSUTF8StringEncoding];
 	NSLog(theXML);
 	[theXML release];
@@ -335,8 +399,6 @@
 		NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  
 		[userDefaults setObject:soapResults forKey:@"sessionCode"];
 		
-		NSLog(@"Sessioncode: %@", soapResults);
-		
 		[soapResults release];
 		soapResults = nil;
 	} else if ([elementName isEqualToString:@"userID"]) {
@@ -355,7 +417,6 @@
     [super viewWillAppear:animated];
 
 	if (self.genre != nil) {
-		NSLog(@"genre:");
 		NSLog(self.genre);
 	}
 }
@@ -415,36 +476,50 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
+	
     static NSString *CellIdentifier = @"Cell";
-    
 	
 	pubCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 
-	cell.nameLabel.text = [tableData objectAtIndex:indexPath.row];
-	cell.distanceLabel.text = @"801 meters east";
-	cell.ratingLabel.text = @"Rating:";
+	NSArray *pub = [tableData objectAtIndex:indexPath.row];
+	cell.nameLabel.text = [pub objectAtIndex:0];
 	
-	cell.star1.image = [UIImage imageNamed:@"star.png"];
-	cell.star2.image = [UIImage imageNamed:@"star.png"];
-	cell.star3.image = [UIImage imageNamed:@"star.png"];
-	cell.star4.image = [UIImage imageNamed:@"star_light.png"];
-	cell.star5.image = [UIImage imageNamed:@"star_light.png"];
+	
+	if (self.userLocation != nil) {
+		CLLocationDegrees longitude= [[pub objectAtIndex:8] doubleValue];
+		CLLocationDegrees latitude = [[pub objectAtIndex:7] doubleValue];
+		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
+		[pubLocation release];
+		NSString *strDistance = [NSString stringWithFormat:@"%f", distance/1000];
+		NSRange commaRange = [strDistance rangeOfString:@"."];
+		strDistance = [strDistance substringToIndex:commaRange.location + 2];
+		cell.distanceLabel.text = [NSString stringWithFormat:@"%@ km", strDistance];
+	} else {
+		cell.distanceLabel.text = @"Distance unknown";
+	}
+	
+	cell.ratingLabel.text = @"Rating:";
+	[cell.stars setRating:[[pub objectAtIndex:6] intValue]];
 		
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
 	cell.playButton.indexPath = indexPath;
 	
     return cell;
+	
 }
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	
-	NSString *strPubName = [dataSource objectAtIndex:indexPath.row];
-	[self pubCell_clicked:tableView pubName:strPubName];
+
+	NSLog(@"ROW CLICKED");
+	NSLog(@"ROW CLICKED");
+	NSLog(@"ROW CLICKED");
+	[self pubCell_clicked:tableView row:indexPath.row];
 
     // Navigation logic may go here. Create and push another view controller.
 	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
@@ -500,17 +575,17 @@
 
 #pragma mark UISearchBarDelegate
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)theSearchBar
 {
 	
 	// only show the status bar’s cancel button while in edit mode
-	searchBar.showsCancelButton = YES;
-	searchBar.autocorrectionType = UITextAutocorrectionTypeNo;
+	theSearchBar.showsCancelButton = YES;
+	theSearchBar.autocorrectionType = UITextAutocorrectionTypeNo;
 }
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+- (void)searchBarTextDidEndEditing:(UISearchBar *)theSearchBar
 {
-	searchBar.showsCancelButton = NO;
+	theSearchBar.showsCancelButton = NO;
 }
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
@@ -523,13 +598,14 @@
 	}
 
 	NSInteger counter = 0;
-	for(NSString *name in dataSource)
+	for(NSArray *pub in dataSource) 
 	{
+		NSString *name = [pub objectAtIndex:0];
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc]init];
 		NSRange r = [name rangeOfString:searchText options:NSCaseInsensitiveSearch];
 		if(r.location != NSNotFound)
 		{
-			[tableData addObject:name];
+			[tableData addObject:pub];
 		}
 		counter++;
 		[pool release];
@@ -538,7 +614,7 @@
 	[tableView reloadData];
 }
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+- (void)searchBarCancelButtonClicked:(UISearchBar *)theSearchBar
 {
 	// if a valid search was entered but the user wanted to cancel, bring back the main list content
 	[tableData removeAllObjects];
@@ -548,15 +624,15 @@
 	}
 	@catch(NSException *e){
 	}
-	[searchBar resignFirstResponder];
-	searchBar.text = @"";
+	[theSearchBar resignFirstResponder];
+	theSearchBar.text = @"";
 	[tableView reloadData];
 }
 
 //called when Search (in our case “Done”) button pressed
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+- (void)searchBarSearchButtonClicked:(UISearchBar *)theSearchBar
 {
-	[searchBar resignFirstResponder];
+	[theSearchBar resignFirstResponder];
 }
 
 
@@ -568,6 +644,7 @@
 	[soapResults release];
 	[xmlParser release];
 	[webData release];
+	[userLocation release];
     [super dealloc];
 }
 

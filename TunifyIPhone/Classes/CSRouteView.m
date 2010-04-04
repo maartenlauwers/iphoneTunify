@@ -96,6 +96,7 @@
 @synthesize mapView = _mapView;
 
 - (id)initWithFrame:(CGRect)frame {
+	NSLog(@"routeView: initWithFrame");
     if (self = [super initWithFrame:frame]) {
         
 		self.backgroundColor = [UIColor clearColor];
@@ -110,6 +111,7 @@
 		
 		[self addSubview:_internalRouteView];
     }
+	NSLog(@"end routeview initwithframe");
     return self;
 }
 
@@ -131,6 +133,7 @@
 	_internalRouteView.frame = CGRectMake(origin.x, origin.y, _mapView.frame.size.width, _mapView.frame.size.height);
 	[_internalRouteView setNeedsDisplay];
 	
+	NSLog(@"end region changed");
 }
 
 - (void)dealloc 

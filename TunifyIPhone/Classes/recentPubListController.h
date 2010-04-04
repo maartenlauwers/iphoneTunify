@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <AudioToolbox/AudioToolbox.h> 
 #import <AVFoundation/AVFoundation.h> 
+#import "CoordinatesTool.h"
+#import "RecentlyVisited.h"
 
 @interface recentPubListController : UITableViewController {
 	NSMutableArray *dataSource;		// stores all data
@@ -22,12 +24,16 @@
 	
 	AVAudioPlayer *player; 
 	NSIndexPath *rowPlayingIndexPath;
+	
+	CoordinatesTool *ct;
+	CLLocation *userLocation;
 }
 
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) NSString *genre;
 @property (assign) NSIndexPath *rowPlayingIndexPath;
+@property (nonatomic, retain) CLLocation *userLocation;
 
 - (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName;
 - (void) btnFilter_clicked:(id)sender;

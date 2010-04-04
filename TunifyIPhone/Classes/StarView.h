@@ -15,6 +15,8 @@
 	UIImageView *star3;
 	UIImageView *star4;
 	UIImageView *star5;
+	
+	NSInteger *rating;
 }
 
 @property (nonatomic, retain) UIImageView *star1;
@@ -23,6 +25,6 @@
 @property (nonatomic, retain) UIImageView *star4;
 @property (nonatomic, retain) UIImageView *star5;
 
-- (id)initWithRating:(CGRect)frame rating:(NSInteger *)rating;
-- (void)setRating:(NSInteger *)rating;
+- (id)initWithRating:(CGRect)frame rating:(NSInteger *)theRating;
+- (void)setRating:(NSInteger *)theRating;
 @end
