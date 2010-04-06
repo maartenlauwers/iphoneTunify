@@ -263,6 +263,7 @@ Color3D colors[] = {
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	[ct fetchPubLocation:self.strPubAddress];
+	[ct fetchHeading];
 	
 	// Create the 3D pointer arrow view
 	self.glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
@@ -271,13 +272,15 @@ Color3D colors[] = {
 	[self.view addSubview:self.glView];
 	self.glView.animationInterval = 1.0 / kRenderingFrequency;
 	[self.glView startAnimation];
+	
+	
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
 		self.distance = [sender fetchDistance];
-		self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
+		[self updateDistance];
 	}
 }
 
@@ -295,7 +298,7 @@ Color3D colors[] = {
 	self.pubLocation = sender.pubLocation;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
 		self.distance = [sender fetchDistance];
-		self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
+		[self updateDistance];
 	}
 }
 
@@ -307,6 +310,90 @@ Color3D colors[] = {
 														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
 														otherButtonTitles:nil]; 
 	[alertView show]; 
+}
+
+- (void)updateDistance {
+	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
+	[self headingTest];
+}
+
+- (void)headingTest {
+	float x1 = userLocation.coordinate.latitude;					//Our position.
+	float y1 = userLocation.coordinate.longitude;
+	float x2 = pubLocation.coordinate.latitude;		//The other thing's position.
+	float y2 = pubLocation.coordinate.longitude;
+	NSLog(@"x1: %f, y1: %f, x2: %f, y2: %f", x1, y1, x2, y2);
+	float result;						//The resulting bearing.
+	
+	//x2 = -3;
+	//y2 = 3;
+	
+	// Base vector
+	float bx = 0;
+	float by = 1;
+	
+	// Normalize our pub location vector by subtracting the basevector from it.
+	//float normalizedX2 = x2;//-x1;//-bx1;
+	//float normalizedY2 = y2;//-by1;
+	float normalizedX2 = x2-x1;
+	float normalizedY2 = y2-y1;
+	
+	
+	// Imagine we know our compass degrees, assume 0 degrees
+	float degrees = -181; //TODO: Replace by actual degrees of the direction we're facing * -1
+
+	// Update our base vector by the above degrees
+	float degreesRad = degrees * (M_PI/180);
+	float Nbx = (bx * cos(degreesRad)) - (by * sin(degreesRad));
+	float Nby = (bx * sin(degreesRad)) + (by * cos(degreesRad));
+	NSLog(@"Nbx: %f", Nbx);
+	NSLog(@"Nby: %f", Nby);
+	
+	// Calculate the angle between the direction we're facing and the pub location
+	float uv = (normalizedX2*Nbx) + (normalizedY2*Nby);
+	float normU = sqrt(normalizedX2*normalizedX2 + normalizedY2*normalizedY2);
+	float normV = sqrt(Nbx*Nbx + Nby*Nby);
+	float resultRad = acos(uv/(normU * normV));
+	float resultDeg = resultRad * (180/M_PI);
+	
+	// We will always get a value smaller than 180 degrees, so we need to fix this.
+	
+	if (degrees < 0 && degrees >= -180) {
+		resultDeg = -resultDeg;
+	}
+	 
+	 
+	/*
+	// First You calculate Delta distances.
+	float dx = (x2-x1);
+	float dy = (y2-y1);
+	
+	// If x part is 0 we could get into division by zero problems, but in that case result can only be 90 or 270:
+	if (dx==0){
+		if (dy > 0){
+			result = 90;
+		}else {
+			result = 270;
+		}
+	}else {
+		result = (atan(dy/dx)) * 180 / M_PI;
+	}
+	
+	// the (*180/ M_PI) part is because results are usually in Radians, but we want it in degrees.
+	// This is only valid for two quadrants (for right side of the coordinate system) so modify result if necessary...
+	if (dx < 0) {
+		result = result + 180;
+	}
+	
+	// looks better if all numbers are positive (0 to 360 range)
+	if (result < 0) {
+		result = result + 360;
+	}
+	
+	//Return our result.
+	//return result;
+	*/
+	NSLog(@"Heading: %.0f", resultDeg);
 }
 
 - (void)drawView:(UIView *)theView

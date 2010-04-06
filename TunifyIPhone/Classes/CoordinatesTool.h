@@ -43,7 +43,9 @@
 - (void) stop;
 - (void) fetchUserLocation;
 - (void) fetchPubLocation:(NSString *)pubAddress;
+- (void) fetchHeading;
 - (CLLocationDistance) fetchDistance;
 - (CLLocationDistance) fetchDistance:(CLLocation *)locationA locationB:(CLLocation *)locationB;
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading;
 
 @end

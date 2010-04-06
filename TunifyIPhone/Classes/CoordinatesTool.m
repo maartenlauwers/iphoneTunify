@@ -108,6 +108,18 @@
 	return [locationA getDistanceFrom:locationB];
 }
 
+- (void)fetchHeading {
+	locationManager = [[CLLocationManager alloc] init]; 
+	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
+	locationManager.delegate = self; 
+	[locationManager startUpdatingLocation]; 
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+	NSLog(@"Heading: %.3f", newHeading);
+	//[NSString stringWithFormat:@"Heading %.3f", [[location course] magneticHeading]];
+}
+
 - (void) stop {
 	self.delegate = nil;
 	[locationManager stopUpdatingLocation];

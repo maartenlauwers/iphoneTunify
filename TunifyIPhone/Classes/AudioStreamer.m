@@ -1170,12 +1170,13 @@ cleanup:
 
 		@synchronized(self)
 		{
-			if(currentSegment < maxSegment) {
+			if(currentSegment < maxSegment - 1) {
 				if (![self updateStream]) {
 					NSLog(@"self updateStream failed");
 				}
 			} else {
 				currentSegment = 0;
+				
 				
 				if (state == AS_WAITING_FOR_DATA)
 				{

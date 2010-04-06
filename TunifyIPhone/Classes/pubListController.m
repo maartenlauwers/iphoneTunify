@@ -246,12 +246,8 @@
 	self.rowPlayingIndexPath = nil;
 	
 	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	//[audioPlayer play:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
-	/*
-	M3U8Handler *handler = [[M3U8Handler alloc] init];
-	handler.delegate = self;
-	[handler parseUrl:@"http://localhost:1935/live/mp3:H.mp3/playlist.m3u8"];
-	*/
+	//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+	
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
@@ -268,16 +264,6 @@
 											  otherButtonTitles:nil]; 
 	[alertView show]; 
 }
-
-/*
-- (void)playlistAvailable:(M3U8Handler *)sender {
-
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	M3U8SegmentInfo *segment = [sender.playlist getSegment:0];
-	[audioPlayer play:[NSString stringWithFormat:@"http://localhost:1935/live/mp3:H.mp3/%@", segment.location]];
-	
-}
- */
 
 -(void)tunify_login {
 	// Log in the user
@@ -516,15 +502,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 
-	NSLog(@"ROW CLICKED");
-	NSLog(@"ROW CLICKED");
-	NSLog(@"ROW CLICKED");
 	[self pubCell_clicked:tableView row:indexPath.row];
-
-    // Navigation logic may go here. Create and push another view controller.
-	// AnotherViewController *anotherViewController = [[AnotherViewController alloc] initWithNibName:@"AnotherView" bundle:nil];
-	// [self.navigationController pushViewController:anotherViewController];
-	// [anotherViewController release];
 }
 
 
