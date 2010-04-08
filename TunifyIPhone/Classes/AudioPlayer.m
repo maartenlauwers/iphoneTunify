@@ -31,6 +31,7 @@ int currentSegment;
     {
         if (sharedInstance == nil)
 			sharedInstance = [[AudioPlayer alloc] init];
+			lastUsedVolume = 0.5;
     }
     return sharedInstance;
 }
@@ -88,43 +89,24 @@ int currentSegment;
 	currentSegment = 0;
 
 	M3U8SegmentInfo *segment = [self.playlist getSegment:currentSegment];
-	
+	if (streamer) {
+		[streamer stop];
+		streamer = nil;
+	}
 	streamer = [[AudioStreamer alloc] initWithPlaylist:self.playlist andBaseURL:self.baseUrl];
 	streamer.delegate = self;
-	[streamer start];
+	[streamer startWithVolume:lastUsedVolume];
 }
 
-- (void)streamFinished:(AudioStreamer *)sender {
-	/*
-	NSLog(@"stream finished: %d", currentSegment);
-	NSLog(@"a: %d", currentSegment);
-	[self destroyStreamer];
-	NSLog(@"b: %d", currentSegment);
-	if (currentSegment < self.playlist.length) {
-		NSLog(@"c1: %d", currentSegment);
-		currentSegment = currentSegment + 1;
-		NSLog(@"c2: %d", currentSegment);
-		M3U8SegmentInfo *segment = [self.playlist getSegment:currentSegment];
-		NSLog(@"d: %d", currentSegment);
-		[self createStreamer:[NSString stringWithFormat:@"%@/%@", self.baseUrl, segment.location]];
-		NSLog(@"e: %d", currentSegment);
-		[streamer start];
-		NSLog(@"f: %d", currentSegment);
-	} else {
-		NSLog(@"g: %d", currentSegment);
-		M3U8Handler *handler = [M3U8Handler sharedInstance];
-		handler.delegate = nil;
-		currentSegment = 0;
-		NSLog(@"h: %d", currentSegment);
-	}	
-	NSLog(@"i: %d", currentSegment);
-	*/
+- (void)setVolume:(float)volume {
+	[streamer setVolume:volume];
+	lastUsedVolume = volume;
+	NSLog(@"lastUsedVolume: %f", lastUsedVolume);
 }
 
 - (void)stop {
-	M3U8Handler *handler = [M3U8Handler sharedInstance];
-	handler.delegate = nil;
-	[self destroyStreamer];
+	[streamer stop];
+	streamer = nil;
 }
 
 //
@@ -132,6 +114,7 @@ int currentSegment;
 //
 // Creates or recreates the AudioStreamer object.
 //
+/*
 - (void)createStreamer:(NSString*)path
 {
 	if (streamer)
@@ -154,7 +137,7 @@ int currentSegment;
 	streamer = [[AudioStreamer alloc] initWithURL:url];
 	streamer.delegate = self;
 }
-
+*/
 //
 // destroyStreamer
 //

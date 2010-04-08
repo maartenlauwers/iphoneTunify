@@ -146,6 +146,8 @@ extern NSString * const ASStatusChangedNotification;
 	double seekTime;
 	double sampleRate;
 	double lastProgress;
+
+	float volume;
 }
 
 @property (assign) id<AudioStreamerDelegate> delegate;
@@ -157,6 +159,8 @@ extern NSString * const ASStatusChangedNotification;
 - (id)initWithURL:(NSURL *)aURL;
 - (id)initWithPlaylist:(M3U8Playlist*)aPlaylist andBaseURL:(NSString *)baseURL;
 - (void)start;
+- (void)startWithVolume:(float)volume;
+- (void)setVolume:(float)volume;
 - (void)stop;
 - (void)pause;
 - (BOOL)isPlaying;

@@ -74,15 +74,16 @@ static M3U8Handler *sharedInstance = nil;
 		return 0;
 	}
 	
+	NSLog(@"a");
 	NSString *redirectUrl = [data substringFromIndex:linkRange.location];
 	data = [NSString stringWithContentsOfURL:[NSURL URLWithString:redirectUrl]];
-	
+	NSLog(@"b");
 	
 	NSMutableArray *segments = [[NSMutableArray alloc] init];
 	
 	NSString *remainingSegments = data;
 	NSRange segmentRange = [remainingSegments rangeOfString:@"#EXTINF:"];
-	
+	NSLog(@"c");	
 	while(segmentRange.location != NSNotFound) {
 		
 		M3U8SegmentInfo *segment = [[M3U8SegmentInfo alloc] init];
@@ -104,7 +105,9 @@ static M3U8Handler *sharedInstance = nil;
 		
 		remainingSegments = [remainingSegments substringFromIndex:rangeToSegmentEnd.location];
 		segmentRange = [remainingSegments rangeOfString:@"#EXTINF:"];
+			NSLog(@"d");
 	}
+		NSLog(@"e");
 	
 	
 	// Create a playlist with all the segments

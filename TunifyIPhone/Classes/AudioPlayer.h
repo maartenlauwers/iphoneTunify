@@ -19,16 +19,16 @@
 	AudioStreamer *streamer;
 	NSString *baseUrl;
 	M3U8Playlist *playlist;
-	//NSInteger *currentSegment;
+	float lastUsedVolume;
 }
 
 @property (nonatomic, retain) AudioStreamer *streamer;
 @property (nonatomic, retain) NSString *baseUrl;
 @property (nonatomic, retain) M3U8Playlist *playlist;
-//@property (assign) NSInteger *currentSegment;
 
 + (AudioPlayer*)sharedInstance;
 - (void)play:(NSString *)path;
+- (void)setVolume:(float)volume;
 - (void)stop;
 - (void)createStreamer:(NSString*)path;
 - (void)destroyStreamer;

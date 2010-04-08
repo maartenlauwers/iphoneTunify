@@ -33,7 +33,6 @@
 	
 	NSString *genre;
 	
-	AVAudioPlayer *player; 
 	NSIndexPath *rowPlayingIndexPath;
 	
 	CoordinatesTool *ct;

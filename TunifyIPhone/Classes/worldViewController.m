@@ -224,7 +224,7 @@ Color3D colors[] = {
         
 		// Note: These views must not be released because they are still required.
     }
-	
+
 	
 	self.navigationItem.title = strPubName;
 	
@@ -244,6 +244,9 @@ Color3D colors[] = {
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
 	
+	//UIImageView *image1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"urban.jpg"]];
+	//[self.view addSubview:image1];
+	
 }
 
 -(void) viewDidAppear:(BOOL)animated { 
@@ -252,6 +255,7 @@ Color3D colors[] = {
 } 
 
 -(void)initAll {
+	
 	self.lblDistanceToDestination.text = @"";
 	self.distance = -1;
 	self.userLocation = nil;
@@ -324,9 +328,6 @@ Color3D colors[] = {
 	NSLog(@"x1: %f, y1: %f, x2: %f, y2: %f", x1, y1, x2, y2);
 	float result;						//The resulting bearing.
 	
-	//x2 = -3;
-	//y2 = 3;
-	
 	// Base vector
 	float bx = 0;
 	float by = 1;
@@ -341,21 +342,12 @@ Color3D colors[] = {
 	// Imagine we know our compass degrees, assume 0 degrees
 	float heading = 360; //TODO: Replace by actual degrees of the direction we're facing * -1
 
-	// Update our base vector by the above degrees
-	/*
-	float degreesRad = degrees * (M_PI/180);
-	float Nbx = (bx * cos(degreesRad)) - (by * sin(degreesRad));
-	float Nby = (bx * sin(degreesRad)) + (by * cos(degreesRad));
-	NSLog(@"Nbx: %f", Nbx);
-	NSLog(@"Nby: %f", Nby);
-	*/
 	// Calculate the angle between the direction we're facing and the pub location
 	float uv = (normalizedX2*bx) + (normalizedY2*by);
 	float normU = sqrt(normalizedX2*normalizedX2 + normalizedY2*normalizedY2);
 	float normV = sqrt(bx*bx + by*by);
 	float resultRad = acos(uv/(normU * normV));
 	float resultDeg = resultRad * (180/M_PI);
-	
 	
 	// We will always get a value smaller than 180 degrees, so we need to fix this in case the pub's longitude coordinate is in the western
 	// hemisphere (meaning that the angle according to our base vector should be > 180 degrees)
@@ -372,18 +364,12 @@ Color3D colors[] = {
 	NSLog(@"Heading: %.0f", resultDeg);
 	
 	GLfloat *glHeading = (GLfloat *)malloc(sizeof(GLfloat));
-	
-	// fill out the coords here
-	
 	*glHeading = resultDeg;
 	return glHeading;
 }
 
 - (void)drawView:(UIView *)theView
 {
-	
-    
-    
     glLoadIdentity();
     glTranslatef(0.0f,0.0f,-3.0f);
 	glScalef(0.5f, 0.5f, 0.5f);

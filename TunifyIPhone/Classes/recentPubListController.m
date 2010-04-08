@@ -103,29 +103,18 @@
 		self.rowPlayingIndexPath = button.indexPath;
 		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 		
-		NSError *error = nil; 
-		player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
-		player.delegate = self; 
-		if(error != NULL) { 
-			NSLog([error description]);  
-			[error release]; 
-		} 
-		
-		[player play]; 
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 	} else {
 		if (self.rowPlayingIndexPath.row == button.indexPath.row) {
 			// Our current cell is playing
 			self.rowPlayingIndexPath = nil;
 			[button setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
-			[player stop];
-			player.delegate = nil;
-			[player release];
 			
+			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			[audioPlayer stop];
 		} else {
 			// Another cell is playing. We need to stop it and play our current one.
-			[player stop];
-			player.delegate = nil;
-			[player release];
 			
 			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:self.rowPlayingIndexPath];
 			pubCell *c = (pubCell *)cell;
@@ -135,15 +124,8 @@
 			self.rowPlayingIndexPath = button.indexPath;
 			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 			
-			NSError *error = nil; 
-			player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
-			player.delegate = self; 
-			if(error != NULL) { 
-				NSLog([error description]);  
-				[error release]; 
-			} 
-			
-			[player play]; 
+			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 			
 		}
 	}

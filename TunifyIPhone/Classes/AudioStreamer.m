@@ -881,6 +881,7 @@ int maxSegment;
 		}
 	}
 	
+	[self setVolume:volume];
 	//
 	// Process the run loop until playback is finished or failed.
 	//
@@ -960,15 +961,6 @@ cleanup:
 		seekTime = 0;
 		seekNeeded = NO;
 		self.state = AS_INITIALIZED;
-		
-		// CALL TO DELEGATE HERE
-		/*
-		if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(streamFinished:)]) {
-			NSLog(@"stream finished");
-			[delegate streamFinished:self];
-			self.delegate = nil;
-		}   
-		 */
 	}
 
 	[pool release];
@@ -1000,6 +992,35 @@ cleanup:
 				withObject:nil];
 		}
 	}
+}
+
+- (void)startWithVolume:(float)theVolume
+{
+	volume = theVolume;
+	@synchronized (self)
+	{
+		if (state == AS_PAUSED)
+		{
+			[self pause];
+		}
+		else if (state == AS_INITIALIZED)
+		{
+			//NSAssert([[NSThread currentThread] isEqual:[NSThread mainThread]],
+			//	@"Playback can only be started from the main thread.");
+			notificationCenter =
+			[[NSNotificationCenter defaultCenter] retain];
+			self.state = AS_STARTING_FILE_THREAD;
+			[NSThread
+			 detachNewThreadSelector:@selector(startInternal)
+			 toTarget:self
+			 withObject:nil];
+		}
+	}
+}
+
+- (void)setVolume:(float)theVolume {
+	volume = theVolume;
+	AudioQueueSetParameter (audioQueue, kAudioQueueParam_Volume,volume);
 }
 
 //
@@ -1105,6 +1126,7 @@ cleanup:
 //
 - (void)stop
 {
+	currentSegment = 0;
 	@synchronized(self)
 	{
 		if (audioQueue &&

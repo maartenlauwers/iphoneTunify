@@ -109,16 +109,19 @@
 	
 	
 	
-	NSLog(@"URL: %@", [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]]);
+	//NSLog(@"URL: %@", [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]]);
 	NSError *error = nil; 
-	player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
-	player.delegate = self; 
+	//player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
+	//player.delegate = self; 
 	if(error != NULL) { 
 		NSLog([error description]);  
 		[error release]; 
 	} 
 	
-	[player play]; 
+	//[player play]; 
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer play:@"http://localhost:1935/live/mp3:LethalIndustry.mp3/playlist.m3u8"];
 	
 
 
@@ -126,10 +129,19 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+-(IBAction) volumeChanged {
+	float volume = volumeSlider.value;
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer setVolume:volume];
+}
+
+/*
 - (void) audioPlayerDidFinishPlaying: (AVAudioPlayer *) theplayer successfully:(BOOL)flag { 
 	NSLog(@"Song played");
 	[theplayer release]; 
 } 
+ */
 
 
 
@@ -264,7 +276,7 @@
 
 - (void)dealloc {
 	[strPubName release];
-	[player release];
+	//[player release];
     [super dealloc];
 }
 

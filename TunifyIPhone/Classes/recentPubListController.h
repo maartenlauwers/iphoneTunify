@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h> 
 #import "CoordinatesTool.h"
 #import "RecentlyVisited.h"
+#import "AudioPlayer.h"
 
 @interface recentPubListController : UITableViewController {
 	NSMutableArray *dataSource;		// stores all data
@@ -22,7 +23,6 @@
 	
 	NSString *genre;
 	
-	AVAudioPlayer *player; 
 	NSIndexPath *rowPlayingIndexPath;
 	
 	CoordinatesTool *ct;
