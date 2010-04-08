@@ -25,6 +25,7 @@
 @synthesize lblDistanceToDestination;
 @synthesize ct;
 
+GLfloat rot = 0.0;
 Vertex3D vertices[]= {
 
 // pointer sides
@@ -134,8 +135,6 @@ Color3D colors[] = {
 {1.0, 0.8, 0.2, 1.0}
 
 };	
-
-
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -314,10 +313,10 @@ Color3D colors[] = {
 
 - (void)updateDistance {
 	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
-	[self headingTest];
+	rot = *[self getArrowHeading];
 }
 
-- (void)headingTest {
+- (GLfloat *)getArrowHeading {
 	float x1 = userLocation.coordinate.latitude;					//Our position.
 	float y1 = userLocation.coordinate.longitude;
 	float x2 = pubLocation.coordinate.latitude;		//The other thing's position.
@@ -340,72 +339,57 @@ Color3D colors[] = {
 	
 	
 	// Imagine we know our compass degrees, assume 0 degrees
-	float degrees = -181; //TODO: Replace by actual degrees of the direction we're facing * -1
+	float heading = 360; //TODO: Replace by actual degrees of the direction we're facing * -1
 
 	// Update our base vector by the above degrees
+	/*
 	float degreesRad = degrees * (M_PI/180);
 	float Nbx = (bx * cos(degreesRad)) - (by * sin(degreesRad));
 	float Nby = (bx * sin(degreesRad)) + (by * cos(degreesRad));
 	NSLog(@"Nbx: %f", Nbx);
 	NSLog(@"Nby: %f", Nby);
-	
+	*/
 	// Calculate the angle between the direction we're facing and the pub location
-	float uv = (normalizedX2*Nbx) + (normalizedY2*Nby);
+	float uv = (normalizedX2*bx) + (normalizedY2*by);
 	float normU = sqrt(normalizedX2*normalizedX2 + normalizedY2*normalizedY2);
-	float normV = sqrt(Nbx*Nbx + Nby*Nby);
+	float normV = sqrt(bx*bx + by*by);
 	float resultRad = acos(uv/(normU * normV));
 	float resultDeg = resultRad * (180/M_PI);
 	
-	// We will always get a value smaller than 180 degrees, so we need to fix this.
 	
-	if (degrees < 0 && degrees >= -180) {
-		resultDeg = -resultDeg;
+	// We will always get a value smaller than 180 degrees, so we need to fix this in case the pub's longitude coordinate is in the western
+	// hemisphere (meaning that the angle according to our base vector should be > 180 degrees)
+	if (normalizedY2 <= 0) {
+		resultDeg = (180 - resultDeg) + 180;
+	} 
+	
+	if (heading >= resultDeg) {
+		resultDeg = (heading - resultDeg) * -1;
+	} else {
+		resultDeg = resultDeg - heading;
 	}
 	 
-	 
-	/*
-	// First You calculate Delta distances.
-	float dx = (x2-x1);
-	float dy = (y2-y1);
-	
-	// If x part is 0 we could get into division by zero problems, but in that case result can only be 90 or 270:
-	if (dx==0){
-		if (dy > 0){
-			result = 90;
-		}else {
-			result = 270;
-		}
-	}else {
-		result = (atan(dy/dx)) * 180 / M_PI;
-	}
-	
-	// the (*180/ M_PI) part is because results are usually in Radians, but we want it in degrees.
-	// This is only valid for two quadrants (for right side of the coordinate system) so modify result if necessary...
-	if (dx < 0) {
-		result = result + 180;
-	}
-	
-	// looks better if all numbers are positive (0 to 360 range)
-	if (result < 0) {
-		result = result + 360;
-	}
-	
-	//Return our result.
-	//return result;
-	*/
 	NSLog(@"Heading: %.0f", resultDeg);
+	
+	GLfloat *glHeading = (GLfloat *)malloc(sizeof(GLfloat));
+	
+	// fill out the coords here
+	
+	*glHeading = resultDeg;
+	return glHeading;
 }
 
 - (void)drawView:(UIView *)theView
 {
 	
-    static GLfloat rot = 0.0;
+    
     
     glLoadIdentity();
     glTranslatef(0.0f,0.0f,-3.0f);
 	glScalef(0.5f, 0.5f, 0.5f);
     glRotatef(45,1.0f,0.0f,0.0f);
-	glRotatef(rot, 0.0f, 1.0f, 0.0f);
+	glRotatef(0, 0.0f, 1.0f, 0.0f);
+	glRotatef(-rot, 0.0f, 1.0f, 0.0f);
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -418,6 +402,7 @@ Color3D colors[] = {
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 	
+	/*
     static NSTimeInterval lastDrawTime;
     if (lastDrawTime)
     {
@@ -425,7 +410,7 @@ Color3D colors[] = {
         rot+=50 * timeSinceLastDraw;                
     }
     lastDrawTime = [NSDate timeIntervalSinceReferenceDate];
-	    
+	*/
 }
 -(void)setupView:(GLView*)view
 {

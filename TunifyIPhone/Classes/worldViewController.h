@@ -42,5 +42,6 @@
 - (void) btnPubs_clicked:(id)sender;
 - (void) btnMusic_clicked:(id)sender;
 - (IBAction) capturedToggleChanged:(id)sender;
+- (GLfloat *)getArrowHeading;
 
 @end
