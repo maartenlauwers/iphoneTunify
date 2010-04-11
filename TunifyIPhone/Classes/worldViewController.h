@@ -10,30 +10,32 @@
 #import "GLView.h"
 #import <CoreLocation/CoreLocation.h>
 #import "CoordinatesTool.h"
-
+#import "Pub.h"
 
 //@class EAGLView;
 
 @interface worldViewController : UIViewController <GLViewDelegate, CoordinatesToolDelegate> {
-	NSString *strPubName;
+	Pub *pub;
+	NSString *pubAddress;
+	
 	IBOutlet UISegmentedControl *capturedToggle;
 	IBOutlet UILabel *lblDistanceToDestination;
 	GLView *glView;
 	
 	CoordinatesTool *ct;
-	NSString *strPubAddress;
 	CLLocation *userLocation;
 	CLLocation *pubLocation;
 	CLLocationDistance distance;
 }
 
-@property (nonatomic, retain) NSString *strPubName;
+@property (nonatomic, retain) Pub *pub;
+@property (nonatomic, retain) NSString *pubAddress;
+
 @property (nonatomic, retain) IBOutlet UISegmentedControl *capturedToggle;
 @property (nonatomic, retain) IBOutlet UILabel *lblDistanceToDestination;
 @property (nonatomic, retain) GLView *glView;
 
 @property (nonatomic, retain) CoordinatesTool *ct;
-@property (nonatomic, retain) NSString *strPubAddress;
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (assign) CLLocationDistance distance;

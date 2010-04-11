@@ -11,7 +11,7 @@
 
 @implementation twitterController
 
-@synthesize strPubName;
+@synthesize pub;
 @synthesize strAchievementName;
 @synthesize charactersLeft;
 @synthesize charactersLeftLabel;
@@ -44,7 +44,7 @@
 
 - (void)showSuccess {
 	
-	if ([strPubName length] > 0) {
+	if ([[self.pub name] length] > 0) {
 		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Success",@"title") 
 															message:NSLocalizedString(@"Your visit has been published.",  
 																					  @"message") 
@@ -154,7 +154,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.navigationItem.title = strPubName;
+	self.navigationItem.title = [self.pub name];
 	
 	// Create the left bar button item
 	UIBarButtonItem *cancelBarButtonItem = [[UIBarButtonItem alloc] init];
@@ -164,8 +164,8 @@
 	self.navigationItem.leftBarButtonItem = cancelBarButtonItem;
 	[cancelBarButtonItem release];
 	
-	if ([strPubName length] > 0) {
-		[self.twitterMessageView setText:[[@"Going to '" stringByAppendingString:self.strPubName] stringByAppendingString:@"'."]];
+	if ([[self.pub name] length] > 0) {
+		[self.twitterMessageView setText:[[@"Going to '" stringByAppendingString:[self.pub name]] stringByAppendingString:@"'."]];
 	} else if ([strAchievementName length] > 0) {
 		[self.twitterMessageView setText:[[@"Achievement '" stringByAppendingString:self.strAchievementName] stringByAppendingString:@"' reached!"]];
 	}
@@ -198,7 +198,7 @@
 
 
 - (void)dealloc {
-	[strPubName release];
+	[pub release];
 	[strAchievementName release];
 	[charactersLeftLabel release];
 	[twitterMessageView release];

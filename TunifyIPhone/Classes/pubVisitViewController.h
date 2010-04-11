@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "FBConnect/FBConnect.h"
+#import "Pub.h"
 
 @class rateStar;
 
-
 @interface pubVisitViewController : UIViewController <FBSessionDelegate> {
-	NSString *strPubName;
+	Pub *pub;
 	IBOutlet UILabel *infoLabel;
 	rateStar *star1;
 	rateStar *star2;
@@ -24,7 +24,7 @@
 
 }
 
-@property (nonatomic, retain) NSString *strPubName;
+@property (nonatomic, retain) Pub *pub;
 @property (nonatomic, retain) IBOutlet UILabel *infoLabel;
 @property (nonatomic, retain) rateStar *star1;
 @property (nonatomic, retain) rateStar *star2;

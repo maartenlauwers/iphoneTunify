@@ -11,8 +11,9 @@
 
 @implementation musicViewController
 
-@synthesize strPubName;
+@synthesize pub;
 @synthesize source;
+@synthesize dataSource;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -71,7 +72,7 @@
     }
 	
 	
-	self.navigationItem.title = strPubName;
+	self.navigationItem.title = [self.pub name];
 	
 	// Create the left bar button item
 	UIBarButtonItem *pubsBarButtonItem = [[UIBarButtonItem alloc] init];
@@ -275,8 +276,8 @@
 
 
 - (void)dealloc {
-	[strPubName release];
-	//[player release];
+	[pub release];
+	[dataSource release];
     [super dealloc];
 }
 

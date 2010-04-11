@@ -24,6 +24,10 @@
 @synthesize rowPlayingIndexPath;
 @synthesize userLocation;
 
+
+@synthesize fetchedResultsController;
+@synthesize managedObjectContext;
+
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
     // Override initWithStyle: if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -63,21 +67,19 @@
 		
 		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
 		
-		for(NSArray *pub in dataSource) {
-			NSLog(@"Pub name: %@", [pub objectAtIndex:0]);
-			
+		for(Pub *pub in dataSource) {
 			// Initial entry
 			if ([sortedArray count] == 0) {
 				[sortedArray addObject:pub];
 			} else {
 				// Further entries
-				if ([[pub objectAtIndex:6] intValue] <= [[[sortedArray lastObject] objectAtIndex:6] intValue]) {
+				if ([[pub rating] intValue] <= [[[sortedArray lastObject] rating] intValue]) {
 					[sortedArray addObject:pub];
-				} else if ([[pub objectAtIndex:6] intValue] >= [[[sortedArray objectAtIndex:0] objectAtIndex:6] intValue]) {
+				} else if ([[pub rating] intValue] >= [[[sortedArray objectAtIndex:0] rating] intValue]) {
 					[sortedArray insertObject:pub atIndex:0];
 				} else {
 					for(int i=1; i<[sortedArray count]-1; i++) {
-						if ([[pub objectAtIndex:6] intValue] == [[[sortedArray objectAtIndex:i] objectAtIndex:6] intValue]) {
+						if ([[pub rating] intValue] == [[[sortedArray objectAtIndex:i] rating] intValue]) {
 							[sortedArray insertObject:pub atIndex:i];
 							break;
 						}
@@ -106,18 +108,14 @@
 
 - (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow {
 	
-	NSArray *pub = [dataSource objectAtIndex:theRow];
+	Pub *pub = [dataSource objectAtIndex:theRow];
 	
 	// Add the pub to the recently visited pub list
 	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
 	[rv addPub:pub];
 	
 	mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
-	controller.strPubName = [pub objectAtIndex:0];
-	
-	NSString *address = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub objectAtIndex:1], [pub objectAtIndex:2], [pub objectAtIndex:3], [pub objectAtIndex:4]];
-	controller.strPubAddress = address;
-	
+	controller.pub = pub;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -188,24 +186,74 @@
 	[lookBarButtonItem release];
 	
 	
-	// Create some test data for the table
-	dataSource = [[NSMutableArray alloc] init];
-
-	NSArray *pub1 = [[NSArray alloc] initWithObjects:@"De zoete bron", @"M.Noestraat", 	@"15", @"3050", @"oud heverlee", @"418090", @"4", @"50.8236691", @"4.6626304", nil];
-	NSArray *pub2 = [[NSArray alloc] initWithObjects:@"Fitforyou", @"Mechelsesteenweg", @"763", @"3020", @"Herent", @"418012", @"3",@"50.9204853", @"4.6479286", nil];
-	NSArray *pub3 = [[NSArray alloc] initWithObjects:@"Cafe Mezza", @"Mathieu de Layensplein", @"119", @"3000", @"Leuven", @"416197", @"5",@"50.8799430", @"4.7002825", nil];
-	NSArray *pub4 = [[NSArray alloc] initWithObjects:@"Linx", @"Vismarkt", 	@"17", @"3000", @"Leuven", @"416665", @"1", @"50.8817091", @"4.6998039",nil];
-	NSArray *pub5 = [[NSArray alloc] initWithObjects:@"Mundo", @"Martelarenplein", @"14", @"3000", @"Leuven", @"418090", @"0", @"50.8814212", @"4.7145274",nil];
-	NSArray *pub6 = [[NSArray alloc] initWithObjects:@"Mephisto", @"Oude Markt", @"2", @"3000", @"Leuven", @"315056", @"2", @"50.8783624", @"4.6996464",nil];
-	NSArray *pub7 = [[NSArray alloc] initWithObjects:@"Cafe de Zappa", @"Emile Carelsstraat", @"1", @"3090", @"Overijse", @"413875", @"3",@"50.7709673", @"4.5401609", nil];
+	// CoreData test
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
+	self.managedObjectContext = managedObjectContext;
 	
-	[dataSource addObject:pub1];
-	[dataSource addObject:pub2];
-	[dataSource addObject:pub3];
-	[dataSource addObject:pub4];
-	[dataSource addObject:pub5];
-	[dataSource addObject:pub6];
-	[dataSource addObject:pub7];
+	/*
+	[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
+				andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304"];
+	
+	[self insertNewObject:@"Fitforyou" andStreet:@"Mechelsesteenweg" andNumber:@"763" andZipCode:@"3020" andCity:@"Herent" 
+				andUserID:@"418012" andRating:@"3" andLatitude:@"50.9204853" andLongitude:@"4.6479286"];
+	
+	[self insertNewObject:@"Cafe Mezza" andStreet:@"Mathieu de Layensplein" andNumber:@"119" andZipCode:@"3000" andCity:@"Leuven" 
+				andUserID:@"416197" andRating:@"5" andLatitude:@"50.8799430" andLongitude:@"4.7002825"];
+	
+	[self insertNewObject:@"Linx" andStreet:@"Vismarkt" andNumber:@"17" andZipCode:@"3000" andCity:@"Leuven" 
+				andUserID:@"416665" andRating:@"1" andLatitude:@"50.8817091" andLongitude:@"4.6998039"];
+	
+	[self insertNewObject:@"Mundo" andStreet:@"Martelarenplein" andNumber:@"14" andZipCode:@"3000" andCity:@"Leuven" 
+				andUserID:@"418090" andRating:@"0" andLatitude:@"50.8814212" andLongitude:@"4.7145274"];
+	
+	[self insertNewObject:@"Mephisto" andStreet:@"Oude Markt" andNumber:@"2" andZipCode:@"3000" andCity:@"Leuven" 
+				andUserID:@"315056" andRating:@"2" andLatitude:@"50.8783624" andLongitude:@"4.6996464"];
+	
+	[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
+				andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609"];
+	
+	*/
+	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
+	[request setEntity:entity]; 
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]; 
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil]; 
+	[request setSortDescriptors:sortDescriptors]; 
+	[sortDescriptors release]; 
+	[sortDescriptor release]; 
+	NSError *error; 
+	NSMutableArray *mutableFetchResults = [[self.managedObjectContext executeFetchRequest:request error:&error] mutableCopy]; 
+	if (mutableFetchResults == nil) { 
+		// Might want to do something more serious... 
+		NSLog(@"Can’t load the Pub data!"); 
+	} 
+	
+	self.dataSource = [[NSMutableArray alloc] init];
+	[self.dataSource addObjectsFromArray:mutableFetchResults];
+	/*
+	for(Pub *pub in mutableFetchResults) {
+		[self.managedObjectContext deleteObject:pub];
+	}
+	 */
+	
+	
+	// Save the context.
+    //NSError *error = nil;
+	/*
+    if (![self.managedObjectContext save:&error]) {
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+    }
+	 */
+	
+	
+	[mutableFetchResults release];
+	[request release];
+
+	
+	NSLog(@"Datasource count: %d", [dataSource count]);	
 
 	tableData = [[NSMutableArray alloc] init];
 	searchedData = [[NSMutableArray alloc] init];
@@ -225,6 +273,49 @@
 	//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 	
 }
+
+
+#pragma mark -
+#pragma mark Add a new object
+
+- (void)insertNewObject:(NSString *)theName andStreet:(NSString *)theStreet andNumber:(NSString *)theNumber
+				andZipCode:(NSString *)theZipCode andCity:(NSString *)theCity andUserID:(NSString *)theUserID
+				andRating:(NSString *)theRating andLatitude:(NSString *)theLatitude andLongitude:(NSString *)theLongitude
+{
+	
+	Pub *pub = (Pub *)[NSEntityDescription insertNewObjectForEntityForName:@"Pub" inManagedObjectContext:self.managedObjectContext];
+	[pub setName:theName];
+	[pub setStreet:theStreet];
+	[pub setNumber:theNumber];
+	[pub setZipcode:theZipCode];
+	[pub setCity:theCity];
+	[pub setUserid:theUserID];
+	[pub setRating:theRating];
+	[pub setLatitude:theLatitude];
+	[pub setLongitude:theLongitude];
+	
+	// Save the context.
+    NSError *error = nil;
+    if (![self.managedObjectContext save:&error]) {
+		/*
+		 Replace this implementation with code to handle the error appropriately.
+		 
+		 abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development. If it is not possible to recover from the error, display an alert panel that instructs the user to quit the application by pressing the Home button.
+		 */
+		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+		abort();
+    }
+}
+
+
+// NSFetchedResultsControllerDelegate method to notify the delegate that all section and object changes have been processed. 
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
+	// In the simplest, most efficient, case, reload the table view.
+	[self.tableView reloadData];
+}
+
+#pragma mark -
+#pragma mark Location lookup callbacks
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
@@ -446,13 +537,12 @@
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 
-	NSArray *pub = [tableData objectAtIndex:indexPath.row];
-	cell.nameLabel.text = [pub objectAtIndex:0];
-	
+	Pub *pub = [tableData objectAtIndex:indexPath.row];
+	cell.nameLabel.text = [pub name];
 	
 	if (self.userLocation != nil) {
-		CLLocationDegrees longitude= [[pub objectAtIndex:8] doubleValue];
-		CLLocationDegrees latitude = [[pub objectAtIndex:7] doubleValue];
+		CLLocationDegrees longitude= [[pub longitude] doubleValue];
+		CLLocationDegrees latitude = [[pub latitude] doubleValue];
 		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
 		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
 		[pubLocation release];
@@ -465,7 +555,7 @@
 	}
 	
 	cell.ratingLabel.text = @"Rating:";
-	[cell.stars setRating:[[pub objectAtIndex:6] intValue]];
+	[cell.stars setRating:[[pub rating] intValue]];
 		
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
@@ -552,9 +642,9 @@
 	}
 
 	NSInteger counter = 0;
-	for(NSArray *pub in dataSource) 
+	for(Pub *pub in dataSource) 
 	{
-		NSString *name = [pub objectAtIndex:0];
+		NSString *name = [pub name];
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc]init];
 		NSRange r = [name rangeOfString:searchText options:NSCaseInsensitiveSearch];
 		if(r.location != NSNotFound)
@@ -599,6 +689,9 @@
 	[xmlParser release];
 	[webData release];
 	[userLocation release];
+	
+	[fetchedResultsController release];
+	[managedObjectContext release];
     [super dealloc];
 }
 

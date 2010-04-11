@@ -10,10 +10,11 @@
 #import <AudioToolbox/AudioToolbox.h> 
 #import <AVFoundation/AVFoundation.h> 
 #import "AudioPlayer.h"
+#import "Pub.h"
 
 @interface musicViewController : UIViewController <AVAudioPlayerDelegate> {
 	NSMutableArray *dataSource;		// stores all data
-	NSString *strPubName;
+	Pub *pub;
 	
 	IBOutlet UILabel *titleLabel;
 	IBOutlet UILabel *artistLabel;
@@ -26,7 +27,7 @@
 }
 
 @property (nonatomic, retain) NSMutableArray *dataSource;
-@property (nonatomic, retain) NSString *strPubName;
+@property (nonatomic, retain) Pub *pub;
 @property (assign) NSInteger *source;
 
 -(IBAction) volumeChanged;

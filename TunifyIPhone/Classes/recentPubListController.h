@@ -14,6 +14,7 @@
 #import "AudioPlayer.h"
 
 @interface recentPubListController : UITableViewController {
+	
 	NSMutableArray *dataSource;		// stores all data
 	NSMutableArray *tableData;		// stores data displayed in the table
 	NSMutableArray *searchedData;	// stores search results
@@ -35,7 +36,7 @@
 @property (assign) NSIndexPath *rowPlayingIndexPath;
 @property (nonatomic, retain) CLLocation *userLocation;
 
-- (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName;
+- (void) pubCell_clicked:(id)sender pub:(NSString*)pub;
 - (void) btnFilter_clicked:(id)sender;
 - (void) playMusic:(id)sender;
 

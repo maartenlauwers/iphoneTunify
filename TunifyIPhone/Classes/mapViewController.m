@@ -19,8 +19,8 @@
 
 @implementation mapViewController
 
-@synthesize strPubName;
-@synthesize strPubAddress;
+@synthesize pub;
+@synthesize pubAddress;
 @synthesize capturedToggle;
 @synthesize activityIndicator;
 @synthesize mapView;
@@ -72,13 +72,13 @@
 	
 	[ct stop];
 	
-	musicViewController *mvc = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
-	mvc.strPubName = strPubName;
-	mvc.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
+	controller.pub = self.pub;
+	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	//[self presentModalViewController:mvc animated:YES];
-	[self.navigationController pushViewController:mvc animated:YES];
-	[mvc release];
-	mvc = nil;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
 }
 
 - (void) loadPubView {
@@ -94,11 +94,11 @@
 	
 	[ct stop];
 	
-	pubVisitViewController *pvvc = [[pubVisitViewController alloc] initWithNibName:@"pubVisitView" bundle:[NSBundle mainBundle]];
-	pvvc.strPubName = strPubName;
-	[self.navigationController pushViewController:pvvc animated:YES];
-	[pvvc release];
-	pvvc = nil;
+	pubVisitViewController *controller = [[pubVisitViewController alloc] initWithNibName:@"pubVisitView" bundle:[NSBundle mainBundle]];
+	controller.pub = self.pub;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
 }
 
 - (IBAction) capturedToggleChanged:(id)sender {
@@ -108,8 +108,7 @@
 		[ct stop];
 		
 		worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
-		controller.strPubName = self.strPubName;
-		controller.strPubAddress = self.strPubAddress;
+		controller.pub = self.pub;
 		[self.navigationController pushViewController:controller animated:YES];
 		[controller release];
 		controller = nil;
@@ -133,7 +132,7 @@
 		// Note: These views must not be released because they are still required.
     }
 
-	self.navigationItem.title = strPubName;
+	self.navigationItem.title = [self.pub name];
 	
 	// Create the left bar button item
 	UIBarButtonItem *pubsBarButtonItem = [[UIBarButtonItem alloc] init];
@@ -166,7 +165,6 @@
 
 - (void)initAll {
 	
-	NSLog(@"maps: initAll");
 	[self.activityIndicator startAnimating];
 	
 	pointsArray = [[NSMutableArray alloc] init];
@@ -176,10 +174,15 @@
 	
 	self.webViewDidFinishLoading = FALSE;
 	
+	
+	// Fetch the pub's address
+	self.pubAddress = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub street], [pub number], [pub zipcode], [pub city]];
+	
+	// Fetch the user location and the pub's location
 	ct = [[CoordinatesTool alloc] init];
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	[ct fetchPubLocation:self.strPubAddress];
+	[ct fetchPubLocation:self.pubAddress];
 	
 	
 	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
@@ -194,7 +197,6 @@
 											  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
 							  nil]; 
 	[alertView show]; 
-	NSLog(@"maps: end initAll");
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
@@ -392,10 +394,10 @@
 	// create the end annotation and add it to the array
 	annotation = [[[CSMapAnnotation alloc] initWithCoordinate:[[pointsArray objectAtIndex:pointsArray.count - 1] coordinate]
 											   annotationType:CSMapAnnotationTypeEnd
-														title:self.strPubName] autorelease];
-	[annotation subtitle:self.strPubAddress];
-	[mapView addAnnotation:annotation];
+														title:[self.pub name]] autorelease];
 	
+	[annotation subtitle:self.pubAddress];
+	[mapView addAnnotation:annotation];
 	
 	// center and size the map view on the region computed by our route annotation. 
 	[mapView setRegion:routeAnnotation.region];
@@ -408,6 +410,7 @@
 
 - (void)mapView:(MKMapView *)mapView
 {
+	NSLog(@"mapView");
 	// turn off the view of the route as the map is chaning regions. This prevents
 	// the line from being displayed at an incorrect positoin on the map during the
 	// transition. 
@@ -423,6 +426,7 @@
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
+	NSLog(@"regioinDidChangeAnimated");
 	// re-enable and re-poosition the route display. 
 	for(NSObject* key in [_routeViews allKeys])
 	{
@@ -436,6 +440,7 @@
 
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
+	NSLog(@"ViewForAnnotation");
 	MKAnnotationView* annotationView = nil;
 	
 	
@@ -502,7 +507,7 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
-	
+	NSLog(@"annotaionView");
 	CSImageAnnotationView* imageAnnotationView = (CSImageAnnotationView*) view;
 	CSMapAnnotation* annotation = (CSMapAnnotation*)[imageAnnotationView annotation];
 	
@@ -520,6 +525,7 @@
 
 -(void) showWebViewForURL:(NSURL*) url
 {
+	NSLog(@"ShowWebViewForURL");
 	CSWebDetailsViewController* webViewController = [[CSWebDetailsViewController alloc] initWithNibName:@"CSWebDetailsViewController" bundle:nil];
 	[webViewController setUrl:url];
 	
@@ -567,8 +573,6 @@
 
 
 - (void)dealloc {
-	[strPubName release];
-	[strPubAddress release];
 	[pointsArray release];
 	[mapView release];
 	[_routeViews release];
@@ -579,6 +583,8 @@
 	[userLocation release];
 	[pubCoordinates release];
 	[pubLocation release];
+	[pubAddress release];
+	[pub release];
 	[activityIndicator release];
 	[capturedToggle release];
     [super dealloc];

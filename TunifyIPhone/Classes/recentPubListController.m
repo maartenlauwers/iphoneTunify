@@ -59,21 +59,20 @@
     } else if (buttonIndex == 2) {
 		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
 		
-		for(NSArray *pub in dataSource) {
-			NSLog(@"Pub name: %@", [pub objectAtIndex:0]);
+		for(Pub *pub in dataSource) {
 			
 			// Initial entry
 			if ([sortedArray count] == 0) {
 				[sortedArray addObject:pub];
 			} else {
 				// Further entries
-				if ([[pub objectAtIndex:6] intValue] <= [[[sortedArray lastObject] objectAtIndex:6] intValue]) {
+				if ([[pub rating] intValue] <= [[[sortedArray lastObject] rating] intValue]) {
 					[sortedArray addObject:pub];
-				} else if ([[pub objectAtIndex:6] intValue] >= [[[sortedArray objectAtIndex:0] objectAtIndex:6] intValue]) {
+				} else if ([[pub rating] intValue] >= [[[sortedArray objectAtIndex:0] rating] intValue]) {
 					[sortedArray insertObject:pub atIndex:0];
 				} else {
 					for(int i=1; i<[sortedArray count]-1; i++) {
-						if ([[pub objectAtIndex:6] intValue] == [[[sortedArray objectAtIndex:i] objectAtIndex:6] intValue]) {
+						if ([[pub rating] intValue] == [[[sortedArray objectAtIndex:i] rating] intValue]) {
 							[sortedArray insertObject:pub atIndex:i];
 							break;
 						}
@@ -137,12 +136,12 @@
 	[theplayer release]; 
 } 
 
-- (void) pubCell_clicked:(id)sender pubName:(NSString*)pubName {
-	mapViewController *mvc = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
-	mvc.strPubName = pubName;
-	[self.navigationController pushViewController:mvc animated:YES];
-	[mvc release];
-	mvc = nil;
+- (void) pubCell_clicked:(id)sender pub:(NSString*)pub {
+	mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
+	controller.pub = pub;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
 }
 	
 - (void)viewDidLoad {
@@ -268,12 +267,12 @@
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
 	
-	NSArray *pub = [tableData objectAtIndex:indexPath.row];
-	cell.nameLabel.text = [pub objectAtIndex:0];
+	Pub *pub = [tableData objectAtIndex:indexPath.row];
+	cell.nameLabel.text = [pub name];
 	
 	if (self.userLocation != nil) {
-		CLLocationDegrees longitude= [[pub objectAtIndex:8] doubleValue];
-		CLLocationDegrees latitude = [[pub objectAtIndex:7] doubleValue];
+		CLLocationDegrees longitude= [[pub longitude] doubleValue];
+		CLLocationDegrees latitude = [[pub latitude] doubleValue];
 		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
 		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
 		[pubLocation release];
@@ -286,7 +285,7 @@
 	}
 
 	cell.ratingLabel.text = @"Rating:";
-	[cell.stars setRating:[[pub objectAtIndex:6] intValue]];
+	[cell.stars setRating:[[pub rating] intValue]];
 
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
@@ -296,9 +295,9 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSString *strPubName = [dataSource objectAtIndex:indexPath.row];
-	[self pubCell_clicked:tableView pubName:strPubName];
+- (void)tableView:(UITableView *)theTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	Pub *pub = [dataSource objectAtIndex:indexPath.row];
+	[self pubCell_clicked:theTableView pub:pub];
 }
 
 
@@ -372,9 +371,9 @@
 	}
 	
 	NSInteger counter = 0;
-	for(NSArray *pub in dataSource) 
+	for(Pub *pub in dataSource) 
 	{
-		NSString *name = [pub objectAtIndex:0];
+		NSString *name = [pub name];
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc]init];
 		NSRange r = [name rangeOfString:searchText options:NSCaseInsensitiveSearch];
 		if(r.location != NSNotFound)

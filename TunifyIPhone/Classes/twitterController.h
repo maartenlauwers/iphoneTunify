@@ -7,17 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Pub.h"
 
 @interface twitterController : UIViewController {
-	NSString *strPubName;
+	Pub *pub;
 	NSString *strAchievementName;
 	NSInteger charactersLeft;
 	IBOutlet UILabel *charactersLeftLabel;
 	IBOutlet UITextView *twitterMessageView;
 }
 
-@property (nonatomic, retain) NSString *strPubName;
+@property (nonatomic, retain) Pub *pub;
 @property (nonatomic, retain) NSString *strAchievementName;
 @property (nonatomic, retain) IBOutlet UILabel *charactersLeftLabel;
 @property (nonatomic, retain) IBOutlet UITextView *twitterMessageView;

@@ -16,6 +16,8 @@
 #import "M3U8Playlist.h"
 #import "CoordinatesTool.h"
 #import "RecentlyVisited.h"
+#import "Pub.h"
+#import "TunifyIPhoneAppDelegate.h"
 
 @interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate, M3U8HandlerDelegate> {
 	mapViewController *mapViewController;
@@ -37,6 +39,9 @@
 	
 	CoordinatesTool *ct;
 	CLLocation *userLocation;
+	
+	NSFetchedResultsController *fetchedResultsController;
+	NSManagedObjectContext *managedObjectContext;
 }
 
 @property (nonatomic, retain) NSMutableData *webData;
@@ -48,11 +53,18 @@
 @property (assign) NSIndexPath *rowPlayingIndexPath;
 @property (nonatomic, retain) CLLocation *userLocation;
 
+@property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+
 - (void) tunify_login;
 - (void) btnFilter_clicked:(id)sender;
 - (void) btnLookAround_clicked:(id)sender;
 - (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow;
 - (IBAction) searchFieldDoneEditing:(id)sender;
 - (void) playMusic:(id)sender;
+
+- (void)insertNewObject:(NSString *)theName andStreet:(NSString *)theStreet andNumber:(NSString *)theNumber
+				andZipCode:(NSString *)theZipCode andCity:(NSString *)theCity andUserID:(NSString *)theUserID
+				andRating:(NSString *)theRating andLatitude:(NSString *)theLatitude andLongitude:(NSString *)theLongitude;
 
 @end

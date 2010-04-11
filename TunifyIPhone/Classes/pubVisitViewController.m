@@ -17,7 +17,7 @@
 #define STAR_NOT_TOUCHED = @"28-star_light.png";
 
 @implementation pubVisitViewController
-@synthesize strPubName;
+@synthesize pub;
 @synthesize infoLabel;
 @synthesize star1;
 @synthesize star2;
@@ -43,7 +43,7 @@
 */
 - (IBAction) btnMusic_clicked:(id)sender {
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
-	controller.strPubName = strPubName;
+	controller.pub = self.pub;
 	controller.source = 1;
 	
 	/*
@@ -114,7 +114,7 @@
 	[backgroundImage release];
 	
 	UILabel *rateLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 10, 280, 30)];
-	rateLabel.text = [[@"Rate '" stringByAppendingString:strPubName] stringByAppendingString:@"'"];
+	rateLabel.text = [[@"Rate '" stringByAppendingString:[self.pub name]] stringByAppendingString:@"'"];
 	rateLabel.textAlignment = UITextAlignmentCenter;
 	rateLabel.adjustsFontSizeToFitWidth = NO;
 	rateLabel.textColor = [UIColor blackColor];
@@ -273,7 +273,7 @@
 */
 - (IBAction) btnTwitter_clicked:(id)sender {
 	twitterController *controller = [[twitterController alloc] initWithNibName:@"twitterMessageView" bundle:[NSBundle mainBundle]];
-	controller.strPubName = strPubName;
+	controller.pub = self.pub;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -333,7 +333,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	self.navigationItem.title = strPubName;
+	self.navigationItem.title = [self.pub name];
 	
 	// Create the left bar button item
 	UIBarButtonItem *pubsBarButtonItem = [[UIBarButtonItem alloc] init];
@@ -451,7 +451,7 @@
 
 
 - (void)dealloc {
-	[strPubName release];
+	[pub release];
 	[infoLabel release];
 	[rateView release];
     [super dealloc];

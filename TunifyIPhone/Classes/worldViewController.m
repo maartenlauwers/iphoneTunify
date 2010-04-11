@@ -15,10 +15,10 @@
 
 @implementation worldViewController
 
-@synthesize strPubName;
+@synthesize pub;
+@synthesize pubAddress;
 @synthesize glView;
 @synthesize capturedToggle;
-@synthesize strPubAddress;
 @synthesize pubLocation;
 @synthesize userLocation;
 @synthesize distance;
@@ -183,7 +183,7 @@ Color3D colors[] = {
 	[self.glView release];
 	
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
-	controller.strPubName = strPubName;
+	controller.pub = self.pub;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -200,8 +200,7 @@ Color3D colors[] = {
 		[self.glView release];
 		
 		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
-		controller.strPubName = self.strPubName;
-		controller.strPubAddress = self.strPubAddress;
+		controller.pub = self.pub;
 		[self.navigationController pushViewController:controller animated:YES];
 		[controller release];
 		controller = nil;
@@ -226,7 +225,7 @@ Color3D colors[] = {
     }
 
 	
-	self.navigationItem.title = strPubName;
+	self.navigationItem.title = [self.pub name];
 	
 	// Create the left bar button item
 	UIBarButtonItem *pubsBarButtonItem = [[UIBarButtonItem alloc] init];
@@ -261,11 +260,14 @@ Color3D colors[] = {
 	self.userLocation = nil;
 	self.pubLocation = nil;
 	
+	// Fetch the pub's address
+	self.pubAddress = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub street], [pub number], [pub zipcode], [pub city]];
+	
 	// Fetch the user and pub coordinates
 	ct = [[CoordinatesTool alloc] init];
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	[ct fetchPubLocation:self.strPubAddress];
+	[ct fetchPubLocation:self.pubAddress];
 	[ct fetchHeading];
 	
 	// Create the 3D pointer arrow view
@@ -448,10 +450,11 @@ Color3D colors[] = {
 
 - (void)dealloc {
 	
-	[strPubName release];
+	[pub release];
 	[lblDistanceToDestination release];
 	[userLocation release];
 	[pubLocation release];
+	[pubAddress release];
 	[ct release];
 	[capturedToggle release];
     [super dealloc];

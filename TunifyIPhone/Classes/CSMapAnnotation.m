@@ -44,12 +44,15 @@
 
 - (NSString *)subtitle:(NSString *)text
 {
+	NSLog(@"settting subtitle");
+	NSLog(text);
 	if(_annotationType == CSMapAnnotationTypeStart || 
 		_annotationType == CSMapAnnotationTypeEnd)
 	{
 		subtitle = text;
 	}
 	
+	NSLog(@"returning subtitle");
 	return subtitle;
 }
 

@@ -68,7 +68,7 @@ static RecentlyVisited *sharedInstance = nil;
 	// Remove doubles
 	
 	for (NSArray *recentPub in recentPubs) {
-		if ([pub objectAtIndex:0] == [recentPub objectAtIndex:0]) {
+		if ([pub name] == [recentPub name]) {
 			[recentPubs removeObject:recentPub];
 			break;
 		}

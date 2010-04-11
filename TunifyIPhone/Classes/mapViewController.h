@@ -11,12 +11,13 @@
 #import <CoreLocation/CoreLocation.h>
 #import "UICGoogleMapsAPI.h"
 #import "CoordinatesTool.h"
+#import "Pub.h"
 
 @class CSWebDetailsViewController;
 
 @interface mapViewController : UIViewController <UIWebViewDelegate, MKMapViewDelegate, CLLocationManagerDelegate, CoordinatesToolDelegate> {
-	NSString *strPubName;
-	NSString *strPubAddress;
+	Pub *pub;
+	NSString *pubAddress;
 	
 	IBOutlet MKMapView *mapView;
 	IBOutlet UISegmentedControl *capturedToggle;
@@ -42,8 +43,8 @@
 	BOOL *webViewDidFinishLoading;
 }
 
-@property (nonatomic, retain) NSString *strPubName;
-@property (nonatomic, retain) NSString *strPubAddress;
+@property (nonatomic, retain) Pub *pub;
+@property (nonatomic, retain) NSString *pubAddress;
 @property (nonatomic, retain) MKMapView *mapView;
 @property (nonatomic, retain) IBOutlet UISegmentedControl *capturedToggle;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *activityIndicator;
