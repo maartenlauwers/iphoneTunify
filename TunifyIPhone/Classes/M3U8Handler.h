@@ -13,6 +13,7 @@
 @protocol M3U8HandlerDelegate <NSObject>
 @optional
 - (void)playlistAvailable:(M3U8Handler *)sender;
+- (void)playlistParseError:(M3U8Handler *)sender;
 @end
 
 @interface M3U8Handler : NSObject {

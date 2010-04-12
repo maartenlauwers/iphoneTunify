@@ -191,6 +191,7 @@
 	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
 	self.managedObjectContext = managedObjectContext;
 	
+	// Uncomment the following code to add the pubs to the database
 	/*
 	[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
 				andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304"];
@@ -232,13 +233,15 @@
 	
 	self.dataSource = [[NSMutableArray alloc] init];
 	[self.dataSource addObjectsFromArray:mutableFetchResults];
+	
+	// Uncomment the following code to remove all items from the database
 	/*
 	for(Pub *pub in mutableFetchResults) {
 		[self.managedObjectContext deleteObject:pub];
 	}
 	 */
 	
-	
+	// Uncomment the following code to commit the removal or add of items in the database
 	// Save the context.
     //NSError *error = nil;
 	/*
@@ -252,8 +255,6 @@
 	[mutableFetchResults release];
 	[request release];
 
-	
-	NSLog(@"Datasource count: %d", [dataSource count]);	
 
 	tableData = [[NSMutableArray alloc] init];
 	searchedData = [[NSMutableArray alloc] init];

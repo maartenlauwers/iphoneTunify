@@ -1,0 +1,9 @@
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m: In function '-[M3U8Handler parseUrl:]':
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:67: warning: 'return' with a value, in function returning void
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:73: warning: '-playlistParseError:' not found in protocol(s)
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:73: warning: no '-playlistParseError:' method found
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:73: warning: (Messages without a matching method signature
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:73: warning: will be assumed to return 'id' and accept
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:73: warning: '...' as arguments.)
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:99: warning: passing argument 1 of 'setDuration:' makes pointer from integer without a cast
+/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/M3U8Handler.m:117: warning: local declaration of 'playlist' hides instance variable

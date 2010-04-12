@@ -67,23 +67,28 @@ static M3U8Handler *sharedInstance = nil;
 		return 0;
 	}
 	NSString *data = [NSString stringWithContentsOfURL:[NSURL URLWithString:url]];
+	if (data == nil) {
+		NSLog(@"data is nil");
+		if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(playlistParseError:)]) {
+			[delegate playlistParseError:self];
+		}   
+		return;
+	}
 	
 	NSRange linkRange = [data rangeOfString:@"http://"];
 	if (linkRange.location == NSNotFound) {
 		NSLog(@"Invalid playlist");
-		return 0;
+		return;
 	}
 	
-	NSLog(@"a");
 	NSString *redirectUrl = [data substringFromIndex:linkRange.location];
 	data = [NSString stringWithContentsOfURL:[NSURL URLWithString:redirectUrl]];
-	NSLog(@"b");
 	
 	NSMutableArray *segments = [[NSMutableArray alloc] init];
 	
 	NSString *remainingSegments = data;
 	NSRange segmentRange = [remainingSegments rangeOfString:@"#EXTINF:"];
-	NSLog(@"c");	
+
 	while(segmentRange.location != NSNotFound) {
 		
 		M3U8SegmentInfo *segment = [[M3U8SegmentInfo alloc] init];
@@ -105,16 +110,11 @@ static M3U8Handler *sharedInstance = nil;
 		
 		remainingSegments = [remainingSegments substringFromIndex:rangeToSegmentEnd.location];
 		segmentRange = [remainingSegments rangeOfString:@"#EXTINF:"];
-			NSLog(@"d");
 	}
-		NSLog(@"e");
-	
 	
 	// Create a playlist with all the segments
 	M3U8Playlist *playlist = [[M3U8Playlist alloc] initWithSegments:segments];
 	self.playlist = playlist;
-
-	
 	
 	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(playlistAvailable:)]) {
 		NSLog(@"playlist created");

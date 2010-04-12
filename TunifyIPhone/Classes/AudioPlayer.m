@@ -98,6 +98,17 @@ int currentSegment;
 	[streamer startWithVolume:lastUsedVolume];
 }
 
+- (void)playlistParseError:(M3U8Handler *)sender {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"Could not contact the Tunify server. Audio playback will not work.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	
+	[alertView show]; 
+}
+
 - (void)setVolume:(float)volume {
 	[streamer setVolume:volume];
 	lastUsedVolume = volume;
