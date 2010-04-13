@@ -213,8 +213,8 @@
 	
 	[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
 				andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609"];
-	
 	*/
+	
 	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
 	[request setEntity:entity]; 
@@ -249,7 +249,8 @@
 		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 		abort();
     }
-	 */
+	*/
+	 
 	
 	
 	[mutableFetchResults release];

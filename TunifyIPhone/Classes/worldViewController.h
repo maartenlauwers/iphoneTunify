@@ -11,6 +11,8 @@
 #import <CoreLocation/CoreLocation.h>
 #import "CoordinatesTool.h"
 #import "Pub.h"
+#import "CustomUIImagePickerController.h"
+#import "CustomImagePicker.h"
 
 //@class EAGLView;
 
@@ -26,6 +28,12 @@
 	CLLocation *userLocation;
 	CLLocation *pubLocation;
 	CLLocationDistance distance;
+	
+	CustomUIImagePickerController *picker;
+	UIView *overlayView;
+	
+	NSTimer *locationTimer;		// Timer to keep our current location updated
+
 }
 
 @property (nonatomic, retain) Pub *pub;
@@ -39,6 +47,9 @@
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (assign) CLLocationDistance distance;
+
+@property (nonatomic, retain) CustomUIImagePickerController *picker;
+@property (nonatomic, retain) UIView *overlayView;
 
 - (void) initAll;
 - (void) btnPubs_clicked:(id)sender;

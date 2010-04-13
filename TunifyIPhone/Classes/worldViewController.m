@@ -24,46 +24,48 @@
 @synthesize distance;
 @synthesize lblDistanceToDestination;
 @synthesize ct;
+@synthesize picker;
+@synthesize overlayView;
 
 GLfloat rot = 0.0;
 Vertex3D vertices[]= {
 
 // pointer sides
-{0, 0.0f, -1.0f},					// 0
-{0, -0.3f, -1.0f},					// 1
-{-0.5f, 0.0f, -0.2f},				// 2
-{-0.5f, -0.3f, -0.2f},				// 3
-{0.5f, 0.0f, -0.2f},				// 4
-{0.5f, -0.3f, -0.2f},				// 5
+{0, 0.0f, -1.3f},					// 0
+{0, -0.3f, -1.3f},					// 1
+{-0.8f, 0.0f, -0.2f},				// 2
+{-0.8f, -0.3f, -0.2f},				// 3
+{0.8f, 0.0f, -0.2f},				// 4
+{0.8f, -0.3f, -0.2f},				// 5
 
 // pointer roof
-{0, 0.0f, -1.0f},					// 6
-{-0.5f, 0.0f, -0.2f},				// 7
-{0.5f, 0.0f, -0.2f},				// 8
+{0, 0.0f, -1.3f},					// 6
+{-0.8f, 0.0f, -0.2f},				// 7
+{0.8f, 0.0f, -0.2f},				// 8
 
 // box left side	
-{-0.15f, 0.0f, -0.2f},				// 9
-{-0.15f, -0.3f, -0.2f},				// 10
-{-0.15f, 0.0f, 1.0f},				// 11
-{-0.15f, -0.3f, 1.0f},				// 12
+{-0.25f, 0.0f, -0.2f},				// 9
+{-0.25f, -0.3f, -0.2f},				// 10
+{-0.25f, 0.0f, 1.2f},				// 11
+{-0.25f, -0.3f, 1.2f},				// 12
 
 // box right side
-{0.15f, 0.0f, -0.2f},				// 13
-{0.15f, -0.3f, -0.2f},				// 14
-{0.15f, 0.0f, 1.0f},				// 15
-{0.15f, -0.3f, 1.0f},				// 16
+{0.25f, 0.0f, -0.2f},				// 13
+{0.25f, -0.3f, -0.2f},				// 14
+{0.25f, 0.0f, 1.2f},				// 15
+{0.25f, -0.3f, 1.2f},				// 16
 
 // box closest side
-{0.15f, 0.0f, 1.0f},				// 17
-{0.15f, -0.3f, 1.0f},				// 18
-{-0.15f, 0.0f, 1.0f},				// 19
-{-0.15f, -0.3f, 1.0f},				// 20
+{0.25f, 0.0f, 1.2f},				// 17
+{0.25f, -0.3f, 1.2f},				// 18
+{-0.25f, 0.0f, 1.2f},				// 19
+{-0.25f, -0.3f, 1.2f},				// 20
 
 // box top side
-{0.15f, 0.0f, -0.2f},				// 21
-{-0.15f, 0.0f, -0.2f},				// 22
-{0.15f, 0.0f, 1.0f},				// 23
-{-0.15f, 0.0f, 1.0f}				// 24
+{0.25f, 0.0f, -0.2f},				// 21
+{-0.25f, 0.0f, -0.2f},				// 22
+{0.25f, 0.0f, 1.2f},				// 23
+{-0.25f, 0.0f, 1.2f}				// 24
 
 };
 
@@ -193,12 +195,20 @@ Color3D colors[] = {
 	
 	if(capturedToggle.selectedSegmentIndex == 0) {
 		
+		//[locationTimer invalidate];
+		//[locationTimer release];
+		ct.delegate = nil;
 		[ct stop];
+
 		self.glView.delegate = nil;
 		[glView stopAnimation];
 		[self.glView removeFromSuperview];
 		[self.glView release];
 		
+		//[self.overlayView release];
+		//[self.picker release];
+		
+		[self dismissModalViewControllerAnimated:YES];
 		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 		controller.pub = self.pub;
 		[self.navigationController pushViewController:controller animated:YES];
@@ -243,13 +253,46 @@ Color3D colors[] = {
 	self.navigationItem.rightBarButtonItem = musicBarButtonItem;
 	[musicBarButtonItem release];
 	
-	//UIImageView *image1 = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"urban.jpg"]];
-	//[self.view addSubview:image1];
-	
 }
 
 -(void) viewDidAppear:(BOOL)animated { 
 	[super viewDidAppear:animated]; 
+	
+	self.lblDistanceToDestination.text = @"";
+	
+	self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+	self.overlayView.opaque = YES;
+	
+	[self.overlayView insertSubview:self.lblDistanceToDestination atIndex:1];
+	[self.overlayView insertSubview:self.capturedToggle atIndex:2];
+	
+	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		
+		self.picker = [[CustomUIImagePickerController alloc] init];
+		self.picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+	
+		self.picker.showsCameraControls = NO;
+		self.picker.cameraOverlayView = self.overlayView;
+		CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.0, 1.132);
+		self.picker.cameraViewTransform = cameraTransform;
+		self.picker.navigationBar.barStyle = UIBarStyleBlackOpaque;
+		
+		[self presentModalViewController:self.picker animated:YES];
+		
+	} else {
+		self.picker = nil;
+		
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No Camera Found"
+															message:@"You need a camera to use this application."
+														   delegate:self
+												  cancelButtonTitle:@"Cancel"
+												  otherButtonTitles:@"Ok", nil];
+		
+		[alertView show];
+		[alertView release];
+	}
+	NSLog(@"picker initialized");
+	
 	[self initAll];
 } 
 
@@ -270,22 +313,25 @@ Color3D colors[] = {
 	[ct fetchPubLocation:self.pubAddress];
 	[ct fetchHeading];
 	
+	
 	// Create the 3D pointer arrow view
 	self.glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
 	self.glView.delegate = self;
 	self.glView.opaque = NO;
-	[self.view addSubview:self.glView];
+	[self.overlayView insertSubview:self.glView atIndex:0];
+	//[self.view insertSubview:self.glView atIndex:0];
 	self.glView.animationInterval = 1.0 / kRenderingFrequency;
 	[self.glView startAnimation];
 	
 	
+	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(updateDistance) userInfo:nil repeats: YES];
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
 		self.distance = [sender fetchDistance];
-		[self updateDistance];
+		//[self updateDistance];
 	}
 }
 
@@ -303,7 +349,7 @@ Color3D colors[] = {
 	self.pubLocation = sender.pubLocation;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
 		self.distance = [sender fetchDistance];
-		[self updateDistance];
+		//[self updateDistance];
 	}
 }
 
@@ -317,9 +363,14 @@ Color3D colors[] = {
 	[alertView show]; 
 }
 
+- (void)headingUpdated:(CoordinatesTool *)sender {
+	// Update our arrow
+	rot = *[self getArrowHeading];		
+}
+
 - (void)updateDistance {
 	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
-	rot = *[self getArrowHeading];
+	[ct fetchUserLocation];
 }
 
 - (GLfloat *)getArrowHeading {
@@ -327,7 +378,7 @@ Color3D colors[] = {
 	float y1 = userLocation.coordinate.longitude;
 	float x2 = pubLocation.coordinate.latitude;		//The other thing's position.
 	float y2 = pubLocation.coordinate.longitude;
-	NSLog(@"x1: %f, y1: %f, x2: %f, y2: %f", x1, y1, x2, y2);
+	//NSLog(@"x1: %f, y1: %f, x2: %f, y2: %f", x1, y1, x2, y2);
 	float result;						//The resulting bearing.
 	
 	// Base vector
@@ -342,8 +393,9 @@ Color3D colors[] = {
 	
 	
 	// Imagine we know our compass degrees, assume 0 degrees
-	float heading = 360; //TODO: Replace by actual degrees of the direction we're facing * -1
-
+	float heading = [ct getHeading];// 360; //TODO: Replace by actual degrees of the direction we're facing * -1
+	//NSLog(@"Received heading: %f", heading);
+	
 	// Calculate the angle between the direction we're facing and the pub location
 	float uv = (normalizedX2*bx) + (normalizedY2*by);
 	float normU = sqrt(normalizedX2*normalizedX2 + normalizedY2*normalizedY2);
@@ -363,7 +415,7 @@ Color3D colors[] = {
 		resultDeg = resultDeg - heading;
 	}
 	 
-	NSLog(@"Heading: %.0f", resultDeg);
+	//NSLog(@"Resulting heading: %.0f", resultDeg);
 	
 	GLfloat *glHeading = (GLfloat *)malloc(sizeof(GLfloat));
 	*glHeading = resultDeg;
@@ -375,9 +427,13 @@ Color3D colors[] = {
     glLoadIdentity();
     glTranslatef(0.0f,0.0f,-3.0f);
 	glScalef(0.5f, 0.5f, 0.5f);
-    glRotatef(45,1.0f,0.0f,0.0f);
-	glRotatef(0, 0.0f, 1.0f, 0.0f);
+	
+	// Make the arrow face upwards
+    glRotatef(90,1.0f,0.0f,0.0f);
+	
+	// Rotate the arrow around the Y axis to make it point to our pub
 	glRotatef(-rot, 0.0f, 1.0f, 0.0f);
+	
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnableClientState(GL_VERTEX_ARRAY);
@@ -395,7 +451,6 @@ Color3D colors[] = {
     if (lastDrawTime)
     {
         NSTimeInterval timeSinceLastDraw = [NSDate timeIntervalSinceReferenceDate] - lastDrawTime;
-        rot+=50 * timeSinceLastDraw;                
     }
     lastDrawTime = [NSDate timeIntervalSinceReferenceDate];
 	*/
@@ -449,7 +504,8 @@ Color3D colors[] = {
 
 
 - (void)dealloc {
-	
+	[picker release];
+	[overlayView release];
 	[pub release];
 	[lblDistanceToDestination release];
 	[userLocation release];

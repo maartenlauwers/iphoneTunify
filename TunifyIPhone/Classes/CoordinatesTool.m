@@ -13,6 +13,7 @@
 @synthesize userLocation;
 @synthesize pubCoordinates;
 @synthesize pubLocation;
+//@synthesize heading;
 @synthesize userLocationOK;
 @synthesize pubLocationOK;
 
@@ -51,7 +52,7 @@
 
 	CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
 	self.userLocation = currentLocation; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
-	[currentLocation release];
+	//[currentLocation release];
 	self.userLocationOK = TRUE;	
 	[locationManager stopUpdatingLocation];
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(userLocationFound:)]) {
@@ -112,12 +113,19 @@
 	locationManager = [[CLLocationManager alloc] init]; 
 	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
 	locationManager.delegate = self; 
-	[locationManager startUpdatingLocation]; 
+	[locationManager startUpdatingHeading]; 
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
-	NSLog(@"Heading: %.3f", newHeading);
-	//[NSString stringWithFormat:@"Heading %.3f", [[location course] magneticHeading]];
+	
+	heading = [[NSString stringWithFormat:@"%.0f", [newHeading trueHeading]] floatValue];
+	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(headingUpdated:)]) {
+		[delegate headingUpdated:self];
+	} 
+}
+
+- (float)getHeading {
+	return heading;
 }
 
 - (void) stop {
