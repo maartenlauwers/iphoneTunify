@@ -8,19 +8,24 @@
 
 #import <Foundation/Foundation.h>
 #import "StarView.h"
+#import "Pub.h"
 
 @interface PubCard : UIView {
 	NSString *name;
 	NSString *address;
 	NSInteger *visitors;
 	NSInteger *rating;
+	Pub *pub;
+	BOOL *visible;
 }
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *address;
 @property (assign) NSInteger *visitors;
 @property (assign) NSInteger *rating;
+@property (nonatomic, retain) Pub *pub;
+@property (assign) BOOL *visible;
 
-- (id)initWithPub:(NSString *)name pubAddress:(NSString *)address pubVisitors:(NSInteger *)visitors pubRating:(NSInteger *)rating;
+- (id)initWithPub:(Pub *)pub;
 - (void)setPosition:(float)x y:(float)y;
 @end

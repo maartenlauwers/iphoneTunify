@@ -194,27 +194,27 @@
 	// Uncomment the following code to add the pubs to the database
 	/*
 	[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
-				andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304"];
+				andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304" andVisitors:@"87"];
 	
 	[self insertNewObject:@"Fitforyou" andStreet:@"Mechelsesteenweg" andNumber:@"763" andZipCode:@"3020" andCity:@"Herent" 
-				andUserID:@"418012" andRating:@"3" andLatitude:@"50.9204853" andLongitude:@"4.6479286"];
+				andUserID:@"418012" andRating:@"3" andLatitude:@"50.9204853" andLongitude:@"4.6479286" andVisitors:@"75"];
 	
 	[self insertNewObject:@"Cafe Mezza" andStreet:@"Mathieu de Layensplein" andNumber:@"119" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"416197" andRating:@"5" andLatitude:@"50.8799430" andLongitude:@"4.7002825"];
+				andUserID:@"416197" andRating:@"5" andLatitude:@"50.8799430" andLongitude:@"4.7002825" andVisitors:@"132"];
 	
 	[self insertNewObject:@"Linx" andStreet:@"Vismarkt" andNumber:@"17" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"416665" andRating:@"1" andLatitude:@"50.8817091" andLongitude:@"4.6998039"];
+				andUserID:@"416665" andRating:@"1" andLatitude:@"50.8817091" andLongitude:@"4.6998039" andVisitors:@"23"];
 	
 	[self insertNewObject:@"Mundo" andStreet:@"Martelarenplein" andNumber:@"14" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"418090" andRating:@"0" andLatitude:@"50.8814212" andLongitude:@"4.7145274"];
+				andUserID:@"418090" andRating:@"0" andLatitude:@"50.8814212" andLongitude:@"4.7145274" andVisitors:@"24"];
 	
 	[self insertNewObject:@"Mephisto" andStreet:@"Oude Markt" andNumber:@"2" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"315056" andRating:@"2" andLatitude:@"50.8783624" andLongitude:@"4.6996464"];
+				andUserID:@"315056" andRating:@"2" andLatitude:@"50.8783624" andLongitude:@"4.6996464" andVisitors:@"54"];
 	
 	[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
-				andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609"];
-	*/
+				andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609" andVisitors:@"9"];
 	
+	*/
 	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
 	[request setEntity:entity]; 
@@ -239,7 +239,8 @@
 	for(Pub *pub in mutableFetchResults) {
 		[self.managedObjectContext deleteObject:pub];
 	}
-	 */
+	*/
+	
 	
 	// Uncomment the following code to commit the removal or add of items in the database
 	// Save the context.
@@ -250,6 +251,9 @@
 		abort();
     }
 	*/
+	 
+	 
+	
 	 
 	
 	
@@ -283,6 +287,7 @@
 - (void)insertNewObject:(NSString *)theName andStreet:(NSString *)theStreet andNumber:(NSString *)theNumber
 				andZipCode:(NSString *)theZipCode andCity:(NSString *)theCity andUserID:(NSString *)theUserID
 				andRating:(NSString *)theRating andLatitude:(NSString *)theLatitude andLongitude:(NSString *)theLongitude
+				andVisitors:(NSString *)theVisistors
 {
 	
 	Pub *pub = (Pub *)[NSEntityDescription insertNewObjectForEntityForName:@"Pub" inManagedObjectContext:self.managedObjectContext];
@@ -295,6 +300,8 @@
 	[pub setRating:theRating];
 	[pub setLatitude:theLatitude];
 	[pub setLongitude:theLongitude];
+	[pub setVisitors:theVisistors];
+	[pub setAddress:[NSString stringWithFormat:@"%@ %@, %@ %@", theStreet, theNumber, theZipCode, theCity]];
 	
 	// Save the context.
     NSError *error = nil;
@@ -538,7 +545,7 @@
     if (cell == nil) {
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
-
+	
 	Pub *pub = [tableData objectAtIndex:indexPath.row];
 	cell.nameLabel.text = [pub name];
 	

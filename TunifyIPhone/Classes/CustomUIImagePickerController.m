@@ -32,10 +32,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	/*
 	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
 	accel.delegate = self;
 	accel.updateInterval = 1.0f/60.0f;
 	NSLog(@"accelerometer configured");
+	*/
 	/*
 	NSLog(@"picker viewDidLoad");
 	//UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];

@@ -15,6 +15,8 @@
 @synthesize address;
 @synthesize visitors;
 @synthesize rating;
+@synthesize pub;
+@synthesize visible;
 
 - (id)init
 {
@@ -34,13 +36,18 @@
 	return self;	
 }
 
-- (id)initWithPub:(NSString *)pubName pubAddress:(NSString *)pubAddress pubVisitors:(NSInteger *)pubVisitors pubRating:(NSInteger *)pubRating {
+//- (id)initWithPub:(NSString *)pubName pubAddress:(NSString *)pubAddress pubVisitors:(NSInteger *)pubVisitors pubRating:(NSInteger *)pubRating {
+	
+- (id)initWithPub:(Pub *)thePub {
 	if ((self = [super init])) {
 		
-		self.name = pubName;
-		self.address = pubAddress;
-		self.visitors = pubVisitors;
-		self.rating = pubRating;
+		self.visible = FALSE;
+		
+		self.pub = thePub;
+		self.name = [pub name];
+		self.address = [pub address];
+		self.visitors = [pub visitors];
+		self.rating = [pub rating];
 		
 		self.frame = CGRectMake(0, 0, 200, 90);
 		self.center = CGPointMake(160, 250);
@@ -89,6 +96,7 @@
 - (void)dealloc {
 	[name release];
 	[address release];
+	[pub release];
 	[super dealloc];
 }
 

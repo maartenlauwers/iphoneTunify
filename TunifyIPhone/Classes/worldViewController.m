@@ -207,8 +207,9 @@ Color3D colors[] = {
 		
 		//[self.overlayView release];
 		//[self.picker release];
-		
 		[self dismissModalViewControllerAnimated:YES];
+		picker = nil;
+		NSLog(@"picker released");
 		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 		controller.pub = self.pub;
 		[self.navigationController pushViewController:controller animated:YES];
@@ -258,6 +259,7 @@ Color3D colors[] = {
 -(void) viewDidAppear:(BOOL)animated { 
 	[super viewDidAppear:animated]; 
 	
+	NSLog(@"View did appear");
 	self.lblDistanceToDestination.text = @"";
 	
 	self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];

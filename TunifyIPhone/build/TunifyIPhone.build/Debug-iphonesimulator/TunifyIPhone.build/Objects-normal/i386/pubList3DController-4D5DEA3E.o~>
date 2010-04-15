@@ -1,0 +1,12 @@
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m: In function '-[pubList3DController viewDidAppear:]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:251: warning: class 'pubList3DController' does not implement the 'CoordinatesToolDelegate' protocol
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m: In function '-[pubList3DController updateCards]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:312: warning: passing argument 1 of 'setVisible:' makes pointer from integer without a cast
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:319: warning: comparison between pointer and integer
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m: In function '-[pubList3DController calculatePubHeading:]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:344: warning: unused variable 'result'
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m: At top level:
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:508: warning: incomplete implementation of class 'pubList3DController'
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:508: warning: method definition for '-calculatePubHeading2:' not found
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:508: warning: method definition for '-headingtest:' not found
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/pubList3DController.m:508: warning: method definition for '-showPickerControllerView:' not found

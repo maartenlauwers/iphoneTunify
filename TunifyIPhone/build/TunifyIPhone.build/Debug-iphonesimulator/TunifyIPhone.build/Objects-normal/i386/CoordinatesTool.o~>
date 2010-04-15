@@ -1,6 +1,4 @@
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m: In function '-[CoordinatesTool locationManager:didUpdateToLocation:fromLocation:]':
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:55: warning: passing argument 1 of 'setUserLocationOK:' makes pointer from integer without a cast
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:40: warning: unused variable 'userLongitude'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:39: warning: unused variable 'userLatitude'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m: In function '-[CoordinatesTool fetchPubLocation:]':
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/CoordinatesTool.m:89: warning: passing argument 1 of 'setPubLocationOK:' makes pointer from integer without a cast
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/CoordinatesTool.m: In function '-[CoordinatesTool locationManager:didUpdateToLocation:fromLocation:]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/CoordinatesTool.m:53: warning: passing argument 1 of 'setUserLocationOK:' makes pointer from integer without a cast
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/CoordinatesTool.m: In function '-[CoordinatesTool fetchPubLocation:]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-a70afd3/TunifyIPhone/Classes/CoordinatesTool.m:87: warning: passing argument 1 of 'setPubLocationOK:' makes pointer from integer without a cast

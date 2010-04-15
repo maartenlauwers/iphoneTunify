@@ -27,7 +27,6 @@
 	CLLocation *pubLocation;
 	NSString *userCoordinates;
 	CLLocation *userLocation;
-	//CLLocationDirection *heading;
 	float heading;
 	BOOL *pubLocationOK;
 	BOOL *userLocationOK;
@@ -39,7 +38,6 @@
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (nonatomic, retain) NSString *userCoordinates;
 @property (nonatomic, retain) CLLocation *userLocation;
-//@property (nonatomic, retain) CLLocationDirection *heading;
 @property (nonatomic, assign) BOOL *pubLocationOK;
 @property (nonatomic, assign) BOOL *userLocationOK;
 
