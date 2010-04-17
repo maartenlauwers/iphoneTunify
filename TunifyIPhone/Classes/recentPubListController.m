@@ -178,7 +178,8 @@
 	
 	self.rowPlayingIndexPath = nil;
 	
-	ct = [[CoordinatesTool alloc] init];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	
@@ -274,6 +275,8 @@
 		CLLocationDegrees longitude= [[pub longitude] doubleValue];
 		CLLocationDegrees latitude = [[pub latitude] doubleValue];
 		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+		
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
 		[pubLocation release];
 		NSString *strDistance = [NSString stringWithFormat:@"%f", distance/1000];

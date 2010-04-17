@@ -23,7 +23,6 @@
 @synthesize userLocation;
 @synthesize distance;
 @synthesize lblDistanceToDestination;
-@synthesize ct;
 @synthesize picker;
 @synthesize overlayView;
 
@@ -165,19 +164,23 @@ Color3D colors[] = {
 		[view sizeToFit];
 		tabBar.hidden = FALSE;
 	}
-	
-	[ct stop];
-	self.glView.delegate = nil;
 
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct stop];
+	
+	self.glView.delegate = nil;
 	[glView stopAnimation];
 	[self.glView removeFromSuperview];
 	[self.glView release];
 	
+	[self dismissModalViewControllerAnimated:YES];
+	picker = nil;
+	[picker release];
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void) btnMusic_clicked:(id)sender {
-	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 	self.glView.delegate = nil;
 	[glView stopAnimation];
@@ -195,9 +198,7 @@ Color3D colors[] = {
 	
 	if(capturedToggle.selectedSegmentIndex == 0) {
 		
-		//[locationTimer invalidate];
-		//[locationTimer release];
-		ct.delegate = nil;
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 		[ct stop];
 
 		self.glView.delegate = nil;
@@ -209,6 +210,7 @@ Color3D colors[] = {
 		//[self.picker release];
 		[self dismissModalViewControllerAnimated:YES];
 		picker = nil;
+		[picker release];
 		NSLog(@"picker released");
 		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 		controller.pub = self.pub;
@@ -268,6 +270,33 @@ Color3D colors[] = {
 	[self.overlayView insertSubview:self.lblDistanceToDestination atIndex:1];
 	[self.overlayView insertSubview:self.capturedToggle atIndex:2];
 	
+	
+	// Create the navigation bar
+	UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+	navBar.barStyle = UIBarStyleDefault;
+	UINavigationItem *navItem = [[UINavigationItem alloc] initWithTitle:[self.pub name]];
+	
+	// Create the left bar button item
+	UIBarButtonItem *pubsBarButtonItem = [[UIBarButtonItem alloc] init];
+	pubsBarButtonItem.title = @"Pubs";
+	pubsBarButtonItem.target = self;
+	pubsBarButtonItem.action = @selector(btnPubs_clicked:);
+	navItem.leftBarButtonItem = pubsBarButtonItem;
+	[pubsBarButtonItem release];
+	
+	// Create the right bar button item
+	UIBarButtonItem *musicBarButtonItem = [[UIBarButtonItem alloc] init];
+	musicBarButtonItem.title = @"Music";
+	musicBarButtonItem.target = self;
+	musicBarButtonItem.action = @selector(btnMusic_clicked:);
+	navItem.rightBarButtonItem = musicBarButtonItem;
+	[musicBarButtonItem release];
+	
+	[navBar pushNavigationItem:navItem animated:NO];
+	[self.overlayView insertSubview:navBar atIndex:3];
+	
+	
+	NSLog(@"D");
 	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		
 		self.picker = [[CustomUIImagePickerController alloc] init];
@@ -277,9 +306,12 @@ Color3D colors[] = {
 		self.picker.cameraOverlayView = self.overlayView;
 		CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.0, 1.132);
 		self.picker.cameraViewTransform = cameraTransform;
-		self.picker.navigationBar.barStyle = UIBarStyleBlackOpaque;
+		self.picker.navigationBar.barStyle = UIBarStyleDefault;
 		
-		[self presentModalViewController:self.picker animated:YES];
+		NSLog(@"E");
+		[self performSelector:@selector(showPickerView:) withObject:self.picker afterDelay:0.1];
+		//[self presentModalViewController:self.picker animated:YES];
+		NSLog(@"F");
 		
 	} else {
 		self.picker = nil;
@@ -298,8 +330,12 @@ Color3D colors[] = {
 	[self initAll];
 } 
 
+- (void)showPickerView:(UIImagePickerController *)controller {
+	[self presentModalViewController:controller animated:YES];   
+} 
+
 -(void)initAll {
-	
+	NSLog(@"G");
 	self.lblDistanceToDestination.text = @"";
 	self.distance = -1;
 	self.userLocation = nil;
@@ -309,15 +345,15 @@ Color3D colors[] = {
 	self.pubAddress = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub street], [pub number], [pub zipcode], [pub city]];
 	
 	// Fetch the user and pub coordinates
-	ct = [[CoordinatesTool alloc] init];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	[ct fetchPubLocation:self.pubAddress];
 	[ct fetchHeading];
 	
-	
+	NSLog(@"H");
 	// Create the 3D pointer arrow view
-	self.glView = [[GLView alloc] initWithFrame:CGRectMake(0, 0, 320, 250)];
+	self.glView = [[GLView alloc] initWithFrame:CGRectMake(0, 15, 320, 250)];
 	self.glView.delegate = self;
 	self.glView.opaque = NO;
 	[self.overlayView insertSubview:self.glView atIndex:0];
@@ -325,16 +361,25 @@ Color3D colors[] = {
 	self.glView.animationInterval = 1.0 / kRenderingFrequency;
 	[self.glView startAnimation];
 	
-	
+	NSLog(@"I");
 	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(updateDistance) userInfo:nil repeats: YES];
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
+	NSLog(@"User Location Found");
 	self.userLocation = sender.userLocation;
-	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
-		self.distance = [sender fetchDistance];
+	
+	CLLocation *userLocation = sender.userLocation;
+	CLLocation *pubLocation = [[CLLocation alloc] initWithLatitude:[[self.pub latitude] floatValue] longitude:[[self.pub longitude] floatValue]];
+	
+	self.distance = [sender fetchDistance:userLocation locationB:pubLocation];
+	
+	[userLocation release];
+	[pubLocation release];
+	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
 		//[self updateDistance];
-	}
+
+	NSLog(@"End user location found");
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {
@@ -351,6 +396,7 @@ Color3D colors[] = {
 	self.pubLocation = sender.pubLocation;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE) {
 		self.distance = [sender fetchDistance];
+		self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
 		//[self updateDistance];
 	}
 }
@@ -367,22 +413,27 @@ Color3D colors[] = {
 
 - (void)headingUpdated:(CoordinatesTool *)sender {
 	// Update our arrow
+	NSLog(@"heading updated");
 	rot = *[self getArrowHeading];		
+	NSLog(@"heading updated done");
 }
 
 - (void)updateDistance {
-	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
+	NSLog(@"UPDATING DISTANCE");
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct fetchUserLocation];
 }
 
 - (GLfloat *)getArrowHeading {
+	NSLog(@"get arrow heading A");
 	float x1 = userLocation.coordinate.latitude;					//Our position.
 	float y1 = userLocation.coordinate.longitude;
-	float x2 = pubLocation.coordinate.latitude;		//The other thing's position.
-	float y2 = pubLocation.coordinate.longitude;
-	//NSLog(@"x1: %f, y1: %f, x2: %f, y2: %f", x1, y1, x2, y2);
+	float x2 = [[self.pub latitude] floatValue]; //pubLocation.coordinate.latitude;		//The other thing's position.
+	float y2 = [[self.pub longitude] floatValue];
+	NSLog(@"x1: %f, y1: %f, x2: %f, y2: %f", x1, y1, x2, y2);
 	float result;						//The resulting bearing.
-	
+	NSLog(@"get arrow heading B");	
 	// Base vector
 	float bx = 0;
 	float by = 1;
@@ -395,6 +446,7 @@ Color3D colors[] = {
 	
 	
 	// Imagine we know our compass degrees, assume 0 degrees
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	float heading = [ct getHeading];// 360; //TODO: Replace by actual degrees of the direction we're facing * -1
 	//NSLog(@"Received heading: %f", heading);
 	
@@ -421,11 +473,14 @@ Color3D colors[] = {
 	
 	GLfloat *glHeading = (GLfloat *)malloc(sizeof(GLfloat));
 	*glHeading = resultDeg;
+	
+	NSLog(@"get arrow heading C");
 	return glHeading;
 }
 
 - (void)drawView:(UIView *)theView
 {
+	NSLog(@"draw view");
     glLoadIdentity();
     glTranslatef(0.0f,0.0f,-3.0f);
 	glScalef(0.5f, 0.5f, 0.5f);
@@ -448,6 +503,7 @@ Color3D colors[] = {
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_COLOR_ARRAY);
 	
+	NSLog(@"end draw view");
 	/*
     static NSTimeInterval lastDrawTime;
     if (lastDrawTime)
@@ -459,7 +515,7 @@ Color3D colors[] = {
 }
 -(void)setupView:(GLView*)view
 {
-	
+	NSLog(@"setup view");
 	const GLfloat zNear = 0.01, zFar = 1000.0, fieldOfView = 45.0; 
 	GLfloat size; 
 	glEnable(GL_DEPTH_TEST);
@@ -474,7 +530,7 @@ Color3D colors[] = {
 	glLoadIdentity(); 
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+	NSLog(@"end setup view");
 }
 
 
@@ -487,6 +543,7 @@ Color3D colors[] = {
 */
 
 - (void)didReceiveMemoryWarning {
+	NSLog(@"MEMORY WARNING");
 	// Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
 	
@@ -497,7 +554,9 @@ Color3D colors[] = {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
 	
-	ct.delegate = nil;
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct stop];
+	
 	self.glView.delegate = nil;
 	[self.glView stopAnimation];
 	[self.glView removeFromSuperview];
@@ -506,6 +565,7 @@ Color3D colors[] = {
 
 
 - (void)dealloc {
+	NSLog(@"deallocing worldviewcontroller");
 	[picker release];
 	[overlayView release];
 	[pub release];
@@ -513,7 +573,6 @@ Color3D colors[] = {
 	[userLocation release];
 	[pubLocation release];
 	[pubAddress release];
-	[ct release];
 	[capturedToggle release];
     [super dealloc];
 }

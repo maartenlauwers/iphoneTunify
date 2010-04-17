@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "Pub.h"
 
 @interface RecentlyVisited : NSObject {
 	NSMutableArray *recentPubs;
 }
 
 + (RecentlyVisited *)sharedInstance;
-- (void) addPub:(NSArray *)pub;
+- (void) addPub:(Pub *)pub;
 - (NSMutableArray *) getRecentPubs;
 @end

@@ -17,15 +17,60 @@
 @synthesize userLocationOK;
 @synthesize pubLocationOK;
 
+static CoordinatesTool *sharedInstance = nil;
 
-- (id)init
+// Singleton methods
+
++ (CoordinatesTool *)sharedInstance
 {
-    if ((self = [super init])) {
-		self.userLocationOK = FALSE;
-		self.pubLocationOK = FALSE;
+    @synchronized(self)
+    {
+        if (sharedInstance == nil)
+			sharedInstance = [[CoordinatesTool alloc] init];
     }
+    return sharedInstance;
+}
+
++ (id)allocWithZone:(NSZone *)zone {
+    @synchronized(self) {
+        if (sharedInstance == nil) {
+            sharedInstance = [super allocWithZone:zone];
+            return sharedInstance;  // assignment and return on first allocation
+        }
+    }
+    return nil; // on subsequent allocation attempts return nil
+}
+
+- (id)copyWithZone:(NSZone *)zone
+{
     return self;
 }
+
+- (id)retain {
+    return self;
+}
+
+- (unsigned)retainCount {
+    return UINT_MAX;  // denotes an object that cannot be released
+}
+
+- (void)release {
+	NSLog(@"Releasing coordinatestool. THIS SHOULDN'T HAPPEN!");
+	[userLocation release];
+	[pubLocation release];
+	[userCoordinates release];
+	[pubCoordinates release];
+	[delegate release];
+}
+
+- (id)autorelease {
+    return self;
+}
+
+- (void) reInit {
+	[self stop];
+}
+
 - (void) fetchUserLocation {
 	NSLog(@"fetchUserLocation");
 	locationManager = [[CLLocationManager alloc] init]; 
@@ -47,9 +92,9 @@
 	CLLocationDegrees longitude = [userLongitude doubleValue];
 	CLLocationDegrees latitude = [userLatitude doubleValue];
 
-	CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
-	self.userLocation = currentLocation; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
-	//[currentLocation release];
+	CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	self.userLocation = [currentLocation copy]; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
+	[currentLocation release];
 	self.userLocationOK = TRUE;	
 	[locationManager stopUpdatingLocation];
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(userLocationFound:)]) {
@@ -82,9 +127,7 @@
 		CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
 		
 		self.pubLocation = currentLocation;
-		[currentLocation release];
-		
-		self.pubLocationOK = TRUE;
+		self.pubLocationOK = YES;
 	}
 	else {
 		//Error handling
@@ -130,6 +173,8 @@
 	self.delegate = nil;
 	[locationManager stopUpdatingLocation];
 	[locationManager stopUpdatingHeading];
+	self.userLocationOK = FALSE;
+	self.pubLocationOK = FALSE;
 }
 
 @end

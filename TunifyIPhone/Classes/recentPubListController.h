@@ -25,8 +25,7 @@
 	NSString *genre;
 	
 	NSIndexPath *rowPlayingIndexPath;
-	
-	CoordinatesTool *ct;
+
 	CLLocation *userLocation;
 }
 

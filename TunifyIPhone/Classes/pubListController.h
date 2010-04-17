@@ -18,6 +18,7 @@
 #import "RecentlyVisited.h"
 #import "Pub.h"
 #import "TunifyIPhoneAppDelegate.h"
+#import "OverlayView.h"
 
 @interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate, M3U8HandlerDelegate> {
 	mapViewController *mapViewController;
@@ -37,11 +38,21 @@
 	
 	NSIndexPath *rowPlayingIndexPath;
 	
-	CoordinatesTool *ct;
+	//CoordinatesTool *ct;
 	CLLocation *userLocation;
 	
 	NSFetchedResultsController *fetchedResultsController;
 	NSManagedObjectContext *managedObjectContext;
+	
+	// 3D variables
+	UIImagePickerController *picker;
+	NSMutableArray *cardSource;
+	BOOL *in3DView;
+	OverlayView *overlayView;
+	UIView *cardView;
+	UILabel* lblCo;
+	Pub *selectedPub;
+	BOOL *pubPlaying;
 }
 
 @property (nonatomic, retain) NSMutableData *webData;
@@ -56,6 +67,13 @@
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
+@property (nonatomic, retain) UIImagePickerController *picker;
+@property (nonatomic, retain) NSMutableArray *cardSource;
+@property (nonatomic, retain) OverlayView *overlayView;
+@property (nonatomic, retain) UIView *cardView;
+@property (nonatomic, retain) UILabel *lblCo;
+@property (nonatomic, retain) Pub *selectedPub;
+
 - (void) tunify_login;
 - (void) btnFilter_clicked:(id)sender;
 - (void) btnLookAround_clicked:(id)sender;
@@ -67,5 +85,8 @@
 				andZipCode:(NSString *)theZipCode andCity:(NSString *)theCity andUserID:(NSString *)theUserID
 				andRating:(NSString *)theRating andLatitude:(NSString *)theLatitude andLongitude:(NSString *)theLongitude
 				andVisitors:(NSString *)theVisistors;
+
+- (void)show3DList;
+- (float)calculatePubHeading:(Pub *)pub;
 
 @end

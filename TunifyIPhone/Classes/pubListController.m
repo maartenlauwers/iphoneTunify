@@ -23,10 +23,15 @@
 @synthesize webData;
 @synthesize rowPlayingIndexPath;
 @synthesize userLocation;
-
-
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext;
+
+@synthesize picker;
+@synthesize cardSource;
+@synthesize overlayView;
+@synthesize cardView;
+@synthesize lblCo;
+@synthesize selectedPub;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -99,11 +104,20 @@
 	}
 }
 
+
+- (IBAction)btnList_clicked:(id)sender {
+	
+	[self hide3DList];
+}
+
 - (IBAction)btnLookAround_clicked:(id)sender {
+	/*
 	pubList3DController *controller = [[pubList3DController alloc] initWithNibName:@"pubList3D" bundle:[NSBundle mainBundle]];
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
+	*/
+	[self show3DList];
 }
 
 - (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow {
@@ -267,7 +281,8 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	
-	ct = [[CoordinatesTool alloc] init];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	
@@ -328,7 +343,17 @@
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
-	[tableView reloadData];
+	
+	if (in3DView == TRUE) {
+		for(PubCard *pubCard in self.cardSource) {
+			float heading = [self calculatePubHeading:[pubCard pub]];
+			[pubCard setHeading:heading];
+			NSLog(@"CARD HEADING: %f", heading);
+		}
+	} else {
+		[tableView reloadData];
+	}
+	
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {
@@ -553,6 +578,8 @@
 		CLLocationDegrees longitude= [[pub longitude] doubleValue];
 		CLLocationDegrees latitude = [[pub latitude] doubleValue];
 		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+		
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
 		[pubLocation release];
 		NSString *strDistance = [NSString stringWithFormat:@"%f", distance/1000];
@@ -688,10 +715,382 @@
 	[theSearchBar resignFirstResponder];
 }
 
+#pragma mark 3D list methods
+- (void)show3DList {
+	//self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
+	self.overlayView = [[OverlayView buttonWithType:UIButtonTypeCustom] init];
+	self.overlayView.frame = CGRectMake(0, 0, 320, 480);
+	self.overlayView.opaque = NO;
+	self.overlayView.backgroundColor = [UIColor clearColor];
+	self.overlayView.delegate = self;
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	[ct fetchHeading];
+
+	lblCo = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 25)];
+	lblCo.text = @"";
+	lblCo.textAlignment = UITextAlignmentLeft;
+	lblCo.font = [UIFont systemFontOfSize:14];
+	lblCo.adjustsFontSizeToFitWidth = NO;
+	lblCo.textColor = [UIColor blackColor];
+	lblCo.backgroundColor = [UIColor lightGrayColor];
+	[self.overlayView insertSubview:lblCo atIndex:10];
+	
+	// Create the navigation bar
+	UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
+	navBar.barStyle = UIBarStyleDefault;
+	UINavigationItem *navItem = [[UINavigationItem alloc] initWithTitle:@"Pubs"];
+	
+	// Create the left bar button item
+	UIBarButtonItem *filterBarButtonItem = [[UIBarButtonItem alloc] init];
+	filterBarButtonItem.title = @"Filter";
+	filterBarButtonItem.target = self;
+	filterBarButtonItem.action = @selector(btnFilter_clicked:);
+	navItem.leftBarButtonItem = filterBarButtonItem;
+	[filterBarButtonItem release];
+	
+	// Create the right bar button item
+	UIBarButtonItem *listBarButtonItem = [[UIBarButtonItem alloc] init];
+	listBarButtonItem.title = @"List";
+	listBarButtonItem.target = self;
+	listBarButtonItem.action = @selector(btnList_clicked:);
+	navItem.rightBarButtonItem = listBarButtonItem;
+	[listBarButtonItem release];
+	
+	
+	[navBar pushNavigationItem:navItem animated:NO];
+	[self.overlayView insertSubview:navBar atIndex:11];
+	
+	
+	
+	//Create the required pub 'cards'
+	NSLog(@"Creating pub cards");
+	self.cardSource = [[NSMutableArray alloc] init];
+	int i = 0;
+	for(Pub *pub in self.dataSource) {
+		PubCard *card =  [[PubCard alloc] initWithPub:pub];
+		[card setPosition:-500 y:-500];
+		card.visible = FALSE;
+		[card setHeading:-1];
+		card.delegate = self;
+		[self.overlayView insertSubview:card atIndex:i];
+		[self.cardSource addObject:card];
+		i++;
+	}
+	
+	NSLog(@"Pub cards created");
+	//[mutableFetchResults release];
+	//[request release];
+	
+	
+	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		
+		self.picker = [[UIImagePickerController alloc] init];
+		self.picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+		
+		self.picker.showsCameraControls = NO;
+		self.picker.cameraOverlayView = self.overlayView;
+		CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.0, 1.132);
+		self.picker.cameraViewTransform = cameraTransform;
+		self.picker.navigationBar.barStyle = UIBarStyleBlackOpaque;
+		[self presentModalViewController:self.picker animated:YES];
+		
+	} else {
+		NSLog(@"error with picker");
+		self.picker = nil;
+		
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No Camera Found"
+															message:@"You need an iPhone with a camera to use this application."
+														   delegate:self
+												  cancelButtonTitle:@"Cancel"
+												  otherButtonTitles:@"Ok", nil];
+		
+		[alertView show];
+		[alertView release];
+	}
+	
+	NSLog(@"end 3d view did load");
+	
+	// Enable the accelerometer
+	
+	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+	accel.delegate = self;
+	accel.updateInterval = 1.0f/20.0f;
+	
+	in3DView = TRUE;
+}
+
+- (void)hide3DList {
+
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	
+	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+	accel.delegate = nil;
+	
+	[self dismissModalViewControllerAnimated:YES];
+	
+	in3DView = FALSE;
+}
+
+
+- (void)updateCards {
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	NSLog(@"Our heading: %f", [ct getHeading]);
+	
+	NSArray *yValues = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:310],[NSNumber numberWithInt:200],[NSNumber numberWithInt:420],[NSNumber numberWithInt:90],nil]; 
+	int cardScreenIndex = 0;
+	int validIntervalInDegrees = 80;
+	for(PubCard *pubCard in self.cardSource) {
+		float heading = [pubCard getHeading]; //[self calculatePubHeading:[pubCard pub]];
+		
+		// Check if a correct heading was initialized
+		if(heading != -1) {
+			float newHeading = heading - [ct getHeading];
+			
+			BOOL isValidHeading = FALSE;
+			if(heading < 40) {
+				if((360 - [ct getHeading]) <= heading) {
+					isValidHeading = TRUE;
+				}
+			} else if (heading > 320) {
+				if(((360 - heading) + [ct getHeading]) <= 40) {
+					isValidHeading = TRUE;
+				}
+			}
+			
+			if( ((newHeading <= validIntervalInDegrees/2) && (newHeading >= -(validIntervalInDegrees/2))) || (isValidHeading == TRUE)) {
+				//NSLog(@"Card heading: %f", heading);
+				//NSLog(@"new Heading: %f", newHeading);
+				int localHeadingOffset = 0;
+				if (newHeading < 0) {
+					localHeadingOffset = validIntervalInDegrees/2 - (newHeading * -1);
+				} else {
+					localHeadingOffset = newHeading + validIntervalInDegrees/2;
+				}
+				//NSLog(@"LOCALHEADINGOFFSET: %d", localHeadingOffset);
+				// iphone width = 320 px;
+				// card width = 200 px;
+				// width of each degree on screen = 520/(validIntervalInDegrees)
+				
+				// Show the pub
+				//NSLog(@"VALID INTERVAL");
+				pubCard.visible = TRUE;
+				[pubCard setPosition:(localHeadingOffset*6.5 - 100) y:[[yValues objectAtIndex:cardScreenIndex] floatValue]];
+				cardScreenIndex++;
+				//NOTE: When we have more than 4 pubs on the screen, the yValues array will run out of bounds.
+				
+				
+			} else {
+				if(pubCard.visible == TRUE) {
+					[pubCard setPosition:-500 y:-500];
+				}
+				pubCard.visible = FALSE;
+				
+			}
+		}
+	}
+	
+	[yValues release];
+}
+
+- (void)headingUpdated:(CoordinatesTool *)sender {
+	[self updateCards];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	lblCo.text = [NSString stringWithFormat:@"%f", [ct getHeading]];
+	
+}
+
+- (float)calculatePubHeading:(Pub *)pub {
+	float u2 = userLocation.coordinate.latitude;					//Our position.
+	float u1 = userLocation.coordinate.longitude;
+	//u2 = 50.8728119;
+	//u1 = 4.6644344;
+	float v2 = [[pub latitude] floatValue];		
+	float v1 = [[pub longitude] floatValue];
+	//NSLog(@"u1: %f, u2: %f, v1: %f, v2: %f", u1, u2, v1, v2);
+	float result;						//The resulting bearing.
+	
+	
+	// Base vector
+	float b1 = 0;
+	float b2 = 1;
+	
+	// Normalize V
+	float normV1 = v1 - u1;
+	float normV2 = v2 - u2;	
+	
+	// Calculate the angle between the base vector (pointing north) and the pub location
+	//float uv = (normalizedX2*bx) + (normalizedY2*by);
+	float uv = (b1*normV1) + (b2*normV2);
+	//NSLog(@"uv: %f", uv);
+	float normU = sqrt(b1*b1 + b2*b2);
+	//NSLog(@"normU: %f", normU);
+	float normV = sqrt(normV1*normV1 + normV2*normV2);
+	//NSLog(@"normV: %f", normV);
+	float normMultiplication = normU * normV;
+	//NSLog(@"normMultiplication: %f", normMultiplication);
+	float division = uv/normMultiplication;
+	//NSLog(@"division: %f", division);
+	float resultRad = acos(division);
+	//NSLog(@"resultRad: %f", resultRad);
+	float resultDeg = resultRad * (180/M_PI);
+	//NSLog(@"resultDeg: %f", resultDeg);
+	
+	// If our pub's longitude is smaller than the users, then the angle will be larger than 180 degrees.
+	// However, the above method only returns angles smaller than or equal to 180, so we'll need to fix this ourselves.
+	if (v1 < u1) {
+		resultDeg = (180 - resultDeg) + 180;
+	} 
+	
+	return resultDeg;
+}
+
+- (void)cardClicked:(id)sender {
+	
+	PubCard *card = (PubCard *)sender;
+	self.selectedPub = [card pub];
+	
+	self.cardView = [[UIView alloc] initWithFrame:CGRectMake(0, 400, 320, 100)];
+	self.cardView.opaque = YES;
+	self.cardView.backgroundColor = [UIColor lightGrayColor];
+
+	UIButton *directionsButton = [[UIButton alloc] init];
+	[directionsButton setImage:[UIImage imageNamed:@"3DMapsIcon.png"] forState:UIControlStateNormal];
+	[directionsButton addTarget:self action:@selector(buttonDirectionClicked:) forControlEvents:UIControlEventTouchUpInside];
+	directionsButton.frame = CGRectMake(250, 10, 59, 60);	
+						
+	
+	UIButton *playMusicButton = [[UIButton alloc] init];
+	[playMusicButton setImage:[UIImage imageNamed:@"3DPlayIcon.png"] forState:UIControlStateNormal];
+	[playMusicButton addTarget:self action:@selector(buttonPlayMusicClicked:) forControlEvents:UIControlEventTouchUpInside];
+	playMusicButton.frame = CGRectMake(10, 10, 59, 60);	
+	
+
+	UILabel* nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(73, 0, 180, 25)];
+	nameLabel.text = [[card pub] name];
+	nameLabel.textAlignment = UITextAlignmentCenter;
+	nameLabel.font = [UIFont systemFontOfSize:14];
+	nameLabel.adjustsFontSizeToFitWidth = NO;
+	nameLabel.textColor = [UIColor blackColor];
+	nameLabel.opaque = FALSE;
+	nameLabel.backgroundColor = [UIColor clearColor];
+	
+	UILabel *address1Label = [[UILabel alloc] initWithFrame:CGRectMake(73, 20, 180, 25)];
+	address1Label.text = [NSString stringWithFormat:@"%@ %@", [[card pub] street], [[card pub] number]];
+	address1Label.textAlignment = UITextAlignmentCenter;
+	address1Label.font = [UIFont systemFontOfSize:12];
+	address1Label.adjustsFontSizeToFitWidth = NO;
+	address1Label.textColor = [UIColor blackColor];
+	address1Label.opaque = FALSE;
+	address1Label.backgroundColor = [UIColor clearColor];
+	
+	UILabel *address2Label = [[UILabel alloc] initWithFrame:CGRectMake(73, 40, 180, 25)];
+	address2Label.text = [NSString stringWithFormat:@"%@ %@", [[card pub] zipcode], [[card pub] city]];
+	address2Label.textAlignment = UITextAlignmentCenter;
+	address2Label.font = [UIFont systemFontOfSize:12];
+	address2Label.adjustsFontSizeToFitWidth = NO;
+	address2Label.textColor = [UIColor blackColor];
+	address2Label.opaque = FALSE;
+	address2Label.backgroundColor = [UIColor clearColor];
+	
+	UILabel *visitorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 60, 200, 25)];
+	visitorsLabel.text = [NSString stringWithFormat:@"Visitors: %@", [[card pub] visitors]];
+	visitorsLabel.textAlignment = UITextAlignmentCenter;
+	visitorsLabel.font = [UIFont systemFontOfSize:12];
+	visitorsLabel.adjustsFontSizeToFitWidth = NO;
+	visitorsLabel.textColor = [UIColor blackColor];
+	visitorsLabel.opaque = FALSE;
+	visitorsLabel.backgroundColor = [UIColor clearColor];
+	
+	
+	[self.cardView insertSubview:playMusicButton atIndex:0];
+	[self.cardView insertSubview:directionsButton atIndex:1];
+	[self.cardView insertSubview:address1Label atIndex:2];
+	[self.cardView insertSubview:address2Label atIndex:3];
+	[self.cardView insertSubview:visitorsLabel atIndex:4];
+	[self.cardView insertSubview:nameLabel atIndex:5];
+	
+	[self.overlayView insertSubview:self.cardView atIndex:20];
+}
+
+#pragma mark OverlayViewDelegateHandlers
+- (void)viewClicked:(OverlayView *)sender {
+	
+	[self.cardView removeFromSuperview];
+}
+
+#pragma mark popUpScreenButotnHandlers
+-(void)buttonPlayMusicClicked:(id)sender {
+	Pub *pub = self.selectedPub;
+	if (pubPlaying == TRUE) {
+		// stop the music
+		pubPlaying = FALSE;
+	} else {
+		// start the music
+		pubPlaying = TRUE;
+	}
+}
+
+-(void)buttonDirectionClicked:(id)sender {
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct stop];
+	
+	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+	accel.delegate = nil;
+	
+	//[ct release];
+	
+	//[lblCo release];
+	//[genre release];
+	//[searchBar release];
+	//[overlayView release];
+	
+	[self dismissModalViewControllerAnimated:YES];
+	//picker = nil;
+	//[picker release];
+	//NSLog(@"picker released");
+	
+
+	// Add the pub to the recently visited pub list
+	Pub *pub = self.selectedPub;
+	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
+	[rv addPub:pub];
+	
+	worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
+	controller.pub = pub;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
+	
+}
+
+- (void)accelerometer:(UIAccelerometer *)acel didAccelerate:(UIAcceleration *)acceleration {
+	//NSLog([[NSString alloc] initWithFormat:@"x: %g\ty:%g\tz:%g", acceleration.x, acceleration.y, acceleration.z]);
+	
+	
+	if (fabsf(acceleration.x) > 1.5 || fabsf(acceleration.y) > 1.5 || fabsf(acceleration.z) > 1.5)
+	{
+		//NSLog([[NSString alloc] initWithFormat:@"x: %g\ty:%g\tz:%g", acceleration.x, acceleration.y, acceleration.z]);
+	}
+	
+}
+
 
 - (void)dealloc {
+	[lblCo release];
+	[cardView release];
+	[overlayView release];
+	[picker release];
 	[genre release];
+	[selectedPub release];
 	[rowPlayingIndexPath release];
+	[cardSource release];
 	[dataSource release];
 	[tableView release];
 	[soapResults release];

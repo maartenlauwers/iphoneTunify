@@ -41,6 +41,8 @@
 @property (nonatomic, assign) BOOL *pubLocationOK;
 @property (nonatomic, assign) BOOL *userLocationOK;
 
++ (CoordinatesTool *)sharedInstance;
+- (void)reInit;
 - (void) stop;
 - (void) fetchUserLocation;
 - (void) fetchPubLocation:(NSString *)pubAddress;

@@ -13,6 +13,8 @@
 #import "CustomImagePicker.h"
 #import "Pub.h"
 #import "CoordinatesTool.h"
+#import "worldViewController.h"
+#import "mapViewController.h"
 
 @interface pubList3DController : UIViewController <UIActionSheetDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIAccelerometerDelegate> {
 	IBOutlet UISearchBar *searchBar;
@@ -25,7 +27,6 @@
 	
 	NSMutableArray *dataSource;
 	
-	CoordinatesTool *ct;
 	CLLocation *userLocation;
 	NSTimer *timer;
 	UILabel* lblCo;
@@ -36,11 +37,9 @@
 @property (nonatomic, retain) CustomUIImagePickerController *picker;
 @property (nonatomic, retain) UIView *overlayView;
 @property (nonatomic, retain) NSMutableArray *dataSource;
-@property (nonatomic, retain) CoordinatesTool *ct;
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) UILabel *lblCo;
 
-- (void)showPickerControllerView:(id)sender;
 - (void) btnFilter_clicked:(id)sender;
 - (void) btnList_clicked:(id)sender;
 - (float)calculatePubHeading:(Pub *)pub;

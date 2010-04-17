@@ -10,22 +10,38 @@
 #import "StarView.h"
 #import "Pub.h"
 
+@class PubCard;
+@protocol PubCardDelegate <NSObject>
+@optional
+- (void)cardClicked:(PubCard *)sender;
+@end
+
 @interface PubCard : UIView {
+	id<PubCardDelegate> delegate;
+	
 	NSString *name;
 	NSString *address;
 	NSInteger *visitors;
 	NSInteger *rating;
 	Pub *pub;
 	BOOL *visible;
+	float heading;
 }
 
+
+@property (nonatomic, assign) id <PubCardDelegate> delegate;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *address;
 @property (assign) NSInteger *visitors;
 @property (assign) NSInteger *rating;
 @property (nonatomic, retain) Pub *pub;
 @property (assign) BOOL *visible;
+@property (assign) float heading;
+
 
 - (id)initWithPub:(Pub *)pub;
 - (void)setPosition:(float)x y:(float)y;
+- (void)setHeading:(float)theHeading;
+- (float)getHeading;
+- (void)button_clicked:(id)sender;
 @end

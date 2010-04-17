@@ -35,7 +35,7 @@
 	UICGoogleMapsAPI *googleMapsAPI;
 	UIWebView *tempView;
 	
-	CoordinatesTool *ct;
+	//CoordinatesTool *ct;
 	NSString *userCoordinates;
 	CLLocation *userLocation;
 	NSString *pubCoordinates;
@@ -51,7 +51,6 @@
 
 @property (nonatomic, retain) NSMutableArray *pointsArray;
 @property (nonatomic, retain) NSMutableData *webData;
-@property (nonatomic, retain) CoordinatesTool *ct;
 @property (nonatomic, retain) NSString *userCoordinates;
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) NSString *pubCoordinates;

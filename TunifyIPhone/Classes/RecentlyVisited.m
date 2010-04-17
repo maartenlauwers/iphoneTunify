@@ -58,7 +58,7 @@ static RecentlyVisited *sharedInstance = nil;
     return self;
 }
 
-- (void) addPub:(NSArray *)pub {
+- (void) addPub:(Pub *)pub {
 	
 	if (recentPubs == nil) {
 		recentPubs = [[NSMutableArray alloc] init];

@@ -17,7 +17,6 @@
 @synthesize picker;
 @synthesize overlayView;
 @synthesize dataSource;
-@synthesize ct;
 @synthesize userLocation;
 @synthesize lblCo;
 
@@ -109,7 +108,13 @@
 		tabBar.hidden = FALSE;
 	}
 	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct stop];
 	
+	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+	accel.delegate = nil;
+	
+	[self dismissModalViewControllerAnimated:YES];
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
@@ -157,7 +162,11 @@
 	self.overlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 480)];
 	self.overlayView.opaque = YES;
 	
-	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	[ct fetchHeading];
 	
 	// Fetch our discovered pubs from Core Data
 	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
@@ -193,6 +202,36 @@
 	[self.overlayView insertSubview:lblCo atIndex:10];
 	
 	
+	
+	// Create the navigation bar
+	UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+	navBar.barStyle = UIBarStyleDefault;
+	UINavigationItem *navItem = [[UINavigationItem alloc] initWithTitle:@"Pubs"];
+	
+	// Create the left bar button item
+	UIBarButtonItem *filterBarButtonItem = [[UIBarButtonItem alloc] init];
+	filterBarButtonItem.title = @"Filter";
+	filterBarButtonItem.target = self;
+	filterBarButtonItem.action = @selector(btnFilter_clicked:);
+	self.navigationItem.leftBarButtonItem = filterBarButtonItem;
+	[filterBarButtonItem release];
+	
+	// Create the right bar button item
+	UIBarButtonItem *listBarButtonItem = [[UIBarButtonItem alloc] init];
+	listBarButtonItem.title = @"List";
+	listBarButtonItem.target = self;
+	listBarButtonItem.action = @selector(btnList_clicked:);
+	self.navigationItem.rightBarButtonItem = listBarButtonItem;
+	[listBarButtonItem release];
+	
+	navItem.leftBarButtonItem = filterBarButtonItem;
+	navItem.rightBarButtonItem = listBarButtonItem;
+	
+	[navBar pushNavigationItem:navItem animated:NO];
+	[self.overlayView insertSubview:navBar atIndex:11];
+	
+	
+	
 	//Create the required pub 'cards'
 	int i = 0;
 	for(Pub *pub in mutableFetchResults) {
@@ -200,9 +239,12 @@
 			PubCard *card =  [[PubCard alloc] initWithPub:pub];
 			[card setPosition:-500 y:-500];
 			card.visible = FALSE;
+			[card setHeading:-1];	// As long as heading == -1, the method updateCards won't try to work with this value.
+			card.delegate = self;
 			[self.overlayView insertSubview:card atIndex:i];
 			[self.dataSource addObject:card];
 			i++;
+			
 			//heading = [self calculatePubHeading:pub];
 			//NSLog(@"Pub: %@, Heading: %f", [pub name], heading);
 		//}
@@ -247,11 +289,6 @@
 	accel.delegate = self;
 	accel.updateInterval = 1.0f/20.0f;
 	
-	ct = [[CoordinatesTool alloc] init];
-	ct.delegate = self;
-	[ct fetchUserLocation];
-	[ct fetchHeading];
-	
 	//timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(updateCards) userInfo:nil repeats: YES];
 }
 
@@ -259,6 +296,14 @@
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
+	
+	for(PubCard *pubCard in self.dataSource) {
+		float heading = [self calculatePubHeading:[pubCard pub]];
+		[pubCard setHeading:heading];
+		NSLog(@"CARD HEADING: %f", heading);
+	}
+	
+	
 }
 	
 - (void)userLocationError:(CoordinatesTool *)sender {
@@ -272,55 +317,59 @@
 }
 
 - (void)updateCards {
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	NSLog(@"Our heading: %f", [ct getHeading]);
 	
 	NSArray *yValues = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:250],[NSNumber numberWithInt:150],[NSNumber numberWithInt:350],[NSNumber numberWithInt:50],nil]; 
 	int cardScreenIndex = 0;
 	int validIntervalInDegrees = 80;
 	for(PubCard *pubCard in self.dataSource) {
+		float heading = [pubCard getHeading]; //[self calculatePubHeading:[pubCard pub]];
 		
-		float heading = [self calculatePubHeading:[pubCard pub]];
-		float newHeading = heading - [ct getHeading];
-		
-		BOOL isValidHeading = FALSE;
-		if(heading < 40) {
-			if((360 - [ct getHeading]) <= heading) {
-				isValidHeading = TRUE;
+		// Check if a correct heading was initialized
+		if(heading != -1) {
+			float newHeading = heading - [ct getHeading];
+			
+			BOOL isValidHeading = FALSE;
+			if(heading < 40) {
+				if((360 - [ct getHeading]) <= heading) {
+					isValidHeading = TRUE;
+				}
+			} else if (heading > 320) {
+				if(((360 - heading) + [ct getHeading]) <= 40) {
+					isValidHeading = TRUE;
+				}
 			}
-		} else if (heading > 320) {
-			if(((360 - heading) + [ct getHeading]) <= 40) {
-				isValidHeading = TRUE;
-			}
-		}
-		
-		if( ((newHeading <= validIntervalInDegrees/2) && (newHeading >= -(validIntervalInDegrees/2))) || (isValidHeading == TRUE)) {
-			NSLog(@"Card heading: %f", heading);
-			NSLog(@"new Heading: %f", newHeading);
-			int localHeadingOffset = 0;
-			if (newHeading < 0) {
-				localHeadingOffset = validIntervalInDegrees/2 - (newHeading * -1);
+			
+			if( ((newHeading <= validIntervalInDegrees/2) && (newHeading >= -(validIntervalInDegrees/2))) || (isValidHeading == TRUE)) {
+				NSLog(@"Card heading: %f", heading);
+				NSLog(@"new Heading: %f", newHeading);
+				int localHeadingOffset = 0;
+				if (newHeading < 0) {
+					localHeadingOffset = validIntervalInDegrees/2 - (newHeading * -1);
+				} else {
+					localHeadingOffset = newHeading + validIntervalInDegrees/2;
+				}
+				NSLog(@"LOCALHEADINGOFFSET: %d", localHeadingOffset);
+				// iphone width = 320 px;
+				// card width = 200 px;
+				// width of each degree on screen = 520/(validIntervalInDegrees)
+				
+				// Show the pub
+				NSLog(@"VALID INTERVAL");
+				pubCard.visible = TRUE;
+				[pubCard setPosition:(localHeadingOffset*6.5 - 100) y:[[yValues objectAtIndex:cardScreenIndex] floatValue]];
+				cardScreenIndex++;
+				//NOTE: When we have more than 4 pubs on the screen, the yValues array will run out of bounds.
+				
+				
 			} else {
-				localHeadingOffset = newHeading + validIntervalInDegrees/2;
+				if(pubCard.visible == TRUE) {
+					[pubCard setPosition:-500 y:-500];
+				}
+				pubCard.visible = FALSE;
+				
 			}
-			NSLog(@"LOCALHEADINGOFFSET: %d", localHeadingOffset);
-			// iphone width = 320 px;
-			// card width = 200 px;
-			// width of each degree on screen = 520/(validIntervalInDegrees)
-			
-			// Show the pub
-			NSLog(@"VALID INTERVAL");
-			pubCard.visible = TRUE;
-			[pubCard setPosition:(localHeadingOffset*6.5 - 100) y:[[yValues objectAtIndex:cardScreenIndex] floatValue]];
-			cardScreenIndex++;
-			//NOTE: When we have more than 4 pubs on the screen, the yValues array will run out of bounds.
-			
-			
-		} else {
-			if(pubCard.visible == TRUE) {
-				[pubCard setPosition:-500 y:-500];
-			}
-			pubCard.visible = FALSE;
-			
 		}
 	}
 	
@@ -329,6 +378,7 @@
 
 - (void)headingUpdated:(CoordinatesTool *)sender {
 	[self updateCards];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	lblCo.text = [NSString stringWithFormat:@"%f", [ct getHeading]];
 	
 }
@@ -336,11 +386,11 @@
 - (float)calculatePubHeading:(Pub *)pub {
 	float u2 = userLocation.coordinate.latitude;					//Our position.
 	float u1 = userLocation.coordinate.longitude;
-	u2 = 50.8728119;
-	u1 = 4.6644344;
+	//u2 = 50.8728119;
+	//u1 = 4.6644344;
 	float v2 = [[pub latitude] floatValue];		
 	float v1 = [[pub longitude] floatValue];
-	NSLog(@"u1: %f, u2: %f, v1: %f, v2: %f", u1, u2, v1, v2);
+	//NSLog(@"u1: %f, u2: %f, v1: %f, v2: %f", u1, u2, v1, v2);
 	float result;						//The resulting bearing.
 	
 	
@@ -378,6 +428,45 @@
 	return resultDeg;
 }
 
+- (void)cardClicked:(id)sender {
+
+	//ct.delegate = nil;
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct stop];
+	
+	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+	accel.delegate = nil;
+	
+	//[ct release];
+	
+	//[lblCo release];
+	//[genre release];
+	//[searchBar release];
+	//[overlayView release];
+	
+	[self dismissModalViewControllerAnimated:YES];
+	//picker = nil;
+	//[picker release];
+	//NSLog(@"picker released");
+	
+	PubCard *card = (PubCard *)sender;
+	Pub *pub = [card pub];
+	NSLog(@"A");
+	// Add the pub to the recently visited pub list
+	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
+	[rv addPub:pub];
+	
+	//[self dealloc];
+	NSLog(@"B");
+	worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
+	controller.pub = pub;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
+	NSLog(@"C");
+	
+	//[self dealloc];
+}
 
 - (void)accelerometer:(UIAccelerometer *)acel didAccelerate:(UIAcceleration *)acceleration {
 	//NSLog([[NSString alloc] initWithFormat:@"x: %g\ty:%g\tz:%g", acceleration.x, acceleration.y, acceleration.z]);
@@ -499,7 +588,6 @@
 	[overlayView release];
 	[picker release];
 	[userLocation release];
-	[ct release];
 	[dataSource release];
 	[super dealloc];
 }

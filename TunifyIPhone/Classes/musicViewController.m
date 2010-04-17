@@ -109,25 +109,9 @@
 	[dataSource addObject:song3];
 	
 	
+	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	//[audioPlayer play:@"http://localhost:1935/live/mp3:LethalIndustry.mp3/playlist.m3u8"];
 	
-	//NSLog(@"URL: %@", [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]]);
-	NSError *error = nil; 
-	//player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"Equus" ofType:@"mp3"]] error:&error]; 
-	//player.delegate = self; 
-	if(error != NULL) { 
-		NSLog([error description]);  
-		[error release]; 
-	} 
-	
-	//[player play]; 
-	
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer play:@"http://localhost:1935/live/mp3:LethalIndustry.mp3/playlist.m3u8"];
-	
-
-
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 -(IBAction) volumeChanged {

@@ -26,7 +26,6 @@
 @synthesize mapView;
 @synthesize pointsArray;
 @synthesize webData;
-@synthesize ct;
 @synthesize userCoordinates;
 @synthesize userLocation;
 @synthesize pubCoordinates;
@@ -63,19 +62,19 @@
 		tabBar.hidden = FALSE;
 	}
 	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 		
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void) btnMusic_clicked:(id)sender {
-	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 	
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-	//[self presentModalViewController:mvc animated:YES];
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -92,6 +91,7 @@
 		tabBar.hidden = FALSE;
 	}
 	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 	
 	pubVisitViewController *controller = [[pubVisitViewController alloc] initWithNibName:@"pubVisitView" bundle:[NSBundle mainBundle]];
@@ -105,6 +105,7 @@
 	
 	if(capturedToggle.selectedSegmentIndex == 1) {
 		
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 		[ct stop];
 		
 		worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
@@ -179,7 +180,8 @@
 	self.pubAddress = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub street], [pub number], [pub zipcode], [pub city]];
 	
 	// Fetch the user location and the pub's location
-	ct = [[CoordinatesTool alloc] init];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	[ct fetchPubLocation:self.pubAddress];
@@ -304,7 +306,8 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView{
 	NSLog(@"webViewDidFinishLoad");
 	self.webViewDidFinishLoading = TRUE;
-	if (self.ct.userLocationOK == TRUE && self.ct.pubLocationOK == TRUE) {
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	if (ct.userLocationOK == TRUE && ct.pubLocationOK == TRUE) {
 		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];	
 	}
 }
@@ -526,7 +529,7 @@
 -(void) showWebViewForURL:(NSURL*) url
 {
 	NSLog(@"ShowWebViewForURL");
-	CSWebDetailsViewController* webViewController = [[CSWebDetailsViewController alloc] initWithNibName:@"CSWebDetailsViewController" bundle:nil];
+	CSWebDetailsViewController* webViewController = [[[CSWebDetailsViewController alloc] initWithNibName:@"CSWebDetailsViewController" bundle:nil] autorelease];
 	[webViewController setUrl:url];
 	
 	[self presentModalViewController:webViewController animated:YES];
@@ -561,7 +564,9 @@
 -(void) viewWillDisappear:(BOOL)animated { 
 	[super viewWillDisappear:animated]; 
 	
-	NSLog(@"Shutting down core location..."); 
+	NSLog(@"View will disappear..."); 
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct stop];
 	//[self.locationManager stopUpdatingLocation]; 
 	//self.locationManager = nil;
 } 
@@ -573,20 +578,34 @@
 
 
 - (void)dealloc {
+	NSLog(@"A");
 	[pointsArray release];
+		NSLog(@"B");
+	[webData relese];
 	[mapView release];
+		NSLog(@"C");
 	[_routeViews release];
+		NSLog(@"D");
 	[_detailsVC release];
+		NSLog(@"E");
 	[googleMapsAPI release];
-	[ct release];
+		NSLog(@"F");
 	[userCoordinates release];
+		NSLog(@"G");
 	[userLocation release];
+		NSLog(@"H");
 	[pubCoordinates release];
+		NSLog(@"I");
 	[pubLocation release];
+		NSLog(@"J");
 	[pubAddress release];
+		NSLog(@"K");
 	[pub release];
+		NSLog(@"L");
 	[activityIndicator release];
+		NSLog(@"M");
 	[capturedToggle release];
+		NSLog(@"N");
     [super dealloc];
 }
 

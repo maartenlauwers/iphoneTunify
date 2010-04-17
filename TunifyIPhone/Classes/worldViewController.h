@@ -24,7 +24,6 @@
 	IBOutlet UILabel *lblDistanceToDestination;
 	GLView *glView;
 	
-	CoordinatesTool *ct;
 	CLLocation *userLocation;
 	CLLocation *pubLocation;
 	CLLocationDistance distance;
@@ -43,7 +42,6 @@
 @property (nonatomic, retain) IBOutlet UILabel *lblDistanceToDestination;
 @property (nonatomic, retain) GLView *glView;
 
-@property (nonatomic, retain) CoordinatesTool *ct;
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (assign) CLLocationDistance distance;
@@ -56,5 +54,6 @@
 - (void) btnMusic_clicked:(id)sender;
 - (IBAction) capturedToggleChanged:(id)sender;
 - (GLfloat *)getArrowHeading;
+- (void)showPickerView:(UIImagePickerController *)controller;
 
 @end
