@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "FBConnect/FBConnect.h"
+#import "TunifyIPhoneAppDelegate.h"
 
 @interface facebookController : UIViewController <FBDialogDelegate> {
 	FBSession *fbSession;

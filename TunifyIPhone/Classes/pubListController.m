@@ -176,6 +176,9 @@
 	
 }
 
+#pragma mark -
+#pragma mark View managment
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
@@ -201,12 +204,13 @@
 	
 	
 	// CoreData test
+	/*
 	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
 	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
 	self.managedObjectContext = managedObjectContext;
 	
 	// Uncomment the following code to add the pubs to the database
-	/*
+	
 	[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
 				andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304" andVisitors:@"87"];
 	
@@ -228,7 +232,7 @@
 	[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
 				andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609" andVisitors:@"9"];
 	
-	*/
+	
 	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
 	[request setEntity:entity]; 
@@ -247,7 +251,7 @@
 	
 	self.dataSource = [[NSMutableArray alloc] init];
 	[self.dataSource addObjectsFromArray:mutableFetchResults];
-	
+	*/
 	// Uncomment the following code to remove all items from the database
 	/*
 	for(Pub *pub in mutableFetchResults) {
@@ -266,25 +270,13 @@
     }
 	*/
 	 
-	 
-	
-	 
-	
-	
+	/*
 	[mutableFetchResults release];
 	[request release];
+	*/
 
-
-	tableData = [[NSMutableArray alloc] init];
-	searchedData = [[NSMutableArray alloc] init];
-	[tableData addObjectsFromArray:dataSource];
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-	
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	[ct reInit];
-	ct.delegate = self;
-	[ct fetchUserLocation];
 	
 	[self tunify_login];
 	
@@ -295,6 +287,33 @@
 	
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+	NSLog(@"View did appear");
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	
+	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateCurrentLocation) userInfo:nil repeats: YES];
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated {
+	 [super viewDidDisappear:animated];
+	 CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	 [ct stop];
+	 [locationTimer invalidate];
+ }
+ 
+#pragma mark -
+#pragma mark Location management
+
+- (void)updateCurrentLocation {
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct fetchUserLocation];
+}
 
 #pragma mark -
 #pragma mark Add a new object
@@ -344,6 +363,49 @@
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
 	
+	// Fetch all possible pubs from Core Data
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
+	self.managedObjectContext = managedObjectContext;
+	
+	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
+	[request setEntity:entity]; 
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]; 
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil]; 
+	[request setSortDescriptors:sortDescriptors]; 
+	[sortDescriptors release]; 
+	[sortDescriptor release]; 
+	NSError *error; 
+	NSMutableArray *mutableFetchResults = [[self.managedObjectContext executeFetchRequest:request error:&error] mutableCopy]; 
+	if (mutableFetchResults == nil) { 
+		// Might want to do something more serious... 
+		NSLog(@"Can’t load the Pub data!"); 
+	} 
+	
+	// Now that we know our location, we can filter the discoverd pubs based on their distance from us.
+	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  
+	NSNumber *radius = [userDefaults stringForKey:@"radius"];
+	
+	self.dataSource = [[NSMutableArray alloc] init];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	for(Pub *pub in mutableFetchResults) {
+		CLLocationDegrees longitude = [[pub longitude] doubleValue]; 
+		CLLocationDegrees latitude = [[pub latitude] doubleValue]; 
+		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
+			
+		if (distance <= ([radius floatValue] * 1000)) {
+			[self.dataSource addObject:pub];
+		}
+	}
+	
+	tableData = [[NSMutableArray alloc] init];
+	searchedData = [[NSMutableArray alloc] init];
+	[tableData addObjectsFromArray:dataSource];
+	
+	
 	if (in3DView == TRUE) {
 		for(PubCard *pubCard in self.cardSource) {
 			float heading = [self calculatePubHeading:[pubCard pub]];
@@ -354,6 +416,7 @@
 		[tableView reloadData];
 	}
 	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {
@@ -494,17 +557,6 @@
 		
 		[soapResults release];
 		soapResults = nil;
-	} else if ([elementName isEqualToString:@"ns1:loginUserResponse"]) {
-		[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-	}
-}
-
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-
-	if (self.genre != nil) {
-		NSLog(self.genre);
 	}
 }
 
@@ -727,7 +779,7 @@
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
 	ct.delegate = self;
-	[ct fetchUserLocation];
+	//[ct fetchUserLocation];
 	[ct fetchHeading];
 
 	lblCo = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 25)];
@@ -1020,10 +1072,12 @@
 }
 
 #pragma mark OverlayViewDelegateHandlers
+
 - (void)viewClicked:(OverlayView *)sender {
 	
 	[self.cardView removeFromSuperview];
 }
+
 
 #pragma mark popUpScreenButotnHandlers
 -(void)buttonPlayMusicClicked:(id)sender {

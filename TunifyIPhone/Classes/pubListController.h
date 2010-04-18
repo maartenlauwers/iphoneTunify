@@ -40,6 +40,7 @@
 	
 	//CoordinatesTool *ct;
 	CLLocation *userLocation;
+	NSTimer *locationTimer;
 	
 	NSFetchedResultsController *fetchedResultsController;
 	NSManagedObjectContext *managedObjectContext;

@@ -68,19 +68,28 @@
 
 }
 
+- (void)showError {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"An error occured while connecting to Twitter.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	
+	[alertView show];
+}
+
 - (void)postToTwitter {
 	
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  
-	NSString *twitterUsername = [userDefaults stringForKey:@"twitterUsername"];
-	NSString *twitterPassword = [userDefaults stringForKey:@"twitterPassword"];
-	/*
+	NSString *twitterUsername = [userDefaults stringForKey:@"twitter_username"];
+	NSString *twitterPassword = [userDefaults stringForKey:@"twitter_password"];
+	
 	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://%@:%@@twitter.com/statuses/update.xml", twitterUsername, twitterPassword]] 
 														cachePolicy:NSURLRequestUseProtocolCachePolicy 
 														timeoutInterval:60.0]; 
-	*/
-	NSMutableURLRequest *theRequest=[NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://IphoneTunifyT:tzes88572@twitter.com/statuses/update.xml"] 
-															cachePolicy:NSURLRequestUseProtocolCachePolicy 
-														timeoutInterval:60.0]; 
+	
+	
 	
 	[theRequest setHTTPMethod:@"POST"]; 
 	[theRequest setHTTPBody:[[NSString stringWithFormat:@"status=%@", self.twitterMessageView.text] dataUsingEncoding:NSASCIIStringEncoding]]; 
@@ -88,14 +97,19 @@
 	NSURLResponse* response; 
 	NSError* error; 
 	NSData* result = [NSURLConnection sendSynchronousRequest:theRequest returningResponse:&response error:&error]; 
-
-	NSLog(@"%@", [[[NSString alloc] initWithData:result encoding:NSASCIIStringEncoding] autorelease]);
 	
+	NSLog(@"%@", [[[NSString alloc] initWithData:result encoding:NSASCIIStringEncoding] autorelease]);
+	NSLog(@"error: %@", error);
 	
 	[twitterUsername release];
 	[twitterPassword release];
 	
-	[self showSuccess];
+	if(error == nil) {
+		[self showSuccess];
+	} else {
+		[self showError];
+	}
+	
 }
 
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error

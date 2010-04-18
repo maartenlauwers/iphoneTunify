@@ -13,13 +13,16 @@
 @synthesize window;
 @synthesize tabController;
 @synthesize audioPlayer;
+@synthesize fbSession;
 
 #pragma mark -
 #pragma mark Application lifecycle
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application {    
 	
-	self.audioPlayer = [[AudioPlayer alloc] init];
+	self.fbSession = nil;
+	
+	//self.audioPlayer = [[AudioPlayer alloc] init];
     [window addSubview:tabController.view];
     [window makeKeyAndVisible];
 }
@@ -133,6 +136,8 @@
     [managedObjectModel release];
     [persistentStoreCoordinator release];
 	
+	//[fbSession.delegates removeObject:self];
+	[fbSession release];
 	[audioPlayer release];
 	[tabController release];
     [window release];

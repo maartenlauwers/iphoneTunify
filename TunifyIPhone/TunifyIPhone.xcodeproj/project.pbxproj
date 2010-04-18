@@ -13,7 +13,6 @@
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		4E129FB1117895D700BC353F /* 3DMapsIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E129FAF117895D700BC353F /* 3DMapsIcon.png */; };
 		4E129FB2117895D700BC353F /* 3DPlayIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E129FB0117895D700BC353F /* 3DPlayIcon.png */; };
-		4E129FD311789B7D00BC353F /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E129FD211789B7D00BC353F /* OverlayView.m */; };
 		4E14C44C1129911D001234F1 /* 85-trophy.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E14C44B1129911D001234F1 /* 85-trophy.png */; };
 		4E14C44E11299148001234F1 /* star.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E14C44D11299148001234F1 /* star.png */; };
 		4E1E153D116396590026D840 /* CustomImagePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E1E153C116396590026D840 /* CustomImagePicker.m */; };
@@ -85,7 +84,6 @@
 		4E8D68D3113E9ACF00E2AD64 /* CSWebDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D68D1113E9ACF00E2AD64 /* CSWebDetailsViewController.m */; };
 		4E8D69F8113EB09500E2AD64 /* rateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D69F7113EB09500E2AD64 /* rateViewController.m */; };
 		4E8D6A71113EBEA500E2AD64 /* rateStar.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E8D6A70113EBEA500E2AD64 /* rateStar.m */; };
-		4E99F2461135741400303DB8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4E99F2451135741400303DB8 /* Settings.bundle */; };
 		4E99F3A411359BF100303DB8 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E99F3A311359BF100303DB8 /* QuartzCore.framework */; };
 		4EA24616117464D800D6C7F2 /* pub.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4EA24615117464D800D6C7F2 /* pub.xcdatamodeld */; };
 		4EA246461174673400D6C7F2 /* Pub.m in Sources */ = {isa = PBXBuildFile; fileRef = 4EA246451174673400D6C7F2 /* Pub.m */; };
@@ -137,6 +135,8 @@
 		F6EAC2C911511F9600150BE6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EAC2C811511F9600150BE6 /* OpenGLES.framework */; };
 		F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAC3FA11513CA700150BE6 /* GLView.m */; };
 		F6F13F35116E5B84001E5BA8 /* urban.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F6F13F34116E5B84001E5BA8 /* urban.jpg */; };
+		F6FAB4EE117A539100487EF8 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6FAB4ED117A539100487EF8 /* OverlayView.m */; };
+		F6FAB503117A55B400487EF8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F6FAB502117A55B400487EF8 /* Settings.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -151,8 +151,6 @@
 		32CA4F630368D1EE00C91783 /* TunifyIPhone_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TunifyIPhone_Prefix.pch; sourceTree = "<group>"; };
 		4E129FAF117895D700BC353F /* 3DMapsIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3DMapsIcon.png; sourceTree = "<group>"; };
 		4E129FB0117895D700BC353F /* 3DPlayIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3DPlayIcon.png; sourceTree = "<group>"; };
-		4E129FD111789B7D00BC353F /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
-		4E129FD211789B7D00BC353F /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		4E14C44B1129911D001234F1 /* 85-trophy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "85-trophy.png"; sourceTree = "<group>"; };
 		4E14C44D11299148001234F1 /* star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star.png; sourceTree = "<group>"; };
 		4E14C4511129921E001234F1 /* pubListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pubListController.h; sourceTree = "<group>"; };
@@ -233,7 +231,6 @@
 		4E8D69F7113EB09500E2AD64 /* rateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = rateViewController.m; sourceTree = "<group>"; };
 		4E8D6A6F113EBEA500E2AD64 /* rateStar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rateStar.h; sourceTree = "<group>"; };
 		4E8D6A70113EBEA500E2AD64 /* rateStar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = rateStar.m; sourceTree = "<group>"; };
-		4E99F2451135741400303DB8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		4E99F3A311359BF100303DB8 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		4EA24617117464D800D6C7F2 /* pub 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "pub 2.xcdatamodel"; sourceTree = "<group>"; };
 		4EA246441174673400D6C7F2 /* Pub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pub.h; path = ../Pub.h; sourceTree = "<group>"; };
@@ -312,6 +309,9 @@
 		F6EAC3FA11513CA700150BE6 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
 		F6EAC3FD11513CA700150BE6 /* OpenGLCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLCommon.h; sourceTree = "<group>"; };
 		F6F13F34116E5B84001E5BA8 /* urban.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = urban.jpg; sourceTree = "<group>"; };
+		F6FAB4EC117A539100487EF8 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
+		F6FAB4ED117A539100487EF8 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
+		F6FAB502117A55B400487EF8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -426,7 +426,6 @@
 				4EAA2758114122B40056F7D6 /* achievement5.png */,
 				4EAA275E114123550056F7D6 /* achievement6.png */,
 				4EAA275F114123550056F7D6 /* achievement7.png */,
-				4E99F2451135741400303DB8 /* Settings.bundle */,
 				4E14C44D11299148001234F1 /* star.png */,
 				4E14C44B1129911D001234F1 /* 85-trophy.png */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
@@ -434,6 +433,7 @@
 				4EAA282511414EE70056F7D6 /* mapcontainer.html */,
 				4E3395CE11491CFF00226465 /* SOAP_loginUser.xml */,
 				4EA24615117464D800D6C7F2 /* pub.xcdatamodeld */,
+				F6FAB502117A55B400487EF8 /* Settings.bundle */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -524,8 +524,8 @@
 				4E728DA2115512B900A3EDA4 /* PubCard.m */,
 				4E728E541155466A00A3EDA4 /* CustomUIImagePickerController.h */,
 				4E728E551155466A00A3EDA4 /* CustomUIImagePickerController.m */,
-				4E129FD111789B7D00BC353F /* OverlayView.h */,
-				4E129FD211789B7D00BC353F /* OverlayView.m */,
+				F6FAB4EC117A539100487EF8 /* OverlayView.h */,
+				F6FAB4ED117A539100487EF8 /* OverlayView.m */,
 			);
 			name = 3DList;
 			sourceTree = "<group>";
@@ -721,7 +721,6 @@
 				4E264F2E112EBF4C00C667DB /* infoView.xib in Resources */,
 				4E264FFE112ED77700C667DB /* genreView.xib in Resources */,
 				4EDDF3F81132BEC800D1EAF5 /* twitterMessageView.xib in Resources */,
-				4E99F2461135741400303DB8 /* Settings.bundle in Resources */,
 				4E341E1B1136C6BF0001A7C5 /* facebookMessageView.xib in Resources */,
 				4E341F101136D9EB0001A7C5 /* rateView.xib in Resources */,
 				4EAA275A114122B40056F7D6 /* achievement5.png in Resources */,
@@ -760,6 +759,7 @@
 				F6F13F35116E5B84001E5BA8 /* urban.jpg in Resources */,
 				4E129FB1117895D700BC353F /* 3DMapsIcon.png in Resources */,
 				4E129FB2117895D700BC353F /* 3DPlayIcon.png in Resources */,
+				F6FAB503117A55B400487EF8 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,7 +837,7 @@
 				F648282B1169C968005C1E7A /* RecentlyVisited.m in Sources */,
 				4EA24616117464D800D6C7F2 /* pub.xcdatamodeld in Sources */,
 				4EA246461174673400D6C7F2 /* Pub.m in Sources */,
-				4E129FD311789B7D00BC353F /* OverlayView.m in Sources */,
+				F6FAB4EE117A539100487EF8 /* OverlayView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

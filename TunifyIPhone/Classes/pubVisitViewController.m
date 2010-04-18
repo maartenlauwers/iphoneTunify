@@ -284,23 +284,33 @@
  
 	This method will create a working session for the user and will show the login dialog.
  */
-- (IBAction) btnFacebook_clicked:(id)sender {
-	FBSession *fbSession = [FBSession sessionForApplication:@"cb12aa127decea40af4479de16b4e9c1" secret:@"47d30f1b4e2d78c4941cd5baea1bfb14" delegate:self];
-	FBLoginDialog* dialog = [[[FBLoginDialog alloc] initWithSession:fbSession] autorelease];
-    [dialog show];
+- (IBAction) btnFacebook_clicked:(id)sender {	
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	FBSession *session = appDelegate.fbSession;	
+	session = [[FBSession sessionForApplication:@"cb12aa127decea40af4479de16b4e9c1" secret:@"47d30f1b4e2d78c4941cd5baea1bfb14" delegate:self] retain];
+	
+	if ([session isConnected]) {
+		[self postToFacebook];
+	} else {
+		FBLoginDialog* dialog = [[[FBLoginDialog alloc] initWithSession:session] autorelease]; 
+		[dialog show];
+	}
+	
 }
 
 /*
 	This method is called upon a successful facebook login.
  */
 - (void)session:(FBSession*)session didLogin:(FBUID)uid {
-	NSLog(@"User with id %lld logged in.", uid);
-	
+	[self postToFacebook];
+}
+
+- (void)postToFacebook { 
 	FBStreamDialog* dialog = [[[FBStreamDialog alloc] init] autorelease];
 	dialog.delegate = self;
 	dialog.userMessagePrompt = @"Share your visit";
 	dialog.attachment = @"";
-
+	
 	[dialog show];
 }
 

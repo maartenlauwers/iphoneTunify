@@ -163,6 +163,23 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 	NSLog(@"VIEWDIDAPPEAR");
+
+	
+	self.rowPlayingIndexPath = nil;
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	
+	[tableView reloadData];
+	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+}
+
+- (void)userLocationFound:(CoordinatesTool *)sender {
+	self.userLocation = sender.userLocation;
+	
 	// Create some test data for the table
 	dataSource = [[NSMutableArray alloc] init];
 	
@@ -176,19 +193,9 @@
 	searchedData = [[NSMutableArray alloc] init];
 	[tableData addObjectsFromArray:dataSource];
 	
-	self.rowPlayingIndexPath = nil;
-	
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	[ct reInit];
-	ct.delegate = self;
-	[ct fetchUserLocation];
-	
 	[tableView reloadData];
-}
-
-- (void)userLocationFound:(CoordinatesTool *)sender {
-	self.userLocation = sender.userLocation;
-	[tableView reloadData];
+	
+	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {

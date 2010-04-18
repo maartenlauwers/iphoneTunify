@@ -12,7 +12,7 @@
 
 @class rateStar;
 
-@interface pubVisitViewController : UIViewController <FBSessionDelegate> {
+@interface pubVisitViewController : UIViewController <FBSessionDelegate, FBDialogDelegate> {
 	Pub *pub;
 	IBOutlet UILabel *infoLabel;
 	rateStar *star1;
@@ -38,6 +38,7 @@
 - (void)showSuccess;
 - (IBAction)btnTwitter_clicked:(id)sender;
 - (IBAction)btnFacebook_clicked:(id)sender;
+- (void)postToFacebook;
 - (IBAction)btnMusic_clicked:(id)sender;
 
 

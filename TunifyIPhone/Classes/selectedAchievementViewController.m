@@ -61,9 +61,17 @@
  */
 - (IBAction) btnFacebook_clicked:(id)sender {
 	if (self.achieved == TRUE) {
-		FBSession *fbSession = [FBSession sessionForApplication:@"cb12aa127decea40af4479de16b4e9c1" secret:@"47d30f1b4e2d78c4941cd5baea1bfb14" delegate:self];
-		FBLoginDialog* dialog = [[[FBLoginDialog alloc] initWithSession:fbSession] autorelease];
-		[dialog show];
+		TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+		FBSession *session = appDelegate.fbSession;	
+		session = [[FBSession sessionForApplication:@"cb12aa127decea40af4479de16b4e9c1" secret:@"47d30f1b4e2d78c4941cd5baea1bfb14" delegate:self] retain];
+		
+		if ([session isConnected]) {
+			[self postToFacebook];
+		} else {
+			FBLoginDialog* dialog = [[[FBLoginDialog alloc] initWithSession:session] autorelease]; 
+			[dialog show];
+		}
+		
 	}
 }
 
@@ -72,22 +80,25 @@
  */
 - (void)session:(FBSession*)session didLogin:(FBUID)uid {
 	
-	//http://dl.dropbox.com/u/964150/tunifyIphoneIcons/achievement1.png
-	
+	[self postToFacebook];
+}
+
+- (void)postToFacebook {
 	NSString *attachment = [NSString stringWithFormat:@"{\"name\":\"Achievement reached!\","
-	"\"href\":\"#\","
-	"\"caption\":\"%@\",\"description\":\"%@\","
-	"\"media\":[{\"type\":\"image\","
-	"\"src\":\"%@\","
-	"\"href\":\"http://www.tunify.com\"}],"
-	"\"properties\":{\"Download at\":{\"text\":\"Tunify.com\",\"href\":\"http://www.tunify.com\"}}}", self.achievementName, self.achievementDescription, 
-	[NSString stringWithFormat:@"http://dl.dropbox.com/u/964150/tunifyIphoneIcons/achievement%d.png", self.achievementNumber]];
+							"\"href\":\"#\","
+							"\"caption\":\"%@\",\"description\":\"%@\","
+							"\"media\":[{\"type\":\"image\","
+							"\"src\":\"%@\","
+							"\"href\":\"http://www.tunify.com\"}],"
+							"\"properties\":{\"Download at\":{\"text\":\"Tunify.com\",\"href\":\"http://www.tunify.com\"}}}", self.achievementName, self.achievementDescription, 
+							[NSString stringWithFormat:@"http://dl.dropbox.com/u/964150/tunifyIphoneIcons/achievement%d.png", self.achievementNumber]];
 	
 	FBStreamDialog* dialog = [[[FBStreamDialog alloc] init] autorelease];
 	dialog.delegate = self;
 	dialog.userMessagePrompt = @"Share your achievement";
 	dialog.attachment = attachment;
 	[dialog show];
+	
 }
 
 /*

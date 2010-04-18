@@ -43,5 +43,6 @@
 - (void)btnAchievements_clicked:(id)sender;
 - (IBAction)btnTwitter_clicked:(id)sender;
 - (IBAction)btnFacebook_clicked:(id)sender;
+- (void)postToFacebook;
 
 @end

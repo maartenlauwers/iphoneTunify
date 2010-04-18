@@ -96,15 +96,24 @@
 	cancelBarButtonItem.action = @selector(btnCancel_clicked:);
 	self.navigationItem.leftBarButtonItem = cancelBarButtonItem;
 	[cancelBarButtonItem release];
-	
-	FBStreamDialog* dialog = [[[FBStreamDialog alloc] init] autorelease];
-	dialog.delegate = self;
-	dialog.userMessagePrompt = @"Share your visit";
-	dialog.attachment =  @"";
-	[dialog show];
+
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	FBSession *session = appDelegate.fbSession;
+	if ([session isConnected]) {
+		FBStreamDialog* dialog = [[[FBStreamDialog alloc] init] autorelease];
+		dialog.delegate = self;
+		dialog.userMessagePrompt = @"Share your visit";
+		dialog.attachment =  @"";
+		[dialog show];
+	} else {
+		FBLoginDialog* dialog = [[[FBLoginDialog alloc] initWithSession:session] autorelease]; 
+		[dialog show];
+	}
 
+}
 /*
 // Override to allow orientations other than the default portrait orientation.
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

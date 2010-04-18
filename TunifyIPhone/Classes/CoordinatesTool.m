@@ -85,12 +85,12 @@ static CoordinatesTool *sharedInstance = nil;
 	NSString *userLatitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.latitude];
 	NSString *userLongitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.longitude];
 
-	//self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8728119, 4.6644344];
-	self.userCoordinates = [NSString stringWithFormat:@"%@,%@", userLatitude, userLongitude];
-	//CLLocationDegrees longitude = 4.6644344; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
-	//CLLocationDegrees latitude = 50.8728119; //[userLatitude doubleValue];
-	CLLocationDegrees longitude = [userLongitude doubleValue];
-	CLLocationDegrees latitude = [userLatitude doubleValue];
+	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8728119, 4.6644344];
+	//self.userCoordinates = [NSString stringWithFormat:@"%@,%@", userLatitude, userLongitude];
+	CLLocationDegrees longitude = 4.6644344; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	CLLocationDegrees latitude = 50.8728119; //[userLatitude doubleValue];
+	//CLLocationDegrees longitude = [userLongitude doubleValue];
+	//CLLocationDegrees latitude = [userLatitude doubleValue];
 
 	CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
 	self.userLocation = [currentLocation copy]; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];

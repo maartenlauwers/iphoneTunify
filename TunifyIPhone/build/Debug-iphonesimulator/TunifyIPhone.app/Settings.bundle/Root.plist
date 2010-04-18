@@ -2,62 +2,116 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>StringsTable</key>
+	<string>Root</string>
 	<key>PreferenceSpecifiers</key>
 	<array>
 		<dict>
-			<key>Title</key>
-			<string>Facebook account</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Facebook settings</string>
 		</dict>
 		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
 			<string>Username</string>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
 			<key>Key</key>
-			<string>facebookUsername</string>
+			<string>facebook_username</string>
 			<key>DefaultValue</key>
 			<string></string>
+			<key>IsSecure</key>
+			<false/>
+			<key>KeyboardType</key>
+			<string>Alphabet</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
 		</dict>
 		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
 			<string>Password</string>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
 			<key>Key</key>
-			<string>facebookPassword</string>
+			<string>facebook_password</string>
 			<key>DefaultValue</key>
 			<string></string>
+			<key>IsSecure</key>
+			<true/>
+			<key>KeyboardType</key>
+			<string>Alphabet</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>Twitter account</string>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Twitter settings</string>
 		</dict>
 		<dict>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
 			<string>Username</string>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
 			<key>Key</key>
-			<string>twitterUsername</string>
+			<string>twitter_username</string>
 			<key>DefaultValue</key>
-			<string>MaartenLauwers</string>
+			<string></string>
+			<key>IsSecure</key>
+			<false/>
+			<key>KeyboardType</key>
+			<string>Alphabet</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
 		</dict>
 		<dict>
-			<key>Title</key>
-			<string>Password</string>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
+			<key>Title</key>
+			<string>Password</string>
 			<key>Key</key>
-			<string>twitterPassword</string>
+			<string>twitter_password</string>
 			<key>DefaultValue</key>
-			<string>tzes88572</string>
+			<string></string>
+			<key>IsSecure</key>
+			<true/>
+			<key>KeyboardType</key>
+			<string>Alphabet</string>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Pub search radius</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSSliderSpecifier</string>
+			<key>Key</key>
+			<string>radius</string>
+			<key>DefaultValue</key>
+			<integer>5</integer>
+			<key>MinimumValue</key>
+			<integer>0</integer>
+			<key>MaximumValue</key>
+			<integer>10</integer>
+			<key>MinimumValueImage</key>
+			<string>1.jpg</string>
+			<key>MaximumValueImage</key>
+			<string>10.jpg</string>
 		</dict>
 	</array>
-	<key>Title</key>
-	<string>TunifyIPhone</string>
 </dict>
 </plist>

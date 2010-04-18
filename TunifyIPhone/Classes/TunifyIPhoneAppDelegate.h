@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "AudioPlayer.h"
+#import "FBSession.h"
 
-@interface TunifyIPhoneAppDelegate : NSObject <UIApplicationDelegate> {
+@interface TunifyIPhoneAppDelegate : NSObject <UIApplicationDelegate, FBSessionDelegate> {
 	
 	NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    
@@ -18,6 +19,7 @@
     UIWindow *window;
 	UITabBarController *tabController;
 	AudioPlayer *audioPlayer;
+	FBSession *fbSession;
 }
 
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
@@ -27,6 +29,7 @@
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet UITabBarController *tabController;
 @property (nonatomic, retain) AudioPlayer *audioPlayer;
+@property (nonatomic, retain) FBSession *fbSession;
 
 - (NSString *)applicationDocumentsDirectory;
 
