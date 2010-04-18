@@ -1,0 +1,8 @@
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m: In function '-[worldViewController userLocationFound:]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m:375: warning: local declaration of 'userLocation' hides instance variable
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m:375: warning: local declaration of 'pubLocation' hides instance variable
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m:377: warning: local declaration of 'userLocation' hides instance variable
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m:378: warning: local declaration of 'pubLocation' hides instance variable
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m: In function '-[worldViewController pubLocationFound:]':
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m:397: warning: comparison between pointer and integer
+/Users/Elegia/Documents/Development/Elegia-iphoneTunify-576be1a/TunifyIPhone/Classes/worldViewController.m:397: warning: comparison between pointer and integer

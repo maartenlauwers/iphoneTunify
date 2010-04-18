@@ -310,7 +310,7 @@ Color3D colors[] = {
 		
 		NSLog(@"E");
 		[self performSelector:@selector(showPickerView:) withObject:self.picker afterDelay:0.1];
-		//[self presentModalViewController:self.picker animated:YES];
+		[self presentModalViewController:self.picker animated:YES];
 		NSLog(@"F");
 		
 	} else {
@@ -415,6 +415,7 @@ Color3D colors[] = {
 	// Update our arrow
 	NSLog(@"heading updated");
 	rot = *[self getArrowHeading];		
+	NSLog(@"rot: %d", rot);
 	NSLog(@"heading updated done");
 }
 
@@ -424,7 +425,7 @@ Color3D colors[] = {
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct fetchUserLocation];
 }
-
+/*
 - (GLfloat *)getArrowHeading {
 	NSLog(@"get arrow heading A");
 	float x1 = userLocation.coordinate.latitude;					//Our position.
@@ -477,6 +478,61 @@ Color3D colors[] = {
 	NSLog(@"get arrow heading C");
 	return glHeading;
 }
+*/
+
+- (GLfloat *)getArrowHeading {
+	float u2 = userLocation.coordinate.latitude;					//Our position.
+	float u1 = userLocation.coordinate.longitude;
+	//u2 = 50.8728119;
+	//u1 = 4.6644344;
+	float v2 = [[pub latitude] floatValue];		
+	float v1 = [[pub longitude] floatValue];
+	//NSLog(@"u1: %f, u2: %f, v1: %f, v2: %f", u1, u2, v1, v2);
+	
+	// Base vector
+	float b1 = 0;
+	float b2 = 1;
+	
+	// Normalize V
+	float normV1 = v1 - u1;
+	float normV2 = v2 - u2;	
+	
+	// Calculate the angle between the base vector (pointing north) and the pub location
+	//float uv = (normalizedX2*bx) + (normalizedY2*by);
+	float uv = (b1*normV1) + (b2*normV2);
+	//NSLog(@"uv: %f", uv);
+	float normU = sqrt(b1*b1 + b2*b2);
+	//NSLog(@"normU: %f", normU);
+	float normV = sqrt(normV1*normV1 + normV2*normV2);
+	//NSLog(@"normV: %f", normV);
+	float normMultiplication = normU * normV;
+	//NSLog(@"normMultiplication: %f", normMultiplication);
+	float division = uv/normMultiplication;
+	//NSLog(@"division: %f", division);
+	float resultRad = acos(division);
+	//NSLog(@"resultRad: %f", resultRad);
+	float resultDeg = resultRad * (180/M_PI);
+	//NSLog(@"resultDeg: %f", resultDeg);
+	
+	// If our pub's longitude is smaller than the users, then the angle will be larger than 180 degrees.
+	// However, the above method only returns angles smaller than or equal to 180, so we'll need to fix this ourselves.
+	if (v1 < u1) {
+		resultDeg = (180 - resultDeg) + 180;
+	} 
+	
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	if (resultDeg <= [ct getHeading]) {
+		resultDeg = ([ct getHeading] - resultDeg) * (-1);
+	} else {
+		resultDeg = (resultDeg - [ct getHeading]);
+	}
+	 
+	GLfloat *glHeading = (GLfloat *)malloc(sizeof(GLfloat));
+	*glHeading = resultDeg;
+	return glHeading;
+}
+
 
 - (void)drawView:(UIView *)theView
 {

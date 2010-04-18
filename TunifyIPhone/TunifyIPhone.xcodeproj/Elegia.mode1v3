@@ -288,14 +288,15 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>26</integer>
-									<integer>13</integer>
+									<integer>77</integer>
+									<integer>53</integer>
+									<integer>35</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 68}, {289, 678}}</string>
+							<string>{{0, 1152}, {289, 678}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -332,7 +333,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>FBDialog.m</string>
+								<string>worldViewController.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -340,11 +341,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>FBDialog.m</string>
+										<string>worldViewController.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>F6FAB648117A86E600487EF8</string>
+										<string>F6FAB654117A9A7B00487EF8</string>
 										<key>history</key>
 										<array>
 											<string>F6586B25114D3BC200602BC3</string>
@@ -410,12 +411,10 @@
 											<string>F6FAB573117A646900487EF8</string>
 											<string>F6FAB574117A646900487EF8</string>
 											<string>F6FAB575117A646900487EF8</string>
-											<string>F6FAB589117A667200487EF8</string>
 											<string>F6FAB58A117A667200487EF8</string>
 											<string>F6FAB5C7117A79A300487EF8</string>
 											<string>F6FAB5C9117A79A300487EF8</string>
 											<string>F6FAB5D8117A7C0900487EF8</string>
-											<string>F6FAB5DE117A7D3100487EF8</string>
 											<string>F6FAB5F4117A7DE700487EF8</string>
 											<string>F6FAB60A117A830900487EF8</string>
 											<string>F6FAB60D117A830900487EF8</string>
@@ -428,7 +427,9 @@
 											<string>F6FAB640117A868E00487EF8</string>
 											<string>F6FAB641117A868E00487EF8</string>
 											<string>F6FAB645117A86E600487EF8</string>
-											<string>F6FAB646117A86E600487EF8</string>
+											<string>F6FAB649117A987900487EF8</string>
+											<string>F6FAB64A117A987900487EF8</string>
+											<string>F6FAB589117A667200487EF8</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -630,6 +631,8 @@
 											<string>F6FAB642117A868E00487EF8</string>
 											<string>F6FAB643117A868E00487EF8</string>
 											<string>F6FAB647117A86E600487EF8</string>
+											<string>F6FAB64B117A987900487EF8</string>
+											<string>F6FAB64C117A987900487EF8</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
