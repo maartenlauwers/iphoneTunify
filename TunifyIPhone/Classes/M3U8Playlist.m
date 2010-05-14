@@ -24,7 +24,7 @@
 	return self;	
 }
 
-- (M3U8SegmentInfo *)getSegment:(NSInteger *)index {
+- (M3U8SegmentInfo *)getSegment:(NSInteger)index {
 	M3U8SegmentInfo *info = [self.segments objectAtIndex:index];
 	NSLog(@"location: %@", info.location);
 	return info;

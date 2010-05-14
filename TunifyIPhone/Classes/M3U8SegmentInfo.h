@@ -10,11 +10,11 @@
 
 
 @interface M3U8SegmentInfo : NSObject {
-	NSInteger *duration;
+	NSInteger duration;
 	NSString *location;
 }
 
-@property (assign) NSInteger *duration;
+@property (assign) NSInteger duration;
 @property (nonatomic, retain) NSString *location;
 
 @end

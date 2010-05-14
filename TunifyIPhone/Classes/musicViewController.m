@@ -190,7 +190,7 @@
     
     static NSString *CellIdentifier = @"Cell";
     
-    songCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    songCell *cell = (songCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[songCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }

@@ -17,7 +17,7 @@
 	NSMutableData *webData;
 	NSMutableString *soapResults;
 	NSXMLParser *xmlParser;
-	BOOL *recordResults;
+	BOOL recordResults;
 	
 	UIViewController *sourceView;		// A reference to the view we came from
 	NSInteger sourceId;				// Did we arrive here from the publistController (1), the publist3DController (2) or the recentPubListController (3)?

@@ -13,7 +13,9 @@
 @interface pubCell : UITableViewCell {
 	UILabel *nameLabel;
 	UILabel *distanceLabel;
-	UILabel *ratingLabel;
+	UIImageView *ratingImage;
+	UIImageView *visitorsImage;
+	UILabel *visitorsLabel;
 
 	StarView *stars;
 	CellButton *playButton;
@@ -22,7 +24,9 @@
 
 @property (nonatomic, retain) UILabel *nameLabel;
 @property (nonatomic, retain) UILabel *distanceLabel;
-@property (nonatomic, retain) UILabel *ratingLabel;
+@property (nonatomic, retain) UIImageView *ratingImage;
+@property (nonatomic, retain) UIImageView *visitorsImage;
+@property (nonatomic, retain) UILabel *visitorsLabel;
 @property (nonatomic, retain) StarView *stars;
 @property (nonatomic, retain) CellButton *playButton;
 @property (nonatomic, retain) CellButton *infoButton;

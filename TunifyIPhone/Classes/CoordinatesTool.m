@@ -68,12 +68,15 @@ static CoordinatesTool *sharedInstance = nil;
 }
 
 - (void) reInit {
+	locationManager = [[CLLocationManager alloc] init];
 	[self stop];
+	self.userLocationOK = nil;
+	self.pubLocationOK = nil;
 }
 
 - (void) fetchUserLocation {
 	NSLog(@"fetchUserLocation");
-	locationManager = [[CLLocationManager alloc] init]; 
+	//locationManager = [[CLLocationManager alloc] init]; 
 	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
 	locationManager.delegate = self; 
 	[locationManager startUpdatingLocation]; 
@@ -85,12 +88,14 @@ static CoordinatesTool *sharedInstance = nil;
 	NSString *userLatitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.latitude];
 	NSString *userLongitude = [[NSString alloc] initWithFormat:@"%f", newLocation.coordinate.longitude];
 
+	self.userCoordinates = [NSString stringWithFormat:@"%@,%@", userLatitude, userLongitude];
+	CLLocationDegrees longitude = [userLongitude doubleValue];
+	CLLocationDegrees latitude = [userLatitude doubleValue];
+	
+	// Uncomment the following when working on the iPhone simulator
 	self.userCoordinates = [NSString stringWithFormat:@"%f,%f", 50.8728119, 4.6644344];
-	//self.userCoordinates = [NSString stringWithFormat:@"%@,%@", userLatitude, userLongitude];
-	CLLocationDegrees longitude = 4.6644344; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
-	CLLocationDegrees latitude = 50.8728119; //[userLatitude doubleValue];
-	//CLLocationDegrees longitude = [userLongitude doubleValue];
-	//CLLocationDegrees latitude = [userLatitude doubleValue];
+	longitude = 4.6644344; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	latitude = 50.8728119; //[userLatitude doubleValue];
 
 	CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
 	self.userLocation = [currentLocation copy]; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
@@ -103,15 +108,18 @@ static CoordinatesTool *sharedInstance = nil;
 } 
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error { 
+	self.userLocationOK = FALSE;
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(userLocationError:)]) {
 		[delegate userLocationError:self];
 	} 
 } 
 
-- (void) fetchPubLocation:(NSString *)pubAddress {
+- (void) fetchPubLocation:(Pub *)pub {
+	NSString *pubAddress = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub street], [pub number], [pub zipcode], [pub city]];
 	NSString *pubLatitude;
 	NSString *pubLongitude;
-	
+	NSLog(@"PubAddress below");
+	NSLog(@"PubAddress: %@", pubAddress);
 	NSString *pubAddressString = [NSString stringWithFormat:@"http://maps.google.com/maps/geo?q=%@&output=csv&sensor=false", [pubAddress stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	NSString *pubAddressURL = [NSString stringWithContentsOfURL:[NSURL URLWithString:pubAddressString]];
 	NSArray *pubLocationAddressResults = [pubAddressURL componentsSeparatedByString:@","];
@@ -127,13 +135,28 @@ static CoordinatesTool *sharedInstance = nil;
 		CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
 		
 		self.pubLocation = currentLocation;
-		self.pubLocationOK = YES;
+		self.pubLocationOK = TRUE;
 	}
 	else {
 		//Error handling
-		if (self.delegate != nil && [self.delegate respondsToSelector:@selector(pubLocationError:)]) {
-			[delegate pubLocationError:self];
-		} 
+		// Probably can't connect to google maps, so fetch the location from the Core Date pub object (which is the most realistic way)
+		
+		CLLocationDegrees longitude = [pub.longitude doubleValue];
+		CLLocationDegrees latitude = [pub.latitude doubleValue];
+		CLLocation* currentLocation = [[[CLLocation alloc] initWithLatitude:latitude longitude:longitude] autorelease];
+		
+		NSLog(@"pub longitude: %f", longitude);
+		NSLog(@"pub latitude: %f", latitude);
+		self.pubLocation = currentLocation;
+		self.pubCoordinates = [NSString stringWithFormat:@"%f,%f", latitude, longitude];
+		self.pubLocationOK = TRUE;
+		
+		if (currentLocation == nil) {
+			self.pubLocationOK = FALSE;
+			if (self.delegate != nil && [self.delegate respondsToSelector:@selector(pubLocationError:)]) {
+				[delegate pubLocationError:self];
+			} 
+		}
 	}
 	
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(pubLocationFound:)]) {
@@ -150,7 +173,8 @@ static CoordinatesTool *sharedInstance = nil;
 }
 
 - (void)fetchHeading {
-	locationManager = [[CLLocationManager alloc] init]; 
+	NSLog(@"fetching heading");
+	//locationManager = [[CLLocationManager alloc] init]; 
 	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
 	locationManager.delegate = self; 
 	locationManager.headingFilter = 1;
@@ -158,7 +182,7 @@ static CoordinatesTool *sharedInstance = nil;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
-	
+	NSLog(@"DID UPDATE HEADING");
 	heading = [[NSString stringWithFormat:@"%.0f", [newHeading trueHeading]] floatValue];
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(headingUpdated:)]) {
 		[delegate headingUpdated:self];

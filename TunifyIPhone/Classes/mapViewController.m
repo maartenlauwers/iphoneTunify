@@ -7,15 +7,6 @@
 //
 
 #import "mapViewController.h"
-#import "worldViewController.h"
-#import "musicViewController.h"
-#import "pubVisitViewController.h"
-#import "mapAnnotation.h"
-#import "CSMapAnnotation.h"
-#import "CSRouteAnnotation.h"
-#import "CSRouteView.h"
-#import "CSImageAnnotationView.h"
-#import "CSWebDetailsViewController.h"
 
 @implementation mapViewController
 
@@ -28,11 +19,12 @@
 @synthesize webData;
 @synthesize userCoordinates;
 @synthesize userLocation;
+@synthesize lastUserLocation;
 @synthesize pubCoordinates;
 @synthesize pubLocation;
 @synthesize googleMapsAPI;
 @synthesize webViewDidFinishLoading;
-
+@synthesize distanceFromDestination;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -50,6 +42,50 @@
 }
 */
 
+
+/* NOTE: This method allows the volume to range from the minimum to the maximum available. The maximum might be too loud for the user.
+		 Also, the current distance at which the volume changes is 25 meters. This might be too much or too little.
+*/
+- (void) updateMusicPlayback:(CLLocation *)oldLocation currentLocation:(CLLocation *)currentLocation {	
+
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	CLLocationDistance oldDistance = [ct fetchDistance:self.pubLocation locationB:oldLocation];
+	CLLocationDistance newDistance = [ct fetchDistance:self.pubLocation locationB:currentLocation];
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	if (newDistance < oldDistance) {
+		double difference = oldDistance - newDistance;
+		while(difference > 0) {
+			[audioPlayer decreaseVolume];
+			difference -= 25;
+		}
+	} else if (newDistance > oldDistance) {
+		double difference = newDistance - oldDistance;
+		while(difference > 0) {
+			[audioPlayer increaseVolume];
+			difference -= 25;
+		}
+	} 
+}
+
+- (void) repeatSearchWithPub:(Pub *)thePub {
+	NSLog(@"Other pub selected");
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[locationTimer invalidate];
+	[ct stop];
+	
+	[mapView removeAnnotations:[mapView annotations]];
+	
+	// Add the pub to the recently visited pub list
+	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
+	[rv addPub:thePub];
+	
+	self.pub = thePub;
+	[self initAll];
+	
+}
+
 - (void) btnPubs_clicked:(id)sender {
 	
 	// Show the tab bar (because the pubs view needs it)
@@ -63,14 +99,22 @@
 	}
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[locationTimer invalidate];
 	[ct stop];
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
 		
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 - (void) btnMusic_clicked:(id)sender {
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[locationTimer invalidate];
 	[ct stop];
+
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
 	
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
@@ -80,7 +124,7 @@
 	controller = nil;
 }
 
-- (void) loadPubView {
+- (void)loadPubView {
 	// Show the tab bar (because the pubs view needs it)
 	if ( self.tabBarController.view.subviews.count >= 2 )
 	{
@@ -92,6 +136,7 @@
 	}
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[locationTimer invalidate];
 	[ct stop];
 	
 	pubVisitViewController *controller = [[pubVisitViewController alloc] initWithNibName:@"pubVisitView" bundle:[NSBundle mainBundle]];
@@ -106,6 +151,7 @@
 	if(capturedToggle.selectedSegmentIndex == 1) {
 		
 		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+		[locationTimer invalidate];
 		[ct stop];
 		
 		worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
@@ -113,6 +159,18 @@
 		[self.navigationController pushViewController:controller animated:YES];
 		[controller release];
 		controller = nil;
+	}
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	
+	if (buttonIndex == 1) // Visit pub
+	{ 
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+		[locationTimer invalidate];
+		[ct stop];
+		
+		[self loadPubView];
 	}
 }
 
@@ -168,7 +226,10 @@
 	
 	[self.activityIndicator startAnimating];
 	
-	pointsArray = [[NSMutableArray alloc] init];
+	self.userLocation = nil;
+	self.pubLocation = nil;
+	self.userCoordinates = nil;
+	self.pubCoordinates = nil;
 	
 	// dictionary to keep track of route views that get generated. 
 	_routeViews = [[NSMutableDictionary alloc] init];
@@ -177,6 +238,7 @@
 	
 	
 	// Fetch the pub's address
+	NSLog(@"Setting pub address");
 	self.pubAddress = [NSString stringWithFormat:@"%@ %@, %@ %@", [pub street], [pub number], [pub zipcode], [pub city]];
 	
 	// Fetch the user location and the pub's location
@@ -184,11 +246,15 @@
 	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	[ct fetchPubLocation:self.pubAddress];
+	[ct fetchPubLocation:self.pub];
 	
 	
 	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
 	googleMapsAPI.delegate = self;
+	
+	// Play the pub's music
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer playTest];
 	
 	// TODO: The following alert view should only show up when we've reached our destination
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 
@@ -203,25 +269,48 @@
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	NSLog(@"maps: userLocationFound");
-	self.userLocation = sender.userLocation;
-	self.userCoordinates = sender.userCoordinates;
-	
-	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
-		NSLog(@"in userLocationFound: calling javascript");
-		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
-		NSLog(@"javascript called");
+
+	if(self.userLocation == nil ||
+	(self.userLocation.coordinate.latitude != self.lastUserLocation.coordinate.latitude) || 
+	(self.userLocation.coordinate.longitude != self.lastUserLocation.coordinate.longitude)) {
+			self.userLocation = sender.userLocation;
+			self.userCoordinates = sender.userCoordinates;
+			
+			
+			if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
+				NSLog(@"evaluating javascript");
+				[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
+			}
+		
+			// If we arrive here it is either the first time or it is because we've come closer to our destination. In te latter case we must
+			// adapt the music playback.
+		
+			[self updateMusicPlayback:self.lastUserLocation currentLocation:sender.userLocation];
+			self.lastUserLocation = sender.userLocation;
 	}
-	NSLog(@"maps: end userLocationFound");
+	
+	
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {
+	/*
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
-														message:NSLocalizedString(@"An error occured while fetching your position.",  
+														message:NSLocalizedString(@"An error occured while locating your position.",  
 																				  @"message") 
 														delegate:self 
 														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
 														otherButtonTitles:nil]; 
 	[alertView show]; 
+	*/
+	if (sender.userLocationOK == FALSE && sender.pubLocationOK == FALSE) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+															message:NSLocalizedString(@"Cannot locate the pub's position.",  
+																					  @"message") 
+														   delegate:self 
+															cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+															otherButtonTitles:nil]; 
+		[alertView show];
+	}
 }
 
 - (void)pubLocationFound:(CoordinatesTool *)sender {
@@ -229,21 +318,29 @@
 	self.pubLocation = sender.pubLocation;
 	self.pubCoordinates = sender.pubCoordinates;
 	if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
-		NSLog(@"in pubLocationFound: calling javascript");
 		[googleMapsAPI stringByEvaluatingJavaScriptFromString: [NSString stringWithFormat:@"loadDirections(\"%@\", \"%@\")", self.userCoordinates, self.pubCoordinates]];
-		NSLog(@"javascript called");
 	}
-	NSLog(@"maps: end pubLocationFound");
 }
 
 - (void)pubLocationError:(CoordinatesTool *)sender {
+	/*
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
-														message:NSLocalizedString(@"An error occured while the pub's position.",  
+														message:NSLocalizedString(@"An error occured while locating the pub.",  
 																				  @"message") 
 														delegate:self 
 														cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
 														otherButtonTitles:nil]; 
 	[alertView show]; 
+	*/
+	if (sender.userLocationOK == FALSE && sender.pubLocationOK == FALSE) {
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+															message:NSLocalizedString(@"Cannot locate the pub's position.",  
+																					  @"message") 
+														   delegate:self 
+												  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+												  otherButtonTitles:nil]; 
+		[alertView show];
+	}
 }
 
 
@@ -289,7 +386,7 @@
 */
 
 - (void)goolgeMapsAPI:(UICGoogleMapsAPI *)goolgeMapsAPI didGetObject:(NSObject *)object {
-	NSLog(@"maps: googleMapsAPI didgetobject");
+	NSLog(@"Didgetobject");
 	NSString *html = goolgeMapsAPI.message;
 	[self parseCoordinatesHtml:html];
 }
@@ -299,12 +396,11 @@
 }
 
 - (void)messageReceived:(UICGoogleMapsAPI *)sender {
-	
+	NSLog(@"googlemaps message received");
 }
 
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView{
-	NSLog(@"webViewDidFinishLoad");
+- (void)webViewDidFinishLoad:(UIWebView *)webView {
 	self.webViewDidFinishLoading = TRUE;
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	if (ct.userLocationOK == TRUE && ct.pubLocationOK == TRUE) {
@@ -316,7 +412,8 @@
 
 -(void)parseCoordinatesHtml:(NSString *)html {
 	
-	NSLog(@"parseCoordinatesHtml");
+	pointsArray = [[NSMutableArray alloc] init];
+	
 	NSString *remainingSubString = html;
 	NSRange coordRange = [remainingSubString rangeOfString:@"<br>"];
 
@@ -334,7 +431,6 @@
 		coordRange = [remainingSubString rangeOfString:@"<br>"];
 	}		
 	
-	NSLog(@"end parseCoordinatesHtml");
 	[self setupMap];
 	
 }
@@ -375,6 +471,10 @@
 - (void)setupMap {
 	
 	NSLog(@"setupMap");
+	
+	// Remove any existing annotations
+	[mapView removeAnnotations:[mapView annotations]];
+	
 	// CREATE THE ANNOTATIONS AND ADD THEM TO THE MAP
 	
 	// first create the route annotation, so it does not draw on top of the other annotations. 
@@ -399,21 +499,96 @@
 											   annotationType:CSMapAnnotationTypeEnd
 														title:[self.pub name]] autorelease];
 	
-	[annotation subtitle:self.pubAddress];
+	[annotation subtitle:[self.pubAddress copy]];
 	[mapView addAnnotation:annotation];
+	
+	
+	// Place other pubs on the map
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
+	
+	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:managedObjectContext]; 
+	[request setEntity:entity]; 
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]; 
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil]; 
+	[request setSortDescriptors:sortDescriptors]; 
+	[sortDescriptors release]; 
+	[sortDescriptor release]; 
+	NSError *error; 
+	NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request error:&error] mutableCopy]; 
+	if (mutableFetchResults == nil) { 
+		NSLog(@"Can’t load the Pub data!"); 
+	} else {
+		NSLog(@"Mutablefetchresults count: %d", [mutableFetchResults count]);
+		for(Pub *thePub in mutableFetchResults) {
+			if(thePub != self.pub) {
+				NSLog(@"pub name: %@", thePub.name);
+				CLLocationDegrees longitude = [[thePub longitude] doubleValue]; 
+				CLLocationDegrees latitude = [[thePub latitude] doubleValue]; 
+				
+				CLLocationCoordinate2D coord;
+				coord.latitude = latitude;
+				coord.longitude = longitude;
+				
+				CSPubAnnotation *pubAnnotation = [[[CSPubAnnotation alloc] initWithCoordinate:coord
+														title:[thePub name]
+														pub:thePub] autorelease];
+				
+				NSString *address = [[NSString stringWithFormat:@"%@ %@, %@ %@", [thePub street], [thePub number], [thePub zipcode], [thePub city]] retain];
+				[pubAnnotation subtitle:address];
+				
+				[mapView addAnnotation:pubAnnotation];
+			}
+		}
+		
+	}
+	
 	
 	// center and size the map view on the region computed by our route annotation. 
 	[mapView setRegion:routeAnnotation.region];
 	
 	[self.activityIndicator stopAnimating];
 	NSLog(@"end setupMap");
+	
+	
+	// Get the total distance to the destination
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	int totalDistance = 0;
+	int i = 0;
+	for(i=1; i<[pointsArray count]; i++) {
+		CLLocation *locA = [pointsArray objectAtIndex:i-1];
+		CLLocation *locB = [pointsArray objectAtIndex:i];
+		totalDistance += [ct fetchDistance:locA locationB:locB];
+	}
+	self.distanceFromDestination = totalDistance;
+	NSLog(@"TotalDistance: %d", self.distanceFromDestination);
+	
+	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateLocation) userInfo:nil repeats: YES];
+	[ct stop];
+
+	NSLog(@"MAPVIEW ANNOTATION COUNT: %d", [[mapView annotations] count]);
+	
+}
+
+- (void)updateLocation {
+	NSLog(@"Update location");
+	googleMapsAPI = [[UICGoogleMapsAPI alloc] init];
+	googleMapsAPI.delegate = self;
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	NSLog(@"self.pubAddress: %@", self.pubAddress);
+	[ct fetchPubLocation:self.pub];
 }
 
 #pragma mark mapView delegate functions
 
-- (void)mapView:(MKMapView *)mapView
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated
 {
-	NSLog(@"mapView");
 	// turn off the view of the route as the map is chaning regions. This prevents
 	// the line from being displayed at an incorrect positoin on the map during the
 	// transition. 
@@ -429,7 +604,6 @@
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated
 {
-	NSLog(@"regioinDidChangeAnimated");
 	// re-enable and re-poosition the route display. 
 	for(NSObject* key in [_routeViews allKeys])
 	{
@@ -441,9 +615,8 @@
 }
 
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id <MKAnnotation>)annotation
+- (MKAnnotationView *)mapView:(MKMapView *)theMapView viewForAnnotation:(id <MKAnnotation>)annotation
 {
-	NSLog(@"ViewForAnnotation");
 	MKAnnotationView* annotationView = nil;
 	
 	
@@ -454,6 +627,7 @@
 		if(csAnnotation.annotationType == CSMapAnnotationTypeStart || 
 		   csAnnotation.annotationType == CSMapAnnotationTypeEnd)
 		{
+			NSLog(@"CSMapAnnotation pub name: %@", csAnnotation.title);
 			NSString* identifier = @"Pin";
 			MKPinAnnotationView* pin = (MKPinAnnotationView*)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
 			
@@ -462,7 +636,11 @@
 				pin = [[[MKPinAnnotationView alloc] initWithAnnotation:csAnnotation reuseIdentifier:identifier] autorelease];
 			}
 			
-			[pin setPinColor:(csAnnotation.annotationType == CSMapAnnotationTypeEnd) ? MKPinAnnotationColorRed : MKPinAnnotationColorGreen];
+			if (csAnnotation.annotationType == CSMapAnnotationTypeStart) {
+				[pin setPinColor:MKPinAnnotationColorGreen];
+			} else if (csAnnotation.annotationType == CSMapAnnotationTypeEnd) {
+				[pin setPinColor:MKPinAnnotationColorRed];
+			} 
 			
 			annotationView = pin;
 		}
@@ -483,7 +661,6 @@
 		[annotationView setEnabled:YES];
 		[annotationView setCanShowCallout:YES];
 	}
-	
 	else if([annotation isKindOfClass:[CSRouteAnnotation class]])
 	{
 		CSRouteAnnotation* routeAnnotation = (CSRouteAnnotation*) annotation;
@@ -492,15 +669,41 @@
 		
 		if(nil == annotationView)
 		{
-			CSRouteView* routeView = [[[CSRouteView alloc] initWithFrame:CGRectMake(0, 0, mapView.frame.size.width, mapView.frame.size.height)] autorelease];
+			CSRouteView* routeView = [[[CSRouteView alloc] initWithFrame:CGRectMake(0, 0, theMapView.frame.size.width, theMapView.frame.size.height)] autorelease];
 			
 			routeView.annotation = routeAnnotation;
-			routeView.mapView = mapView;
+			routeView.mapView = theMapView;
 			
 			[_routeViews setObject:routeView forKey:routeAnnotation.routeID];
 			
 			annotationView = routeView;
 		}
+	}
+	else if([annotation isKindOfClass:[CSPubAnnotation class]])
+	{
+		CSPubAnnotation* pubAnnotation = (CSPubAnnotation*) annotation;
+		
+		NSLog(@"HANDLING PUB ANNOTATIONS");
+		NSLog(@"pub name: %@", pubAnnotation.pub.name);
+		NSString* identifier = @"PubPin";
+		MKPinAnnotationView* pin = (MKPinAnnotationView*)[self.mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+		
+		
+		if(nil == pin)
+		{
+			NSLog(@"ADDING PUB BUTTON");
+			NSLog(@"pub name: %@", pubAnnotation.pub.name);
+			pin = [[[MKPinAnnotationView alloc] initWithAnnotation:pubAnnotation reuseIdentifier:identifier] autorelease];
+			UIButton *pubButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+			pin.rightCalloutAccessoryView = pubButton;
+		}
+		
+		[pin setPinColor:MKPinAnnotationColorPurple];
+		
+		annotationView = pin;
+		[annotationView setEnabled:YES];
+		[annotationView setCanShowCallout:YES];
+
 	}
 	
 	return annotationView;
@@ -510,10 +713,12 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
-	NSLog(@"annotaionView");
 	CSImageAnnotationView* imageAnnotationView = (CSImageAnnotationView*) view;
-	CSMapAnnotation* annotation = (CSMapAnnotation*)[imageAnnotationView annotation];
+	CSPubAnnotation* annotation = (CSPubAnnotation*)[view annotation];
 	
+	NSLog(@"Clicked pub: %@", annotation.pub.name);
+	[self repeatSearchWithPub:[annotation pub]];
+	/*
 	if(annotation.url != nil)
 	{
 		if(nil == _detailsVC)	
@@ -522,28 +727,20 @@
 		_detailsVC.url = annotation.url;
 		[self.view addSubview:_detailsVC.view];
 	}
+	 */
 }
  
 
-
+/*
 -(void) showWebViewForURL:(NSURL*) url
 {
-	NSLog(@"ShowWebViewForURL");
 	CSWebDetailsViewController* webViewController = [[[CSWebDetailsViewController alloc] initWithNibName:@"CSWebDetailsViewController" bundle:nil] autorelease];
 	[webViewController setUrl:url];
 	
 	[self presentModalViewController:webViewController animated:YES];
 	//[webViewController autorelease];
 }
-
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	
-	if (buttonIndex == 1) 
-	{ 
-		[self loadPubView];
-	}
-}
+ */
  
 
 /*
@@ -564,7 +761,6 @@
 -(void) viewWillDisappear:(BOOL)animated { 
 	[super viewWillDisappear:animated]; 
 	
-	NSLog(@"View will disappear..."); 
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 	//[self.locationManager stopUpdatingLocation]; 
@@ -578,34 +774,21 @@
 
 
 - (void)dealloc {
-	NSLog(@"A");
 	[pointsArray release];
-		NSLog(@"B");
-	[webData relese];
+	[webData release]; // scratch this if you get crashes
 	[mapView release];
-		NSLog(@"C");
 	[_routeViews release];
-		NSLog(@"D");
 	[_detailsVC release];
-		NSLog(@"E");
 	[googleMapsAPI release];
-		NSLog(@"F");
 	[userCoordinates release];
-		NSLog(@"G");
 	[userLocation release];
-		NSLog(@"H");
+	[lastUserLocation release];
 	[pubCoordinates release];
-		NSLog(@"I");
 	[pubLocation release];
-		NSLog(@"J");
 	[pubAddress release];
-		NSLog(@"K");
 	[pub release];
-		NSLog(@"L");
 	[activityIndicator release];
-		NSLog(@"M");
 	[capturedToggle release];
-		NSLog(@"N");
     [super dealloc];
 }
 

@@ -21,6 +21,7 @@
 @synthesize soapResults;
 @synthesize xmlParser;
 @synthesize webData;
+@synthesize buttonPlaying;
 @synthesize rowPlayingIndexPath;
 @synthesize userLocation;
 @synthesize fetchedResultsController;
@@ -69,7 +70,7 @@
     } else if (buttonIndex == 1) {
 		// Sort by song similarity
     } else if (buttonIndex == 2) {
-		
+		// Sort by rating
 		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
 		
 		for(Pub *pub in dataSource) {
@@ -83,9 +84,12 @@
 				} else if ([[pub rating] intValue] >= [[[sortedArray objectAtIndex:0] rating] intValue]) {
 					[sortedArray insertObject:pub atIndex:0];
 				} else {
-					for(int i=1; i<[sortedArray count]-1; i++) {
+					for(int i=0; i<[sortedArray count]; i++) {
 						if ([[pub rating] intValue] == [[[sortedArray objectAtIndex:i] rating] intValue]) {
 							[sortedArray insertObject:pub atIndex:i];
+							break;
+						} else if ([[pub rating] intValue] < [[[sortedArray objectAtIndex:i] rating] intValue] && [[pub rating] intValue] > [[[sortedArray objectAtIndex:i+1] rating] intValue]) {
+							[sortedArray insertObject:pub atIndex:i+1];
 							break;
 						}
 					} // end for loop
@@ -101,6 +105,40 @@
 		
 	} else if (buttonIndex == 3) {
 		// Sort by visitors
+		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+		
+		for(Pub *pub in dataSource) {
+			NSLog(@"Pub: %@", [pub name]);
+			NSLog(@"Visitors: %@", [pub visitors]);
+			// Initial entry
+			if ([sortedArray count] == 0) {
+				[sortedArray addObject:pub];
+			} else {
+				// Further entries
+				if ([[pub visitors] intValue] <= [[[sortedArray lastObject] visitors] intValue]) {
+					[sortedArray addObject:pub];
+				} else if ([[pub visitors] intValue] >= [[[sortedArray objectAtIndex:0] visitors] intValue]) {
+					[sortedArray insertObject:pub atIndex:0];
+				} else {
+					for(int i=0; i<[sortedArray count]; i++) {
+						if ([[pub visitors] intValue] == [[[sortedArray objectAtIndex:i] visitors] intValue]) {
+							[sortedArray insertObject:pub atIndex:i];
+							break;
+						} else if ([[pub visitors] intValue] < [[[sortedArray objectAtIndex:i] visitors] intValue] && [[pub visitors] intValue] > [[[sortedArray objectAtIndex:i+1] visitors] intValue]) {
+							[sortedArray insertObject:pub atIndex:i+1];
+							break;
+						}
+					} // end for loop
+				}				
+			}
+		} // end for loop
+		
+		[dataSource removeAllObjects];
+		dataSource = sortedArray;
+		[tableData removeAllObjects];
+		[tableData addObjectsFromArray:dataSource];
+		[tableView reloadData];
+		
 	}
 }
 
@@ -120,7 +158,7 @@
 	[self show3DList];
 }
 
-- (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow {
+- (void) pubCell_clicked:(id)sender row:(NSInteger)theRow {
 	
 	Pub *pub = [dataSource objectAtIndex:theRow];
 	
@@ -142,7 +180,8 @@
 
 - (void) playMusic:(id)sender {
 
-	CellButton *button = (UIButton *)sender;
+	CellButton *button = (CellButton *)sender;
+	self.buttonPlaying = button;
 	
 	if (self.rowPlayingIndexPath == nil ) {
 		// Nothing is playing yet
@@ -150,6 +189,7 @@
 		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 
 		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		audioPlayer.delegate = self;
 		[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 	} else {
 		if (self.rowPlayingIndexPath.row == button.indexPath.row) {
@@ -169,6 +209,7 @@
 			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 		
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			audioPlayer.delegate = self;
 			[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 			
 		}
@@ -202,37 +243,13 @@
 	self.navigationItem.rightBarButtonItem = lookBarButtonItem;
 	[lookBarButtonItem release];
 	
+	// This is required to prevent the bottom part of the table from hiding behind the tab bar.
+	[self.tableView setFrame:CGRectMake(0,0,320,400)];
 	
-	// CoreData test
-	/*
+	
 	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
-	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
-	self.managedObjectContext = managedObjectContext;
-	
-	// Uncomment the following code to add the pubs to the database
-	
-	[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
-				andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304" andVisitors:@"87"];
-	
-	[self insertNewObject:@"Fitforyou" andStreet:@"Mechelsesteenweg" andNumber:@"763" andZipCode:@"3020" andCity:@"Herent" 
-				andUserID:@"418012" andRating:@"3" andLatitude:@"50.9204853" andLongitude:@"4.6479286" andVisitors:@"75"];
-	
-	[self insertNewObject:@"Cafe Mezza" andStreet:@"Mathieu de Layensplein" andNumber:@"119" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"416197" andRating:@"5" andLatitude:@"50.8799430" andLongitude:@"4.7002825" andVisitors:@"132"];
-	
-	[self insertNewObject:@"Linx" andStreet:@"Vismarkt" andNumber:@"17" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"416665" andRating:@"1" andLatitude:@"50.8817091" andLongitude:@"4.6998039" andVisitors:@"23"];
-	
-	[self insertNewObject:@"Mundo" andStreet:@"Martelarenplein" andNumber:@"14" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"418090" andRating:@"0" andLatitude:@"50.8814212" andLongitude:@"4.7145274" andVisitors:@"24"];
-	
-	[self insertNewObject:@"Mephisto" andStreet:@"Oude Markt" andNumber:@"2" andZipCode:@"3000" andCity:@"Leuven" 
-				andUserID:@"315056" andRating:@"2" andLatitude:@"50.8783624" andLongitude:@"4.6996464" andVisitors:@"54"];
-	
-	[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
-				andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609" andVisitors:@"9"];
-	
-	
+	NSManagedObjectContext *theManagedObjectContext = appDelegate.managedObjectContext;
+	self.managedObjectContext = theManagedObjectContext;
 	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
 	[request setEntity:entity]; 
@@ -248,40 +265,51 @@
 		// Might want to do something more serious... 
 		NSLog(@"Can’t load the Pub data!"); 
 	} 
+	NSLog(@"MutableFetchResults: %d", [mutableFetchResults count]);
+	if (mutableFetchResults == nil || [mutableFetchResults count] <= 0) {
+		[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
+					andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304" andVisitors:@"87"];
+		
+		[self insertNewObject:@"Fitforyou" andStreet:@"Mechelsesteenweg" andNumber:@"763" andZipCode:@"3020" andCity:@"Herent" 
+					andUserID:@"418012" andRating:@"3" andLatitude:@"50.9204853" andLongitude:@"4.6479286" andVisitors:@"90"];
+		
+		[self insertNewObject:@"Cafe Mezza" andStreet:@"Mathieu de Layensplein" andNumber:@"119" andZipCode:@"3000" andCity:@"Leuven" 
+					andUserID:@"416197" andRating:@"5" andLatitude:@"50.8799430" andLongitude:@"4.7002825" andVisitors:@"18"];
+		
+		[self insertNewObject:@"Linx" andStreet:@"Vismarkt" andNumber:@"17" andZipCode:@"3000" andCity:@"Leuven" 
+					andUserID:@"416665" andRating:@"1" andLatitude:@"50.8817091" andLongitude:@"4.6998039" andVisitors:@"23"];
+		
+		[self insertNewObject:@"Mundo" andStreet:@"Martelarenplein" andNumber:@"14" andZipCode:@"3000" andCity:@"Leuven" 
+					andUserID:@"418090" andRating:@"0" andLatitude:@"50.8814212" andLongitude:@"4.7145274" andVisitors:@"24"];
+		
+		[self insertNewObject:@"Mephisto" andStreet:@"Oude Markt" andNumber:@"2" andZipCode:@"3000" andCity:@"Leuven" 
+					andUserID:@"315056" andRating:@"2" andLatitude:@"50.8783624" andLongitude:@"4.6996464" andVisitors:@"54"];
+		
+		[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
+					andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609" andVisitors:@"9"];
+		
+		if (![self.managedObjectContext save:&error]) {
+			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+			abort();
+		}
+	}
 	
-	self.dataSource = [[NSMutableArray alloc] init];
-	[self.dataSource addObjectsFromArray:mutableFetchResults];
-	*/
-	// Uncomment the following code to remove all items from the database
+	[mutableFetchResults release];
+	[request release];
+	 
+	
 	/*
 	for(Pub *pub in mutableFetchResults) {
 		[self.managedObjectContext deleteObject:pub];
 	}
 	*/
 	
-	
-	// Uncomment the following code to commit the removal or add of items in the database
-	// Save the context.
-    //NSError *error = nil;
-	/*
-    if (![self.managedObjectContext save:&error]) {
-		NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-		abort();
-    }
-	*/
-	 
-	/*
-	[mutableFetchResults release];
-	[request release];
-	*/
-
-	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 	
 	[self tunify_login];
 	
 	self.rowPlayingIndexPath = nil;
-	
+	NSLog(@"End viewdidload");
 	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 	//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 	
@@ -293,18 +321,24 @@
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
+	NSLog(@"VIEWDIDAPPEAR REINIT");
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	
-	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateCurrentLocation) userInfo:nil repeats: YES];
+	NSLog(@"end of viewdidappear method");
+	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateCurrentLocation) userInfo:nil repeats: YES];
 }
 
 
 - (void)viewDidDisappear:(BOOL)animated {
-	 [super viewDidDisappear:animated];
-	 CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	 [ct stop];
-	 [locationTimer invalidate];
+	[super viewDidDisappear:animated];
+	if(in3DView == FALSE) {
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+		[ct stop];
+		NSLog(@"VIEW DID DISAPPEAR STOP");
+		[locationTimer invalidate];
+	}
+	 
+	 
  }
  
 #pragma mark -
@@ -312,7 +346,9 @@
 
 - (void)updateCurrentLocation {
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	//[ct reInit];
 	[ct fetchUserLocation];
+	NSLog(@"Updating current location");
 }
 
 #pragma mark -
@@ -358,15 +394,35 @@
 }
 
 #pragma mark -
+#pragma mark AudioPlayer delegate
+- (void)audioPlayerError:(AudioPlayer *)sender {
+	
+	[self.buttonPlaying setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"Could not contact the Tunify server. Audio playback will not work.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	
+	[alertView show]; 
+}
+
+#pragma mark -
 #pragma mark Location lookup callbacks
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
 	
+	NSLog(@"userLatitude: %f", self.userLocation.coordinate.latitude);
+	NSLog(@"userLongitude: %f", self.userLocation.coordinate.longitude);
+	
+	NSLog(@"USERLOCATION FOUND");
 	// Fetch all possible pubs from Core Data
 	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
-	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
-	self.managedObjectContext = managedObjectContext;
+	NSManagedObjectContext *theManagedObjectContext = appDelegate.managedObjectContext;
+	self.managedObjectContext = theManagedObjectContext;
 	
 	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
 	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Pub" inManagedObjectContext:self.managedObjectContext]; 
@@ -386,17 +442,23 @@
 	
 	// Now that we know our location, we can filter the discoverd pubs based on their distance from us.
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  
-	NSNumber *radius = [userDefaults stringForKey:@"radius"];
-	
+	NSString *radius = [userDefaults stringForKey:@"radius"];
+	//int radius = [[userDefaults stringForKey:@"radius"] intValue];
+	//NSLog(@"Radius: %d", [radius doubleValue]);
+	NSLog(@"Radius: %@", radius);
+	NSLog(@"PUBS: %d", [mutableFetchResults count]);
 	self.dataSource = [[NSMutableArray alloc] init];
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	for(Pub *pub in mutableFetchResults) {
+		NSLog(@"pub name: %@", pub.name);
 		CLLocationDegrees longitude = [[pub longitude] doubleValue]; 
 		CLLocationDegrees latitude = [[pub latitude] doubleValue]; 
 		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
 		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
-			
-		if (distance <= ([radius floatValue] * 1000)) {
+		NSLog(@"distance: %f", distance);	
+		NSLog(@"Radius: %f", [radius doubleValue] * 1000);
+		if (distance <= ([radius doubleValue] * 1000)) {
+
 			[self.dataSource addObject:pub];
 		}
 	}
@@ -404,7 +466,11 @@
 	tableData = [[NSMutableArray alloc] init];
 	searchedData = [[NSMutableArray alloc] init];
 	[tableData addObjectsFromArray:dataSource];
+	for (Pub *pub in tableData) {
+		NSLog(@"Pub name: %@", pub.name);
+	}
 	
+	[tableView reloadData];
 	
 	if (in3DView == TRUE) {
 		for(PubCard *pubCard in self.cardSource) {
@@ -429,6 +495,8 @@
 	[alertView show]; 
 }
 
+#pragma mark -
+#pragma mark Tunify and XML 
 -(void)tunify_login {
 	// Log in the user
 	NSString *soapMessage;
@@ -607,18 +675,18 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	NSLog(@"numberofRowsInSection");
 	return [tableData count];
 
 }
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	
     static NSString *CellIdentifier = @"Cell";
 	
-	pubCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	pubCell *cell = (pubCell*)[theTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
@@ -642,8 +710,10 @@
 		cell.distanceLabel.text = @"Distance unknown";
 	}
 	
-	cell.ratingLabel.text = @"Rating:";
+	// Set stars rating
 	[cell.stars setRating:[[pub rating] intValue]];
+	// Set visitor amount
+	cell.visitorsLabel.text = pub.visitors;
 		
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
@@ -654,9 +724,9 @@
 }
 
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-	[self pubCell_clicked:tableView row:indexPath.row];
+- (void)tableView:(UITableView *)theTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	NSLog(@"Did select row at index path");
+	[self pubCell_clicked:theTableView row:indexPath.row];
 }
 
 
@@ -775,12 +845,6 @@
 	self.overlayView.opaque = NO;
 	self.overlayView.backgroundColor = [UIColor clearColor];
 	self.overlayView.delegate = self;
-	
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	[ct reInit];
-	ct.delegate = self;
-	//[ct fetchUserLocation];
-	[ct fetchHeading];
 
 	lblCo = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 25)];
 	lblCo.text = @"";
@@ -837,6 +901,13 @@
 	//[mutableFetchResults release];
 	//[request release];
 	
+	in3DView = TRUE;
+		
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
+	[ct fetchUserLocation];
+	[ct fetchHeading];
 	
 	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		
@@ -871,8 +942,6 @@
 	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
 	accel.delegate = self;
 	accel.updateInterval = 1.0f/20.0f;
-	
-	in3DView = TRUE;
 }
 
 - (void)hide3DList {
@@ -881,6 +950,7 @@
 	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
+	NSLog(@"HIDE3DLIST");
 	
 	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
 	accel.delegate = nil;
@@ -898,6 +968,7 @@
 	NSArray *yValues = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:310],[NSNumber numberWithInt:200],[NSNumber numberWithInt:420],[NSNumber numberWithInt:90],nil]; 
 	int cardScreenIndex = 0;
 	int validIntervalInDegrees = 80;
+	NSLog(@"CARDS: %d", [self.cardSource count]);
 	for(PubCard *pubCard in self.cardSource) {
 		float heading = [pubCard getHeading]; //[self calculatePubHeading:[pubCard pub]];
 		
@@ -966,7 +1037,7 @@
 	float v2 = [[pub latitude] floatValue];		
 	float v1 = [[pub longitude] floatValue];
 	//NSLog(@"u1: %f, u2: %f, v1: %f, v2: %f", u1, u2, v1, v2);
-	float result;						//The resulting bearing.
+	//float result;						//The resulting bearing.
 	
 	
 	// Base vector
@@ -1007,6 +1078,11 @@
 	
 	PubCard *card = (PubCard *)sender;
 	self.selectedPub = [card pub];
+	
+	// Remove any already existing cardviews
+	if(self.cardView != nil) {
+		[self.cardView removeFromSuperview];
+	}
 	
 	self.cardView = [[UIView alloc] initWithFrame:CGRectMake(0, 400, 320, 100)];
 	self.cardView.opaque = YES;
@@ -1081,7 +1157,7 @@
 
 #pragma mark popUpScreenButotnHandlers
 -(void)buttonPlayMusicClicked:(id)sender {
-	Pub *pub = self.selectedPub;
+	//Pub *pub = self.selectedPub;
 	if (pubPlaying == TRUE) {
 		// stop the music
 		pubPlaying = FALSE;
@@ -1094,6 +1170,7 @@
 -(void)buttonDirectionClicked:(id)sender {
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
+	NSLog(@"Buttondirectionclicked");
 	
 	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
 	accel.delegate = nil;
@@ -1146,6 +1223,7 @@
 	[rowPlayingIndexPath release];
 	[cardSource release];
 	[dataSource release];
+	[buttonPlaying release];
 	[tableView release];
 	[soapResults release];
 	[xmlParser release];

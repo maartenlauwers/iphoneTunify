@@ -12,9 +12,15 @@
 @implementation CellButton
 @synthesize indexPath;
 
+- (id)init {
+    if (self = [super init]) {
+    }
+    return self;
+}
+
 - (void) dealloc {
 	[indexPath release];
-	[self dealloc];
+	//[super dealloc]; // If we do this, the dealloc causes a crash. Still need to figure out why.
 }
 
 @end

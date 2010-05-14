@@ -10,7 +10,6 @@
 
 
 @interface rateViewController : UIViewController {
-	IBOutlet UILabel *rateLabel;
 	IBOutlet UIImageView *star1;
 	IBOutlet UIImageView *star2;
 	IBOutlet UIImageView *star3;
@@ -19,7 +18,6 @@
 	IBOutlet UIButton *cancelButton;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *rateLabel;
 @property (nonatomic, retain) IBOutlet UIImageView *star1;
 @property (nonatomic, retain) IBOutlet UIImageView *star2;
 @property (nonatomic, retain) IBOutlet UIImageView *star3;

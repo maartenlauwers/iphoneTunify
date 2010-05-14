@@ -11,16 +11,15 @@
 #import <AudioToolbox/AudioToolbox.h> 
 #import <AVFoundation/AVFoundation.h> 
 #import "AudioPlayer.h"
-#import "M3U8Handler.h"
-#import "M3U8SegmentInfo.h"
-#import "M3U8Playlist.h"
 #import "CoordinatesTool.h"
 #import "RecentlyVisited.h"
 #import "Pub.h"
 #import "TunifyIPhoneAppDelegate.h"
 #import "OverlayView.h"
+#import "PubCard.h"
 
-@interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate, M3U8HandlerDelegate> {
+@class CellButton;
+@interface pubListController : UITableViewController <UIActionSheetDelegate, AVAudioPlayerDelegate, AudioPlayerDelegate, CoordinatesToolDelegate, UIAccelerometerDelegate, OverlayViewDelegate, PubCardDelegate> {
 	mapViewController *mapViewController;
 	NSMutableArray *dataSource;		// stores all data
 	NSMutableArray *tableData;		// stores data displayed in the table
@@ -32,13 +31,13 @@
 	NSMutableData *webData;
 	NSMutableString *soapResults;
 	NSXMLParser *xmlParser;
-	BOOL *recordResults;
+	BOOL recordResults;
 	
 	NSString *genre;
 	
 	NSIndexPath *rowPlayingIndexPath;
+	CellButton *buttonPlaying;
 	
-	//CoordinatesTool *ct;
 	CLLocation *userLocation;
 	NSTimer *locationTimer;
 	
@@ -48,12 +47,12 @@
 	// 3D variables
 	UIImagePickerController *picker;
 	NSMutableArray *cardSource;
-	BOOL *in3DView;
+	BOOL in3DView;
 	OverlayView *overlayView;
 	UIView *cardView;
 	UILabel* lblCo;
 	Pub *selectedPub;
-	BOOL *pubPlaying;
+	BOOL pubPlaying;
 }
 
 @property (nonatomic, retain) NSMutableData *webData;
@@ -62,6 +61,7 @@
 @property (nonatomic, retain) NSString *genre;
 @property (nonatomic, retain) NSMutableString *soapResults;
 @property (nonatomic, retain) NSXMLParser *xmlParser;
+@property (nonatomic, retain) CellButton *buttonPlaying;
 @property (assign) NSIndexPath *rowPlayingIndexPath;
 @property (nonatomic, retain) CLLocation *userLocation;
 
@@ -78,7 +78,7 @@
 - (void) tunify_login;
 - (void) btnFilter_clicked:(id)sender;
 - (void) btnLookAround_clicked:(id)sender;
-- (void) pubCell_clicked:(id)sender row:(NSInteger *)theRow;
+- (void) pubCell_clicked:(id)sender row:(NSInteger)theRow;
 - (IBAction) searchFieldDoneEditing:(id)sender;
 - (void) playMusic:(id)sender;
 
@@ -88,6 +88,7 @@
 				andVisitors:(NSString *)theVisistors;
 
 - (void)show3DList;
+- (void)hide3DList;
 - (float)calculatePubHeading:(Pub *)pub;
 
 @end

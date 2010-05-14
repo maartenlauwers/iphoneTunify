@@ -12,6 +12,18 @@
 #import "UICGoogleMapsAPI.h"
 #import "CoordinatesTool.h"
 #import "Pub.h"
+#import "TunifyIPhoneAppDelegate.h"
+#import "worldViewController.h"
+#import "musicViewController.h"
+#import "pubVisitViewController.h"
+#import "mapAnnotation.h"
+#import "CSMapAnnotation.h"
+#import "CSRouteAnnotation.h"
+#import "CSRouteView.h"
+#import "CSImageAnnotationView.h"
+#import "CSWebDetailsViewController.h"
+#import "CSPubAnnotation.h"
+#import "RecentlyVisited.h"
 
 @class CSWebDetailsViewController;
 
@@ -38,9 +50,13 @@
 	//CoordinatesTool *ct;
 	NSString *userCoordinates;
 	CLLocation *userLocation;
+	CLLocation *lastUserLocation;
 	NSString *pubCoordinates;
 	CLLocation *pubLocation;
-	BOOL *webViewDidFinishLoading;
+	BOOL webViewDidFinishLoading;
+	
+	NSInteger distanceFromDestination;
+	NSTimer *locationTimer;
 }
 
 @property (nonatomic, retain) Pub *pub;
@@ -53,16 +69,20 @@
 @property (nonatomic, retain) NSMutableData *webData;
 @property (nonatomic, retain) NSString *userCoordinates;
 @property (nonatomic, retain) CLLocation *userLocation;
+@property (nonatomic, retain) CLLocation *lastUserLocation;
 @property (nonatomic, retain) NSString *pubCoordinates;
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (nonatomic, retain) UICGoogleMapsAPI *googleMapsAPI;
-@property (nonatomic, assign) BOOL *webViewDidFinishLoading;
+@property (nonatomic, assign) BOOL webViewDidFinishLoading;
+@property (nonatomic, assign) NSInteger distanceFromDestination;
 
 - (void)initAll;
 - (void)parseCoordinatesHtml:(NSString *)html;
 - (void)setupMap;
 - (void) showWebViewForURL:(NSURL*) url;
 
+- (void) updateMusicPlayback:(CLLocation *)oldLocation currentLocation:(CLLocation *)currentLocation;
+- (void) repeatSearchWithPub:(Pub *)pub;
 - (void) btnPubs_clicked:(id)sender;
 - (void) btnMusic_clicked:(id)sender;
 - (void) loadPubView;

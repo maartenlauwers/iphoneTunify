@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="105"/>
+			<integer value="20"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -54,7 +54,7 @@
 						<string key="IBUITitle">Achievements</string>
 						<object class="NSCustomResource" key="IBUIImage">
 							<string key="NSClassName">NSImage</string>
-							<string key="NSResourceName">85-trophy.png</string>
+							<string key="NSResourceName">trophy.png</string>
 						</object>
 						<reference key="IBUITabBar"/>
 					</object>
@@ -108,7 +108,7 @@
 							<string key="IBUITitle">Pubs</string>
 							<object class="NSCustomResource" key="IBUIImage">
 								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">88-beermug.png</string>
+								<string key="NSResourceName">beermug.png</string>
 							</object>
 							<reference key="IBUITabBar"/>
 						</object>
@@ -209,6 +209,7 @@
 											<bool key="IBUIOpaque">NO</bool>
 											<int key="IBUIContentMode">3</int>
 											<bool key="IBUIMultipleTouchEnabled">YES</bool>
+											<string key="IBPlaceholder">Find a pub</string>
 											<object class="IBUITextInputTraits" key="IBTextInputTraits"/>
 										</object>
 									</object>
@@ -369,6 +370,14 @@
 						<reference key="destination" ref="593164601"/>
 					</object>
 					<int key="connectionID">108</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">tableView</string>
+						<reference key="source" ref="593164601"/>
+						<reference key="destination" ref="310494821"/>
+					</object>
+					<int key="connectionID">109</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -609,7 +618,7 @@
 					<bool key="EncodedWithXMLCoder">YES</bool>
 					<string>UIApplication</string>
 					<string>UIResponder</string>
-					<string>{{321, 110}, {320, 480}}</string>
+					<string>{{323, 231}, {320, 480}}</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
 					<string>achievementsController</string>
 					<string>com.apple.InterfaceBuilder.IBCocoaTouchPlugin</string>
@@ -666,7 +675,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">108</int>
+			<int key="maxID">109</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -726,6 +735,10 @@
 							<string>id</string>
 						</object>
 					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">tableView</string>
+						<string key="NS.object.0">UITableView</string>
+					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">Classes/achievementsController.h</string>
@@ -780,7 +793,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>btnFilter_clicked:</string>
 							<string>playMusic:</string>
-							<string>pubCell_clicked:pubName:</string>
+							<string>pubCell_clicked:pub:</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>

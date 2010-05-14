@@ -21,10 +21,10 @@
 	
 	NSString *name;
 	NSString *address;
-	NSInteger *visitors;
-	NSInteger *rating;
+	NSInteger visitors;
+	NSInteger rating;
 	Pub *pub;
-	BOOL *visible;
+	BOOL visible;
 	float heading;
 }
 
@@ -32,10 +32,10 @@
 @property (nonatomic, assign) id <PubCardDelegate> delegate;
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic, retain) NSString *address;
-@property (assign) NSInteger *visitors;
-@property (assign) NSInteger *rating;
+@property (assign) NSInteger visitors;
+@property (assign) NSInteger rating;
 @property (nonatomic, retain) Pub *pub;
-@property (assign) BOOL *visible;
+@property (assign) BOOL visible;
 @property (assign) float heading;
 
 

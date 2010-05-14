@@ -19,6 +19,7 @@
 @synthesize tableView;
 @synthesize rowPlayingIndexPath;
 @synthesize userLocation;
+@synthesize buttonPlaying;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -56,11 +57,11 @@
 		
     } else if (buttonIndex == 1) {
 		// Sort by song similarity
-    } else if (buttonIndex == 2) {
+	} else if (buttonIndex == 2) {
+		// Sort by rating
 		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
 		
 		for(Pub *pub in dataSource) {
-			
 			// Initial entry
 			if ([sortedArray count] == 0) {
 				[sortedArray addObject:pub];
@@ -71,9 +72,12 @@
 				} else if ([[pub rating] intValue] >= [[[sortedArray objectAtIndex:0] rating] intValue]) {
 					[sortedArray insertObject:pub atIndex:0];
 				} else {
-					for(int i=1; i<[sortedArray count]-1; i++) {
+					for(int i=0; i<[sortedArray count]; i++) {
 						if ([[pub rating] intValue] == [[[sortedArray objectAtIndex:i] rating] intValue]) {
 							[sortedArray insertObject:pub atIndex:i];
+							break;
+						} else if ([[pub rating] intValue] < [[[sortedArray objectAtIndex:i] rating] intValue] && [[pub rating] intValue] > [[[sortedArray objectAtIndex:i+1] rating] intValue]) {
+							[sortedArray insertObject:pub atIndex:i+1];
 							break;
 						}
 					} // end for loop
@@ -89,13 +93,48 @@
 		
 	} else if (buttonIndex == 3) {
 		// Sort by visitors
+		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+		
+		for(Pub *pub in dataSource) {
+			NSLog(@"Pub: %@", [pub name]);
+			NSLog(@"Visitors: %@", [pub visitors]);
+			// Initial entry
+			if ([sortedArray count] == 0) {
+				[sortedArray addObject:pub];
+			} else {
+				// Further entries
+				if ([[pub visitors] intValue] <= [[[sortedArray lastObject] visitors] intValue]) {
+					[sortedArray addObject:pub];
+				} else if ([[pub visitors] intValue] >= [[[sortedArray objectAtIndex:0] visitors] intValue]) {
+					[sortedArray insertObject:pub atIndex:0];
+				} else {
+					for(int i=0; i<[sortedArray count]; i++) {
+						if ([[pub visitors] intValue] == [[[sortedArray objectAtIndex:i] visitors] intValue]) {
+							[sortedArray insertObject:pub atIndex:i];
+							break;
+						} else if ([[pub visitors] intValue] < [[[sortedArray objectAtIndex:i] visitors] intValue] && [[pub visitors] intValue] > [[[sortedArray objectAtIndex:i+1] visitors] intValue]) {
+							[sortedArray insertObject:pub atIndex:i+1];
+							break;
+						}
+					} // end for loop
+				}				
+			}
+		} // end for loop
+		
+		[dataSource removeAllObjects];
+		dataSource = sortedArray;
+		[tableData removeAllObjects];
+		[tableData addObjectsFromArray:dataSource];
+		[tableView reloadData];
+		// Sort by visitors
 	}
 }
 
 - (void) playMusic:(id)sender {
 	NSLog(@"Playing the sound of the pub");
 	
-	CellButton *button = (UIButton *)sender;
+	CellButton *button = (CellButton *)sender;
+	self.buttonPlaying = button;
 	
 	if (self.rowPlayingIndexPath == nil ) {
 		// Nothing is playing yet
@@ -103,6 +142,7 @@
 		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 		
 		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		audioPlayer.delegate = self;
 		[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 	} else {
 		if (self.rowPlayingIndexPath.row == button.indexPath.row) {
@@ -111,6 +151,7 @@
 			[button setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 			
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			audioPlayer.delegate = nil;
 			[audioPlayer stop];
 		} else {
 			// Another cell is playing. We need to stop it and play our current one.
@@ -124,6 +165,7 @@
 			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 			
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			audioPlayer.delegate = self;
 			[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 			
 		}
@@ -136,7 +178,25 @@
 	[theplayer release]; 
 } 
 
-- (void) pubCell_clicked:(id)sender pub:(NSString*)pub {
+
+#pragma mark -
+#pragma mark AudioPlayer delegate
+- (void)audioPlayerError:(AudioPlayer *)sender {
+	
+	[self.buttonPlaying setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
+														message:NSLocalizedString(@"Could not contact the Tunify server. Audio playback will not work.",  
+																				  @"message") 
+													   delegate:self 
+											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
+											  otherButtonTitles:nil]; 
+	
+	[alertView show]; 
+}
+
+
+- (void) pubCell_clicked:(id)sender pub:(Pub*)pub {
 	mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 	controller.pub = pub;
 	[self.navigationController pushViewController:controller animated:YES];
@@ -158,6 +218,9 @@
 	filterBarButtonItem.action = @selector(btnFilter_clicked:);
 	self.navigationItem.leftBarButtonItem = filterBarButtonItem;
 	[filterBarButtonItem release];
+
+	// This is required to prevent the bottom part of the table from hiding behind the tab bar.
+	[self.tableView setFrame:CGRectMake(0,0,320,400)];
 	
 }
 
@@ -265,12 +328,12 @@
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
 	static NSString *CellIdentifier = @"Cell";
     
 	
-	pubCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	pubCell *cell = (pubCell*)[theTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[pubCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
     }
@@ -294,8 +357,10 @@
 		cell.distanceLabel.text = @"Distance unknown";
 	}
 
-	cell.ratingLabel.text = @"Rating:";
+	// Set stars rating
 	[cell.stars setRating:[[pub rating] intValue]];
+	// Set visitors amount
+	cell.visitorsLabel.text = pub.visitors;
 
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
@@ -306,7 +371,7 @@
 
 
 - (void)tableView:(UITableView *)theTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	Pub *pub = [dataSource objectAtIndex:indexPath.row];
+	Pub *pub = (Pub *)[dataSource objectAtIndex:indexPath.row];
 	[self pubCell_clicked:theTableView pub:pub];
 }
 
@@ -424,6 +489,7 @@
 	[genre release];
 	[rowPlayingIndexPath release];
 	[dataSource release];
+	[buttonPlaying release];
 	[tableView release];
 	[userLocation release];
     [super dealloc];

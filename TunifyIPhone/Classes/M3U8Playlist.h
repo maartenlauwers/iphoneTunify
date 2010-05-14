@@ -11,13 +11,13 @@
 
 @interface M3U8Playlist : NSObject {
 	NSMutableArray *segments;
-	NSInteger *length;
+	NSInteger length;
 }
 
 @property (nonatomic, retain) NSMutableArray *segments;
-@property (assign) NSInteger *length;
+@property (assign) NSInteger length;
 
 - (id)initWithSegments:(NSMutableArray *)segmentList;
-- (M3U8SegmentInfo *)getSegment:(NSInteger *)index;
+- (M3U8SegmentInfo *)getSegment:(NSInteger)index;
 
 @end

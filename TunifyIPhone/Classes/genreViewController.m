@@ -18,6 +18,8 @@
 @synthesize sourceView;
 @synthesize sourceId;
 @synthesize webData;
+@synthesize soapResults;
+@synthesize xmlParser;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -273,17 +275,17 @@
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    UITableViewCell *cell = [theTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
     
     // Set up the cell...
-	cell.text = [dataSource objectAtIndex:[indexPath row]];
+	cell.textLabel.text = [dataSource objectAtIndex:[indexPath row]];
 	
     return cell;
 }
@@ -399,6 +401,9 @@
 	[dataSource release];
 	[tableView release];
 	[webData release];
+	
+	[soapResults release];
+	[xmlParser release];
     [super dealloc];
 }
 

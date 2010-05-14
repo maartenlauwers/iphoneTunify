@@ -13,10 +13,7 @@
 
 @implementation selectedAchievementViewController
 
-@synthesize achievementName;
-@synthesize achievementDescription;
-@synthesize achievementNumber;
-@synthesize achieved;
+@synthesize achievement;
 @synthesize titleLabel;
 @synthesize descriptionLabel;
 @synthesize statusLabel;
@@ -45,9 +42,9 @@
  Share on Twitter
  */
 - (IBAction) btnTwitter_clicked:(id)sender {
-	if (self.achieved == TRUE) {
+	if ([self.achievement.completion doubleValue] >= 100) {
 		twitterController *controller = [[twitterController alloc] initWithNibName:@"twitterMessageView" bundle:[NSBundle mainBundle]];
-		controller.strAchievementName = self.achievementName;
+		controller.strAchievementName = self.achievement.name;
 		[self.navigationController pushViewController:controller animated:YES];
 		[controller release];
 		controller = nil;
@@ -60,7 +57,7 @@
  This method will create a working session for the user and will show the login dialog.
  */
 - (IBAction) btnFacebook_clicked:(id)sender {
-	if (self.achieved == TRUE) {
+	if ([self.achievement.completion doubleValue] >= 100) {
 		TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
 		FBSession *session = appDelegate.fbSession;	
 		session = [[FBSession sessionForApplication:@"cb12aa127decea40af4479de16b4e9c1" secret:@"47d30f1b4e2d78c4941cd5baea1bfb14" delegate:self] retain];
@@ -90,8 +87,8 @@
 							"\"media\":[{\"type\":\"image\","
 							"\"src\":\"%@\","
 							"\"href\":\"http://www.tunify.com\"}],"
-							"\"properties\":{\"Download at\":{\"text\":\"Tunify.com\",\"href\":\"http://www.tunify.com\"}}}", self.achievementName, self.achievementDescription, 
-							[NSString stringWithFormat:@"http://dl.dropbox.com/u/964150/tunifyIphoneIcons/achievement%d.png", self.achievementNumber]];
+							"\"properties\":{\"Download at\":{\"text\":\"Tunify.com\",\"href\":\"http://www.tunify.com\"}}}", self.achievement.name, self.achievement.description, 
+							[NSString stringWithFormat:@"http://dl.dropbox.com/u/964150/tunifyIphoneIcons/%@.png", self.achievement.name]];
 	
 	FBStreamDialog* dialog = [[[FBStreamDialog alloc] init] autorelease];
 	dialog.delegate = self;
@@ -144,29 +141,28 @@
 	self.navigationItem.leftBarButtonItem = backBarButtonItem;
 	[backBarButtonItem release];
 	
-	
-	self.achievementNumber += 1;
-	titleLabel.text = self.achievementName;
-	descriptionLabel.text = self.achievementDescription;
-	
-	if (self.achieved == TRUE) {
+	titleLabel.text = self.achievement.name;
+	descriptionLabel.text = self.achievement.info;
+	if([self.achievement.completion doubleValue] >= 100) {
 		statusLabel.text = @"Status: Achieved";
-		dateLabel.text = @"Achieved at: March 11, 2010";
-		locationLabel.text = @"Location: De Werf";
+		
+		NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+		[dateFormat setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+		
+		dateLabel.text = [NSString stringWithFormat:@"Achieved at: %@", [dateFormat stringFromDate:self.achievement.date]];
+		locationLabel.text = [NSString stringWithFormat:@"Location: %@", self.achievement.location];
 	} else {
 		statusLabel.text = @"Status: Not achieved";
 		dateLabel.text = @"Achieved at: Unknown";
 		locationLabel.text = @"Location: Unknown";
 	}
-	
-
 	UIImageView *imageView;
-	if (self.achieved == TRUE) {
-		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"achievement" stringByAppendingString:[NSString stringWithFormat:@"%d.png", self.achievementNumber]]]];
+	if ([self.achievement.completion doubleValue] >= 100) {
+		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self.achievement.name stringByAppendingString:[NSString stringWithFormat:@".png"]]]];
 		[twitterButton setImage:[UIImage imageNamed:@"twitter_icon.png"] forState:UIControlStateNormal];
 		[facebookButton setImage:[UIImage imageNamed:@"facebook_icon.png"] forState:UIControlStateNormal];
 	} else {
-		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[@"achievement" stringByAppendingString:[NSString stringWithFormat:@"%d_disabled.png", self.achievementNumber]]]];
+		imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:[self.achievement.name stringByAppendingString:[NSString stringWithFormat:@"_disabled.png"]]]];
 		[twitterButton setImage:[UIImage imageNamed:@"twitter_icon_disabled.png"] forState:UIControlStateNormal];
 		[facebookButton setImage:[UIImage imageNamed:@"facebook_icon_disabled.png"] forState:UIControlStateNormal];
 	}
@@ -199,8 +195,7 @@
 
 
 - (void)dealloc {
-	[achievementName release];
-	[achievementDescription release];
+	[achievement release];
 	[titleLabel release];
 	[descriptionLabel release];
 	[statusLabel release];

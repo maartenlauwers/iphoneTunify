@@ -51,7 +51,6 @@
 
 - (void)layoutSubviews {
 	[super layoutSubviews];
-	CGRect contentRect = self.contentView.bounds;
 	CGFloat boundsX = 0;
 	CGRect frame;
 	

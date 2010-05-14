@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import "Pub.h"
 
 @class CoordinatesTool;
 @protocol CoordinatesToolDelegate <NSObject>
@@ -28,8 +29,8 @@
 	NSString *userCoordinates;
 	CLLocation *userLocation;
 	float heading;
-	BOOL *pubLocationOK;
-	BOOL *userLocationOK;
+	BOOL pubLocationOK;
+	BOOL userLocationOK;
 	
 }
 
@@ -38,14 +39,14 @@
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (nonatomic, retain) NSString *userCoordinates;
 @property (nonatomic, retain) CLLocation *userLocation;
-@property (nonatomic, assign) BOOL *pubLocationOK;
-@property (nonatomic, assign) BOOL *userLocationOK;
+@property (nonatomic, assign) BOOL pubLocationOK;
+@property (nonatomic, assign) BOOL userLocationOK;
 
 + (CoordinatesTool *)sharedInstance;
 - (void)reInit;
 - (void) stop;
 - (void) fetchUserLocation;
-- (void) fetchPubLocation:(NSString *)pubAddress;
+- (void) fetchPubLocation:(Pub *)pub;
 - (void) fetchHeading;
 - (CLLocationDistance) fetchDistance;
 - (CLLocationDistance) fetchDistance:(CLLocation *)locationA locationB:(CLLocation *)locationB;

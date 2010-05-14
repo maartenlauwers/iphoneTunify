@@ -20,7 +20,7 @@
 	IBOutlet UILabel *artistLabel;
 	IBOutlet UISlider *volumeSlider;
 	
-	NSInteger *source;
+	NSInteger source;
 	
 	//AVAudioPlayer *player; 
 
@@ -28,7 +28,7 @@
 
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) Pub *pub;
-@property (assign) NSInteger *source;
+@property (assign) NSInteger source;
 
 -(IBAction) volumeChanged;
 

@@ -2,14 +2,15 @@
 //  OverlayView.h
 //  TunifyIPhone
 //
-//  Created by Maarten on 4/17/10.
+//  Created by thesis on 16/04/10.
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 
 @class OverlayView;
-@protocol OverlayViewDelegate <NSObject> 
+@protocol OverlayViewDelegate <NSObject>
 @optional
 - (void)viewClicked:(OverlayView *)sender;
 @end
@@ -19,4 +20,6 @@
 }
 
 @property (nonatomic, assign) id<OverlayViewDelegate> delegate;
+
+-(void)button_clicked:(id)sender;
 @end

@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "AudioPlayer.h"
 #import "FBSession.h"
+#import "Achievement.h"
 
-@interface TunifyIPhoneAppDelegate : NSObject <UIApplicationDelegate, FBSessionDelegate> {
+@interface TunifyIPhoneAppDelegate : NSObject <UIApplicationDelegate> {
 	
 	NSManagedObjectModel *managedObjectModel;
     NSManagedObjectContext *managedObjectContext;	    

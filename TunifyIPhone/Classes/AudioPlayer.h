@@ -8,28 +8,46 @@
 
 #import <Foundation/Foundation.h>
 #import "AudioStreamer.h"
-#import "M3U8Handler.h"
 #import "M3U8SegmentInfo.h"
 #import "M3U8Playlist.h"
+#import "Handler.h"
+#import <AVFoundation/AVAudioPlayer.h>
 
 @class AudioStreamer;
+@class AudioPlayer;
+@protocol AudioPlayerDelegate <NSObject>
+@optional
+- (void)audioPlayerError:(AudioPlayer *)sender;
+@end
 
-@interface AudioPlayer : NSObject <M3U8HandlerDelegate, AudioStreamerDelegate> {
+@interface AudioPlayer : NSObject <HandlerDelegate, AudioStreamerDelegate> {
+	id<AudioPlayerDelegate> delegate;
 	BOOL *isPlaying;
 	AudioStreamer *streamer;
 	NSString *baseUrl;
 	M3U8Playlist *playlist;
 	float lastUsedVolume;
+	
+	AVAudioPlayer *avAudioPlayer;
 }
 
+@property (nonatomic, retain) id<AudioPlayerDelegate> delegate;
 @property (nonatomic, retain) AudioStreamer *streamer;
 @property (nonatomic, retain) NSString *baseUrl;
 @property (nonatomic, retain) M3U8Playlist *playlist;
+@property (nonatomic, retain) AVAudioPlayer *avAudioPlayer;
 
 + (AudioPlayer*)sharedInstance;
+
+// Usability test methods
+- (void)playTest;
+- (void)decreaseVolume;
+- (void)increaseVolume;
+- (void)stopTest;
+
+
 - (void)play:(NSString *)path;
 - (void)setVolume:(float)volume;
 - (void)stop;
-- (void)createStreamer:(NSString*)path;
 - (void)destroyStreamer;
 @end

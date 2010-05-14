@@ -99,6 +99,8 @@
 		<dict>
 			<key>Type</key>
 			<string>PSSliderSpecifier</string>
+			<key>Title</key>
+			<string>Search radius</string>
 			<key>Key</key>
 			<string>radius</string>
 			<key>DefaultValue</key>

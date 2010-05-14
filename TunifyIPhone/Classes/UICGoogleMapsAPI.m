@@ -42,10 +42,11 @@
 }
 
 
-- (void)webView:(UIWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(id)frame {
-	self.message = message;
+- (void)webView:(UIWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)theMessage initiatedByFrame:(id)frame {
+	NSLog(@"message: %@", theMessage);
+	self.message = theMessage;
 	if ([self.delegate respondsToSelector:@selector(goolgeMapsAPI:didGetObject:)]) {
-		[(id<UICGoogleMapsAPIDelegate>)self.delegate goolgeMapsAPI:self didGetObject:message];
+		[(id<UICGoogleMapsAPIDelegate>)self.delegate goolgeMapsAPI:self didGetObject:theMessage];
 	}
 	
 	

@@ -7,21 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "pubVisitViewController.h"
 
-@protocol rateStar <NSObject>
+@class RateStar;
+@protocol RateStarDelegate <NSObject>
 @optional
-- (void)starTouched:(rateStar *)sender;
+- (void)starTouched:(RateStar *)sender;
 @end
 
-@interface rateStar : UIImageView {
-	NSInteger *number;
+@interface RateStar : UIImageView {
+	id<RateStarDelegate> delegate;
+	
+	NSInteger number;
 	BOOL touched;
-	id<rateStar> delegate;
+	
 }
 
-@property (assign) id<rateStar> delegate;
-@property (assign) NSInteger *number;
+@property (nonatomic, assign) id<RateStarDelegate> delegate;
+@property (assign) NSInteger number;
 @property BOOL touched;
 
 - (void)setTouchedImage:(BOOL)value;

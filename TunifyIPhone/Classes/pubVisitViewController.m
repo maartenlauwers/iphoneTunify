@@ -10,7 +10,6 @@
 #import "twitterController.h"
 #import "facebookController.h"
 #import "rateViewController.h"
-#import "rateStar.h"
 #import "musicViewController.h"
 
 #define STAR_TOUCHED = @"28-star.png";
@@ -18,7 +17,17 @@
 
 @implementation pubVisitViewController
 @synthesize pub;
-@synthesize infoLabel;
+@synthesize dataSource;
+@synthesize achievementLabel;
+@synthesize achievementNameLabel;
+@synthesize achievementReached;
+@synthesize friendsLabel;
+@synthesize shareLabel;
+@synthesize twitterButton;
+@synthesize facebookButton;
+@synthesize achievementButton;
+@synthesize friendsImage;
+@synthesize tableView;
 @synthesize star1;
 @synthesize star2;
 @synthesize star3;
@@ -41,6 +50,32 @@
 - (void)loadView {
 }
 */
+
+- (void) inviteButton_clicked:(id)sender {
+	
+	//CellButton *button = (UIButton *)sender;
+	
+}
+
+- (void) achievementsButton_clicked:(id)sender {
+	
+	//CellButton *button = (UIButton *)sender;
+	
+}
+
+- (void) achievementButton_clicked:(id)sender {
+	
+	selectedAchievementViewController *controller = [[selectedAchievementViewController alloc] initWithNibName:@"achievementsView" bundle:[NSBundle mainBundle]];
+
+	controller.achievement = achievementReached;
+	//controller.achievementName = achievementReached.name;
+	//controller.achievementDescription = achievementReached.description;
+	//controller.achievementNumber = achievementNumber;
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
+}
+
 - (IBAction) btnMusic_clicked:(id)sender {
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
@@ -70,6 +105,9 @@
 		[view sizeToFit];
 		tabBar.hidden = FALSE;
 	}
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
 	
 	NSLog(@"Jumping back to pubs");
 	[self.navigationController popToRootViewControllerAnimated:YES];
@@ -120,34 +158,34 @@
 	rateLabel.textColor = [UIColor blackColor];
 	rateLabel.backgroundColor = [UIColor whiteColor];
 	
-	star1 = [[rateStar alloc] initWithFrame:CGRectMake(50, 50, 28, 28)];
+	star1 = [[RateStar alloc] initWithFrame:CGRectMake(50, 50, 28, 28)];
 	star1.image = [UIImage imageNamed:@"star_light.png"];
 	star1.number = 1;
 	star1.delegate = self;
 	[rateView addSubview:star1];
 	
-	star2 = [[rateStar alloc] initWithFrame:CGRectMake(90, 50, 28, 28)];
+	star2 = [[RateStar alloc] initWithFrame:CGRectMake(90, 50, 28, 28)];
 	star2.image = [UIImage imageNamed:@"star_light.png"];
 	star2.number = 2;
 	star2.delegate = self;
 	[rateView addSubview:star2];
 
 	
-	star3 = [[rateStar alloc] initWithFrame:CGRectMake(130, 50, 28, 28)];
+	star3 = [[RateStar alloc] initWithFrame:CGRectMake(130, 50, 28, 28)];
 	star3.image = [UIImage imageNamed:@"star_light.png"];
 	star3.number = 3;
 	star3.delegate = self;
 	[rateView addSubview:star3];
 
 	
-	star4 = [[rateStar alloc] initWithFrame:CGRectMake(170, 50, 28, 28)];
+	star4 = [[RateStar alloc] initWithFrame:CGRectMake(170, 50, 28, 28)];
 	star4.image = [UIImage imageNamed:@"star_light.png"];
 	star4.number = 4;
 	star4.delegate = self;
 	[rateView addSubview:star4];
 
 	
-	star5 = [[rateStar alloc] initWithFrame:CGRectMake(210, 50, 28, 28)];
+	star5 = [[RateStar alloc] initWithFrame:CGRectMake(210, 50, 28, 28)];
 	star5.image = [UIImage imageNamed:@"star_light.png"];
 	star5.number = 5;
 	star5.delegate = self;
@@ -171,8 +209,8 @@
 	
 }
 
-- (void)starTouched:(rateStar *)sender {
-	NSInteger *number = sender.number;
+- (void)starTouched:(RateStar *)sender {
+	NSInteger number = sender.number;
 	NSLog(@"Star clicked: %d", number);
 	if (number == 1) {
 		if (sender.touched == FALSE) {
@@ -343,6 +381,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	NSLog(@"VISIT VIEW DID LOAD");
 	self.navigationItem.title = [self.pub name];
 	
 	// Create the left bar button item
@@ -394,8 +433,125 @@
 	
 	self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:toolbar];
 	
+	
+	// Check if any achievements were reached
+	BOOL isAchievementReached = FALSE;
+	
+	// NOTE: Because this would require an active database with registered users of the application together with their achievements, we can't actually check
+	// for achieved goals at this time. Instead, we check for a number of pseudo-achievements such as visiting a pub three times during the same session.
+	
+	// Update achievements (in this case, only the settler achievement)
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
+		
+	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Achievement" inManagedObjectContext:managedObjectContext]; 
+	[request setEntity:entity]; 
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]; 
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil]; 
+	[request setSortDescriptors:sortDescriptors]; 
+	[sortDescriptors release]; 
+	[sortDescriptor release]; 
+	NSError *error; 
+	NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request error:&error] mutableCopy]; 
+	if (mutableFetchResults == nil) { 
+		// Might want to do something more serious... 
+		NSLog(@"Can’t load the Pub data!"); 
+	} 
+	
+	// Check for gained achievements (currently we only check for the settler achievement)
+	for (Achievement *achievement in mutableFetchResults) {
+		if ([achievement.name isEqualToString:@"Settler"]) {
+			if (([achievement.completion doubleValue] + 25) >= 100) {
+				
+				if ([achievement.completion doubleValue] < 100) {
+					double completion = [achievement.completion doubleValue] + 25;
+					[achievement setCompletion:[NSString stringWithFormat:@"%f", completion]];
+					[achievement setLocation:pub.name];
+					[achievement setDate:[[NSDate alloc] init]];
+					NSError *error = nil;
+					if (![managedObjectContext save:&error]) {
+						NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+						abort();
+					}
+					
+					isAchievementReached = TRUE;
+					self.achievementReached = achievement;
+					
+				}
+			} else {
+				double completion = [achievement.completion doubleValue] + 25;
+				[achievement setCompletion:[NSString stringWithFormat:@"%f", completion]];
+				NSError *error = nil;
+				if (![managedObjectContext save:&error]) {
+					NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+					abort();
+				}
+				
+			}	
+			
+		}
+	}
+	
+	[mutableFetchResults release];
+	[request release];
+	
+		
+	//achievementReached = TRUE;
+	// Layout the screen according to whether an achievement was reached
+	if (isAchievementReached == TRUE) {
+		
+		// Set a badge
+		TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate];
+		UITabBar *tabBar = appDelegate.tabController.tabBar;
+		UITabBarItem *achievementsTabItem = [tabBar.items objectAtIndex:2];
+		achievementsTabItem.badgeValue = @"1";
+		
+		achievementLabel = [[UILabel alloc]init];
+		achievementLabel.textAlignment = UITextAlignmentCenter;
+		achievementLabel.font = [UIFont systemFontOfSize:16];
+		achievementLabel.frame = CGRectMake(89, 30, 211, 21);
+		achievementLabel.text = @"Achievement reached!";
+		[self.view addSubview:achievementLabel];
+		
+		achievementNameLabel = [[UILabel alloc]init];
+		achievementNameLabel.textAlignment = UITextAlignmentCenter;
+		achievementNameLabel.font = [UIFont systemFontOfSize:16];
+		achievementNameLabel.frame = CGRectMake(89, 51, 211, 21);
+		achievementNameLabel.text = self.achievementReached.name;
+		[self.view addSubview:achievementNameLabel];
+		
+		achievementButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+		[achievementButton setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", self.achievementReached.name]] forState:UIControlStateNormal];
+		[achievementButton addTarget:self action:@selector(achievementButton_clicked:) forControlEvents:UIControlEventTouchUpInside];
+		achievementButton.frame = CGRectMake(20, 20, 64, 64);
+		[self.view addSubview:achievementButton];
+		
+		self.friendsImage.frame = CGRectMake(0, 118, 36, 33);
+		self.friendsLabel.frame = CGRectMake(40, 124, 64, 21);
+		self.shareLabel.frame = CGRectMake(122, 124, 86, 21);
+		self.twitterButton.frame = CGRectMake(216, 114, 36, 36);
+		self.facebookButton.frame = CGRectMake(262, 114, 36, 36);
+		self.tableView.frame = CGRectMake(0, 164, 320, 203);
+	} else {
+		self.friendsImage.frame = CGRectMake(0, 14, 36, 33);
+		self.friendsLabel.frame = CGRectMake(40, 20, 64, 21);
+		self.shareLabel.frame = CGRectMake(122, 20, 86, 21);
+		self.twitterButton.frame = CGRectMake(216, 14, 36, 36);
+		self.facebookButton.frame = CGRectMake(262, 14, 36, 36);
+		self.tableView.frame = CGRectMake(0, 55, 320, 295);
+	}
+	
+	// Fill our datasource with some friends
+	self.dataSource = [[NSMutableArray alloc] init];
+	[self.dataSource addObject:@"Hein Forcé"];
+	[self.dataSource addObject:@"Glenn Verdru"];
+	[self.dataSource addObject:@"Pieter De Rydt"];
+	[self.dataSource addObject:@"Niels Schroyen"];
+	
+	[tableView reloadData];
 }
-
 
 #pragma mark Table view methods
 
@@ -406,26 +562,33 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return 3;
+	return [self.dataSource count];
 	
 }
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	
+	NSLog(@"Cell for row at index path");
     static NSString *CellIdentifier = @"Cell";
 	
+	visitCell *cell = (visitCell*)[theTableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[visitCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
+    }
 	
-	 UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	 if (cell == nil) {
-	 cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-	 }
-	 
-
+	cell.friendLabel.text = [self.dataSource objectAtIndex:indexPath.row];
 	
-	cell.text = @"test";
+	[cell.inviteButton setImage:[UIImage imageNamed:@"beermug.png"] forState:UIControlStateNormal];
+	[cell.inviteButton setImage:[UIImage imageNamed:@"beermug.png"] forState:UIControlStateHighlighted];
+	[cell.inviteButton addTarget:self action:@selector(inviteButton_clicked:) forControlEvents:UIControlEventTouchUpInside];
+	cell.inviteButton.indexPath = indexPath;
+	
+	[cell.achievementsButton setImage:[UIImage imageNamed:@"trophy.png"] forState:UIControlStateNormal];
+	[cell.achievementsButton setImage:[UIImage imageNamed:@"trophy.png"] forState:UIControlStateHighlighted];
+	[cell.achievementsButton addTarget:self action:@selector(achievementsButton_clicked:) forControlEvents:UIControlEventTouchUpInside];
+	cell.achievementsButton.indexPath = indexPath;
 	
     return cell;
 }
@@ -462,8 +625,19 @@
 
 - (void)dealloc {
 	[pub release];
-	[infoLabel release];
+	[achievementLabel release];
+	[achievementNameLabel release];
+	[achievementButton release];
+	[friendsLabel release];
+	[friendsImage release];
+	[shareLabel release];
+	[twitterButton release];
+	[facebookButton release];
+	
+	[tableView release];
 	[rateView release];
+	
+	[achievementReached release];
     [super dealloc];
 }
 

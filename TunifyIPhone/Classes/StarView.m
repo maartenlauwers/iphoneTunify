@@ -38,7 +38,7 @@
     return self;
 }
 
-- (id)initWithRating:(CGRect)frame rating:(NSInteger *)theRating {
+- (id)initWithRating:(CGRect)frame rating:(NSInteger)theRating {
     if (self = [super initWithFrame:frame]) {
 		
 		rating = theRating;
@@ -60,7 +60,7 @@
     return self;
 }
 
-- (void)setRating:(NSInteger *)theRating {
+- (void)setRating:(NSInteger)theRating {
 	rating = theRating;
 	
 	if (rating == 0) {
@@ -102,7 +102,7 @@
 	}
 }
 
-- (NSInteger *)getRating {
+- (NSInteger)getRating {
 	return rating;
 }
 

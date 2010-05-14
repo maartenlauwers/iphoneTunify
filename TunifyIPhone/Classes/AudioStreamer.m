@@ -525,8 +525,8 @@ int maxSegment;
 														 kCFStringEncodingUTF8)
 	 autorelease];
 	
-	NSURL *url = [NSURL URLWithString:escapedValue];
-	return url;
+	NSURL *theUrl = [NSURL URLWithString:escapedValue];
+	return theUrl;
 }
 
 - (BOOL)updateStream {
@@ -536,7 +536,7 @@ int maxSegment;
 	{
 		if(currentSegment >= maxSegment) {
 			NSLog(@"Max segments reached");
-			return;
+			return FALSE;
 		}
 		currentSegment = currentSegment + 1;
 		NSLog(@"updateStream: currentSegment: %d", currentSegment);

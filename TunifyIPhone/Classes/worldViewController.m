@@ -168,6 +168,9 @@ Color3D colors[] = {
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	
 	self.glView.delegate = nil;
 	[glView stopAnimation];
 	[self.glView removeFromSuperview];
@@ -187,6 +190,10 @@ Color3D colors[] = {
 	[self.glView removeFromSuperview];
 	[self.glView release];
 	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	
+	[self dismissModalViewControllerAnimated:YES];
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
 	[self.navigationController pushViewController:controller animated:YES];
@@ -268,6 +275,7 @@ Color3D colors[] = {
 	self.overlayView.opaque = YES;
 	
 	[self.overlayView insertSubview:self.lblDistanceToDestination atIndex:1];
+	[self.capturedToggle setFrame:CGRectMake(56, 393, 207, 44)];
 	[self.overlayView insertSubview:self.capturedToggle atIndex:2];
 	
 	
@@ -296,7 +304,6 @@ Color3D colors[] = {
 	[self.overlayView insertSubview:navBar atIndex:3];
 	
 	
-	NSLog(@"D");
 	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		
 		self.picker = [[CustomUIImagePickerController alloc] init];
@@ -308,10 +315,9 @@ Color3D colors[] = {
 		self.picker.cameraViewTransform = cameraTransform;
 		self.picker.navigationBar.barStyle = UIBarStyleDefault;
 		
-		NSLog(@"E");
+		
 		[self performSelector:@selector(showPickerView:) withObject:self.picker afterDelay:0.1];
-		[self presentModalViewController:self.picker animated:YES];
-		NSLog(@"F");
+		//[self presentModalViewController:self.picker animated:YES];
 		
 	} else {
 		self.picker = nil;
@@ -335,7 +341,7 @@ Color3D colors[] = {
 } 
 
 -(void)initAll {
-	NSLog(@"G");
+	
 	self.lblDistanceToDestination.text = @"";
 	self.distance = -1;
 	self.userLocation = nil;
@@ -351,7 +357,6 @@ Color3D colors[] = {
 	[ct fetchUserLocation];
 	[ct fetchHeading];
 	
-	NSLog(@"H");
 	// Create the 3D pointer arrow view
 	self.glView = [[GLView alloc] initWithFrame:CGRectMake(0, 15, 320, 250)];
 	self.glView.delegate = self;
@@ -361,7 +366,6 @@ Color3D colors[] = {
 	self.glView.animationInterval = 1.0 / kRenderingFrequency;
 	[self.glView startAnimation];
 	
-	NSLog(@"I");
 	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(updateDistance) userInfo:nil repeats: YES];
 }
 
@@ -369,13 +373,13 @@ Color3D colors[] = {
 	NSLog(@"User Location Found");
 	self.userLocation = sender.userLocation;
 	
-	CLLocation *userLocation = sender.userLocation;
-	CLLocation *pubLocation = [[CLLocation alloc] initWithLatitude:[[self.pub latitude] floatValue] longitude:[[self.pub longitude] floatValue]];
+	CLLocation *myUserLocation = sender.userLocation;
+	CLLocation *myPubLocation = [[CLLocation alloc] initWithLatitude:[[self.pub latitude] floatValue] longitude:[[self.pub longitude] floatValue]];
 	
-	self.distance = [sender fetchDistance:userLocation locationB:pubLocation];
+	self.distance = [sender fetchDistance:myUserLocation locationB:myPubLocation];
 	
-	[userLocation release];
-	[pubLocation release];
+	[myUserLocation release];
+	[myPubLocation release];
 	self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
 		//[self updateDistance];
 
@@ -414,7 +418,9 @@ Color3D colors[] = {
 - (void)headingUpdated:(CoordinatesTool *)sender {
 	// Update our arrow
 	NSLog(@"heading updated");
-	rot = *[self getArrowHeading];		
+	if (self.userLocation != nil) {
+		rot = *[self getArrowHeading];		
+	}
 	NSLog(@"rot: %d", rot);
 	NSLog(@"heading updated done");
 }

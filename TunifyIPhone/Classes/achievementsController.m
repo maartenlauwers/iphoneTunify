@@ -12,6 +12,9 @@
 
 @implementation achievementsController
 
+@synthesize dataSource;
+@synthesize gainedAchievements;
+@synthesize tableView;
 
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
@@ -29,44 +32,18 @@
 }
 */
 
-- (NSString *)get_achievement_description:(NSString *)achievementName {
-	if (achievementName == @"City hopper") {
-		return @"Visit pubs in at least 5 different cities.";
-	} else if (achievementName == @"Pub hopper") {
-		return @"Visit over 5 pubs in less than 5 hours.";
-	} else if (achievementName == @"Restless") {
-		return @"Visit more than 5 pubs before the night is over.";
-	} else if (achievementName == @"Recognized") {
-		return @"Visit the same pub over 10 times.";
-	} else if (achievementName == @"Settler") {
-		return @"Visit the same pub over 50 times.";		
-	} else if (achievementName == @"Pathfinder") {
-		return @"Follow route directions to at least 25 different pubs.";
-	} else if (achievementName == @"Social") {
-		return @"Invite at least 10 friends to one or more pubs.";
-	}
-	
-}
 - (void)button1_clicked:(id)sender {
 	
 	UIButton *button = (UIButton *)sender;
 	
 	NSString *row = button.titleLabel.text;
-	NSString *name = [dataSource objectAtIndex:([row intValue] * 3)];
-	NSInteger achievementNumber = [row intValue] * 3;
+	Achievement *achievement = [dataSource objectAtIndex:([row intValue] * 3)];
 	
+	NSLog(@"Achievement description: %@", achievement.description);
 	selectedAchievementViewController *controller = [[selectedAchievementViewController alloc] initWithNibName:@"achievementsView" bundle:[NSBundle mainBundle]];
 	
-	// For testing purposes
-	if (achievementNumber == 1 || achievementNumber == 2 || achievementNumber == 5 || achievementNumber == 6) {
-		controller.achieved = FALSE;
-	} else {
-		controller.achieved = TRUE;
-	} 
-	
-	controller.achievementName = name;
-	controller.achievementDescription = [self get_achievement_description:name];
-	controller.achievementNumber = achievementNumber;
+	controller.achievement = achievement;
+	NSLog(@"Pushing achievement view controller");
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -77,21 +54,11 @@
 	UIButton *button = (UIButton *)sender;
 	
 	NSString *row = button.titleLabel.text;
-	NSString *name = [dataSource objectAtIndex:([row intValue] * 3) + 1];
-	NSInteger achievementNumber = ([row intValue] * 3) + 1;
+	Achievement *achievement = [dataSource objectAtIndex:([row intValue] * 3) + 1];
 	
 	selectedAchievementViewController *controller = [[selectedAchievementViewController alloc] initWithNibName:@"achievementsView" bundle:[NSBundle mainBundle]];
 	
-	// For testing purposes
-	if (achievementNumber == 1 || achievementNumber == 2 || achievementNumber == 5 || achievementNumber == 6) {
-		controller.achieved = FALSE;
-	} else {
-		controller.achieved = TRUE;
-	} 
-	
-	controller.achievementName = name;
-	controller.achievementDescription = [self get_achievement_description:name];
-	controller.achievementNumber = achievementNumber;
+	controller.achievement = achievement;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -102,21 +69,11 @@
 	UIButton *button = (UIButton *)sender;
 	
 	NSString *row = button.titleLabel.text;
-	NSString *name = [dataSource objectAtIndex:([row intValue] * 3) + 2];
-	NSInteger achievementNumber = ([row intValue] * 3) + 2;
+	Achievement *achievement = [dataSource objectAtIndex:([row intValue] * 3) + 2];
 	
 	selectedAchievementViewController *controller = [[selectedAchievementViewController alloc] initWithNibName:@"achievementsView" bundle:[NSBundle mainBundle]];
 	
-	// For testing purposes
-	if (achievementNumber == 1 || achievementNumber == 2 || achievementNumber == 5 || achievementNumber == 6) {
-		controller.achieved = FALSE;
-	} else {
-		controller.achieved = TRUE;
-	} 
-	
-	controller.achievementName = name;
-	controller.achievementDescription = [self get_achievement_description:name];
-	controller.achievementNumber = achievementNumber;
+	controller.achievement = achievement;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;
@@ -129,18 +86,111 @@
 	
 	self.navigationItem.title = @"Achievements";
 	
-	// Create some test data for the table
-	dataSource = [[NSMutableArray alloc] init];
+	// Fetch all available achievements
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
 	
-	[dataSource addObject:@"City hopper"];
-	[dataSource addObject:@"Pub hopper"];
-	[dataSource addObject:@"Restless"];
-	[dataSource addObject:@"Recognized"];
-	[dataSource addObject:@"Settler"];
-	[dataSource addObject:@"Pathfinder"];
-	[dataSource addObject:@"Social"];
-	[dataSource addObject:@"..."];
-	[dataSource addObject:@"..."];
+	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Achievement" inManagedObjectContext:managedObjectContext]; 
+	[request setEntity:entity]; 
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]; 
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil]; 
+	[request setSortDescriptors:sortDescriptors]; 
+	[sortDescriptors release]; 
+	[sortDescriptor release]; 
+	NSError *error; 
+	NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request error:&error] mutableCopy]; 
+	if (mutableFetchResults == nil) { 
+		// Might want to do something more serious... 
+		NSLog(@"Can’t load the Pub data!"); 
+	} 
+	
+	
+	// Create some test data for the table
+	NSLog(@"NSMutableArray count: %d", [mutableFetchResults count]);
+	dataSource = [[NSMutableArray alloc] init];
+	for (Achievement *achievement in mutableFetchResults) {
+		[dataSource addObject:achievement];
+	}
+	NSLog(@"Datasource count: %d", [dataSource count]);
+
+	gainedAchievements = [[NSMutableArray alloc] init];
+	for (Achievement *achievement in mutableFetchResults) {
+		if([achievement.completion doubleValue] >= 100) {
+			[gainedAchievements addObject:achievement];
+		}
+	}
+	
+	[mutableFetchResults release];
+	[request release];
+	
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+	
+	NSLog(@"View did appear");
+	[dataSource removeAllObjects];
+	
+	// Fetch all available achievements
+	TunifyIPhoneAppDelegate *appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate]; 
+	NSManagedObjectContext *managedObjectContext = appDelegate.managedObjectContext;
+	
+	NSFetchRequest *request = [[NSFetchRequest alloc] init]; 
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Achievement" inManagedObjectContext:managedObjectContext]; 
+	[request setEntity:entity]; 
+	
+	NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]; 
+	NSArray *sortDescriptors = [[NSArray alloc] initWithObjects:sortDescriptor, nil]; 
+	[request setSortDescriptors:sortDescriptors]; 
+	[sortDescriptors release]; 
+	[sortDescriptor release]; 
+	NSError *error; 
+	NSMutableArray *mutableFetchResults = [[managedObjectContext executeFetchRequest:request error:&error] mutableCopy]; 
+	if (mutableFetchResults == nil) { 
+		// Might want to do something more serious... 
+		NSLog(@"Can’t load the Pub data!"); 
+	} 
+	
+	
+	// Create some test data for the table
+	NSLog(@"NSMutableArray count: %d", [mutableFetchResults count]);
+	dataSource = [[NSMutableArray alloc] init];
+	for (Achievement *achievement in mutableFetchResults) {
+		[dataSource addObject:achievement];
+	}
+	NSLog(@"Datasource count: %d", [dataSource count]);
+	
+	gainedAchievements = [[NSMutableArray alloc] init];
+	for (Achievement *achievement in mutableFetchResults) {
+		if([achievement.completion doubleValue] >= 100) {
+			[gainedAchievements addObject:achievement];
+		}
+	}
+	
+	[mutableFetchResults release];
+	[request release];
+	[self.tableView reloadData];
+	
+	
+	// Update any potential badges
+	appDelegate = (TunifyIPhoneAppDelegate*)[[UIApplication sharedApplication] delegate];
+	UITabBar *tabBar = appDelegate.tabController.tabBar;
+	UITabBarItem *achievementsTabItem = [tabBar.items objectAtIndex:2];
+	NSInteger badgeValue = [achievementsTabItem.badgeValue intValue];
+	
+	if(achievementsTabItem.badgeValue.length > 0) {
+		if(badgeValue > 0) {
+			badgeValue = badgeValue - 1;
+			
+			if(badgeValue == 0) {
+				achievementsTabItem.badgeValue = nil;
+			} else {
+				achievementsTabItem.badgeValue = [NSString stringWithFormat:@"%d", badgeValue];
+			}
+		}
+	}
 	
 }
 
@@ -153,55 +203,110 @@
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [dataSource count]/3;
+	return [self.dataSource count]/3;
 	
 }
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-	[tableView setSeparatorColor:[UIColor whiteColor]];
+	[theTableView setSeparatorColor:[UIColor whiteColor]];
 	
     static NSString *CellIdentifier = @"Cell";
     
 	
-	achievementsCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+	achievementsCell *cell = (achievementsCell*)[theTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[achievementsCell alloc] initWithFrame:CGRectZero reuseIdentifier:CellIdentifier] autorelease];
 		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
 	
-	
-	/*
-	 UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-	 if (cell == nil) {
-	 cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-	 }
-	 */
-	
 	NSLog(@"row: %d", indexPath.row);
 	
-	cell.label1.text = [dataSource objectAtIndex:(indexPath.row * 3)];
-	cell.label2.text = [dataSource objectAtIndex:(indexPath.row * 3) + 1];
-	cell.label3.text = [dataSource objectAtIndex:(indexPath.row * 3) + 2];
+	Achievement *achievement1 = [dataSource objectAtIndex:(indexPath.row * 3)];
+	Achievement *achievement2 = [dataSource objectAtIndex:(indexPath.row * 3) + 1];
+	Achievement *achievement3 = [dataSource objectAtIndex:(indexPath.row * 3) + 2];
 	
-	NSString *strRow = [NSString stringWithFormat:@"%d", indexPath.row];
-	NSLog(@"Row: %@", strRow);
-	if (indexPath.row == 0) {
-		[cell.button1 setImage:[UIImage imageNamed:@"achievement1.png"] forState:UIControlStateNormal];
-		[cell.button2 setImage:[UIImage imageNamed:@"achievement2_disabled.png"] forState:UIControlStateNormal];
-		[cell.button3 setImage:[UIImage imageNamed:@"achievement3_disabled.png"] forState:UIControlStateNormal];
-	} else if (indexPath.row == 1) {
-		[cell.button1 setImage:[UIImage imageNamed:@"achievement4.png"] forState:UIControlStateNormal];
-		[cell.button2 setImage:[UIImage imageNamed:@"achievement5.png"] forState:UIControlStateNormal];
-		[cell.button3 setImage:[UIImage imageNamed:@"achievement6_disabled.png"] forState:UIControlStateNormal];
+	cell.label1.text = achievement1.name;
+	cell.label2.text = achievement2.name;
+	cell.label3.text = achievement3.name;
+	
+	if([gainedAchievements containsObject:achievement1]) {
+		[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", achievement1.name]] forState:UIControlStateNormal];
 	} else {
-		[cell.button1 setImage:[UIImage imageNamed:@"achievement7_disabled.png"] forState:UIControlStateNormal];
-		[cell.button2 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
-		[cell.button3 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+		[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_disabled.png", achievement1.name]] forState:UIControlStateNormal];
+	}
+	if([gainedAchievements containsObject:achievement2]) {
+		[cell.button2 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", achievement2.name]] forState:UIControlStateNormal];
+	} else {
+		[cell.button2 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_disabled.png", achievement2.name]] forState:UIControlStateNormal];
+	}
+	if([gainedAchievements containsObject:achievement3]) {
+		[cell.button3 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", achievement3.name]] forState:UIControlStateNormal];
+	} else {
+		[cell.button3 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_disabled.png", achievement3.name]] forState:UIControlStateNormal];
 	}
 	
+	NSString *strRow = [NSString stringWithFormat:@"%d", indexPath.row];
+	/*
+	NSLog(@"Row: %@", strRow);
+	if (indexPath.row == 0) {
+		
+		if([gainedAchievements containsObject:achievement1]) {
+			[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", achievement1.name]] forState:UIControlStateNormal];
+		} else {
+			[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_disabled.png", achievement1.name]] forState:UIControlStateNormal];
+		}
+		if([gainedAchievements containsObject:achievement2]) {
+			[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", achievement2.name]] forState:UIControlStateNormal];
+		} else {
+			[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_disabled.png", achievement2.name]] forState:UIControlStateNormal];
+		}
+		if([gainedAchievements containsObject:achievement3]) {
+			[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@.png", achievement3.name]] forState:UIControlStateNormal];
+		} else {
+			[cell.button1 setImage:[UIImage imageNamed:[NSString stringWithFormat:@"%@_disabled.png", achievement3.name]] forState:UIControlStateNormal];
+		}
+		
+	} else if (indexPath.row == 1) {
+		if([gainedAchievements containsObject:cell.label1.text]) {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement4.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"achievement5_disabled.png"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"achievement6_disabled.png"] forState:UIControlStateNormal];
+		} else if ([gainedAchievements containsObject:cell.label2.text]) {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement4_disabled.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"achievement5.png"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"achievement6_disabled.png"] forState:UIControlStateNormal];
+		} else if ([gainedAchievements containsObject:cell.label3.text]) {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement4_disabled.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"achievement5_disabled.png"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"achievement6.png"] forState:UIControlStateNormal];
+		} else {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement4_disabled.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"achievement5_disabled.png"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"achievement6_disabled.png"] forState:UIControlStateNormal];
+		}
+	} else {
+		if([gainedAchievements containsObject:cell.label1.text]) {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement7.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+		} else if ([gainedAchievements containsObject:cell.label2.text]) {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement7_disabled.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+		} else if ([gainedAchievements containsObject:cell.label3.text]) {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement7_disabled.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+		} else {
+			[cell.button1 setImage:[UIImage imageNamed:@"achievement7_disabled.png"] forState:UIControlStateNormal];
+			[cell.button2 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+			[cell.button3 setImage:[UIImage imageNamed:@"testicon64x64.jpg"] forState:UIControlStateNormal];
+		}	
+	}
+	*/
 	[cell.button1 setTitle:strRow forState:UIControlStateNormal];
 	[cell.button2 setTitle:strRow forState:UIControlStateNormal];
 	[cell.button3 setTitle:strRow forState:UIControlStateNormal];
@@ -242,6 +347,8 @@
 
 - (void)dealloc {
 	[dataSource release];
+	[gainedAchievements release];
+	[tableView release];
     [super dealloc];
 }
 

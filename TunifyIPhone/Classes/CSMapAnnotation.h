@@ -13,7 +13,8 @@
 typedef enum {
 	CSMapAnnotationTypeStart = 0,
 	CSMapAnnotationTypeEnd   = 1,
-	CSMapAnnotationTypeImage = 2
+	CSMapAnnotationTypeImage = 2,
+	CSMapAnnotationTypePub = 3
 } CSMapAnnotationType;
 
 @interface CSMapAnnotation : NSObject <MKAnnotation>

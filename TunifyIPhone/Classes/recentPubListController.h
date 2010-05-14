@@ -13,7 +13,8 @@
 #import "RecentlyVisited.h"
 #import "AudioPlayer.h"
 
-@interface recentPubListController : UITableViewController {
+@class CellButton;
+@interface recentPubListController : UITableViewController <UIActionSheetDelegate, AudioPlayerDelegate, CoordinatesToolDelegate> {
 	
 	NSMutableArray *dataSource;		// stores all data
 	NSMutableArray *tableData;		// stores data displayed in the table
@@ -25,7 +26,8 @@
 	NSString *genre;
 	
 	NSIndexPath *rowPlayingIndexPath;
-
+	CellButton *buttonPlaying;
+	
 	CLLocation *userLocation;
 }
 
@@ -33,9 +35,10 @@
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) NSString *genre;
 @property (assign) NSIndexPath *rowPlayingIndexPath;
+@property (nonatomic, retain) CellButton *buttonPlaying;
 @property (nonatomic, retain) CLLocation *userLocation;
 
-- (void) pubCell_clicked:(id)sender pub:(NSString*)pub;
+- (void) pubCell_clicked:(id)sender pub:(Pub*)pub;
 - (void) btnFilter_clicked:(id)sender;
 - (void) playMusic:(id)sender;
 

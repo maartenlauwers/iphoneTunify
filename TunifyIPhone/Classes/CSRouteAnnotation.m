@@ -52,8 +52,7 @@
 	_center.latitude = minLat + _span.latitudeDelta / 2;
 	_center.longitude = minLon + _span.longitudeDelta / 2;
 	
-	self.lineColor = [UIColor blueColor];
-	
+	self.lineColor = [UIColor blueColor];	
 	return self;
 }
 

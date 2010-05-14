@@ -10,7 +10,11 @@
 
 
 @implementation rateViewController
-
+@synthesize star1;
+@synthesize star2;
+@synthesize star3;
+@synthesize star4;
+@synthesize star5;
 /*
  // The designated initializer.  Override if you create the controller programmatically and want to perform customization that is not appropriate for viewDidLoad.
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -81,6 +85,11 @@
 
 
 - (void)dealloc {
+	[star1 release];
+	[star2 release];
+	[star3 release];
+	[star4 release];
+	[star5 release];
     [super dealloc];
 }
 

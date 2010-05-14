@@ -7,32 +7,66 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Achievement.h"
 #import "FBConnect/FBConnect.h"
 #import "Pub.h"
+#import "visitCell.h"
+#import "selectedAchievementViewController.h"
+#import "RateStar.h"
 
-@class rateStar;
+//@class rateStar;
 
-@interface pubVisitViewController : UIViewController <FBSessionDelegate, FBDialogDelegate> {
+@interface pubVisitViewController : UIViewController <RateStarDelegate, FBSessionDelegate, FBDialogDelegate> {
 	Pub *pub;
-	IBOutlet UILabel *infoLabel;
-	rateStar *star1;
-	rateStar *star2;
-	rateStar *star3;
-	rateStar *star4;
-	rateStar *star5;
+	NSMutableArray *dataSource;
+	
+	UILabel *achievementLabel;
+	UILabel *achievementNameLabel;
+	UIButton *achievementButton;
+	
+	IBOutlet UILabel *friendsLabel;
+	IBOutlet UILabel *shareLabel;
+	IBOutlet UITableView *tableView;
+	IBOutlet UIButton *twitterButton;
+	IBOutlet UIButton *facebookButton;
+	IBOutlet UIImageView *friendsImage;
+	
+	RateStar *star1;
+	RateStar *star2;
+	RateStar *star3;
+	RateStar *star4;
+	RateStar *star5;
 	UIView *rateView;
+	
+	Achievement *achievementReached;
 
 }
 
 @property (nonatomic, retain) Pub *pub;
-@property (nonatomic, retain) IBOutlet UILabel *infoLabel;
-@property (nonatomic, retain) rateStar *star1;
-@property (nonatomic, retain) rateStar *star2;
-@property (nonatomic, retain) rateStar *star3;
-@property (nonatomic, retain) rateStar *star4;
-@property (nonatomic, retain) rateStar *star5;
+@property (nonatomic, retain) NSMutableArray *dataSource;
+
+@property (nonatomic, retain) UILabel *achievementLabel;
+@property (nonatomic, retain) UILabel *achievementNameLabel;
+@property (nonatomic, retain) UIButton *achievementButton;
+
+@property (nonatomic, retain) IBOutlet UILabel *friendsLabel;
+@property (nonatomic, retain) IBOutlet UILabel *shareLabel;
+@property (nonatomic, retain) IBOutlet UITableView *tableView;
+@property (nonatomic, retain) IBOutlet UIButton *twitterButton;
+@property (nonatomic, retain) IBOutlet UIButton *facebookButton;
+@property (nonatomic, retain) IBOutlet UIImageView *friendsImage;
+
+@property (nonatomic, retain) RateStar *star1;
+@property (nonatomic, retain) RateStar *star2;
+@property (nonatomic, retain) RateStar *star3;
+@property (nonatomic, retain) RateStar *star4;
+@property (nonatomic, retain) RateStar *star5;
 @property (nonatomic, retain) UIView *rateView;
 
+@property (nonatomic, retain) Achievement *achievementReached;
+
+- (void) inviteButton_clicked:(id)sender;
+- (void) achievementsButton_clicked:(id)sender;
 - (void) btnPubs_clicked:(id)sender;
 - (void) btnRate_clicked:(id)sender;
 - (void)showSuccess;

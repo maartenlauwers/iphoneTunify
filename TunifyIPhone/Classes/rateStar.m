@@ -6,10 +6,10 @@
 //  Copyright 2010 __MyCompanyName__. All rights reserved.
 //
 
-#import "rateStar.h"
+#import "RateStar.h"
 
 
-@implementation rateStar
+@implementation RateStar
 
 @synthesize number;
 @synthesize delegate;

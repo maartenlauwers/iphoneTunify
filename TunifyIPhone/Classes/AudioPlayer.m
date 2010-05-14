@@ -20,6 +20,8 @@ static AudioPlayer *sharedInstance = nil;
 @synthesize baseUrl;
 //@synthesize currentSegment;
 @synthesize playlist;
+@synthesize delegate;
+@synthesize avAudioPlayer;
 
 int currentSegment;
 
@@ -31,7 +33,7 @@ int currentSegment;
     {
         if (sharedInstance == nil)
 			sharedInstance = [[AudioPlayer alloc] init];
-			lastUsedVolume = 0.5;
+			//lastUsedVolume = 0.5;
     }
     return sharedInstance;
 }
@@ -71,24 +73,60 @@ int currentSegment;
 // AudioPlayer methods
 //
 
+- (void)isAvailable {
+	
+}
+
+#pragma mark -
+#pragma mark Local playing methods for usability testing
+
+- (void)playTest {
+	NSString *audioFilePath = [[NSBundle mainBundle] pathForResource:@"Fluke" ofType:@"mp3"];
+	NSURL *audioFileURL = [NSURL fileURLWithPath:audioFilePath];
+	self.avAudioPlayer = [[[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil] autorelease];
+	[self.avAudioPlayer setVolume:1.0];
+	[self.avAudioPlayer prepareToPlay];
+	[self.avAudioPlayer play];
+}
+
+- (void)decreaseVolume {
+	if([self.avAudioPlayer volume] > 0) {
+		[self.avAudioPlayer setVolume:([self.avAudioPlayer volume] - 0.1)];
+	}
+}
+
+- (void)increaseVolume {
+	if([self.avAudioPlayer volume] < 1.0) {
+		[self.avAudioPlayer setVolume:([self.avAudioPlayer volume] + 0.1)];
+	}
+}
+
+- (void)stopTest {
+	[self.avAudioPlayer stop];
+}
+
+#pragma mark -
+#pragma mark Streaming audio methods
 - (void)play:(NSString *)path 
 {
-	
+	NSLog(@"Play");
 	// Subtract the "playlist.m3u8" part to get the base url
 	NSRange r = [path rangeOfString:@"/playlist.m3u8"];
 	self.baseUrl = [path substringToIndex:r.location];
 	
-	M3U8Handler *handler = [M3U8Handler sharedInstance];
+	NSLog(@"starting handler");
+	Handler *handler = [[Handler alloc] init];
+	NSLog(@"Handler started");
 	handler.delegate = self;
 	[handler parseUrl:path];
+	NSLog(@"End Play");
 }
 
-- (void)playlistAvailable:(M3U8Handler *)sender {
+- (void)playlistAvailable:(Handler *)sender {
 
 	self.playlist = sender.playlist;
 	currentSegment = 0;
-
-	M3U8SegmentInfo *segment = [self.playlist getSegment:currentSegment];
+	
 	if (streamer) {
 		[streamer stop];
 		streamer = nil;
@@ -96,17 +134,13 @@ int currentSegment;
 	streamer = [[AudioStreamer alloc] initWithPlaylist:self.playlist andBaseURL:self.baseUrl];
 	streamer.delegate = self;
 	[streamer startWithVolume:lastUsedVolume];
+	[sender release];
 }
 
-- (void)playlistParseError:(M3U8Handler *)sender {
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Error",@"title") 
-														message:NSLocalizedString(@"Could not contact the Tunify server. Audio playback will not work.",  
-																				  @"message") 
-													   delegate:self 
-											  cancelButtonTitle:NSLocalizedString(@"Ok", @"cancel") 
-											  otherButtonTitles:nil]; 
-	
-	[alertView show]; 
+- (void)playlistParseError:(Handler *)sender {
+	if (self.delegate != NULL && [self.delegate respondsToSelector:@selector(audioPlayerError:)]) {
+		[delegate audioPlayerError:self];
+	}  
 }
 
 - (void)setVolume:(float)volume {
@@ -118,37 +152,9 @@ int currentSegment;
 - (void)stop {
 	[streamer stop];
 	streamer = nil;
+	delegate = nil;
 }
 
-//
-// createStreamer
-//
-// Creates or recreates the AudioStreamer object.
-//
-/*
-- (void)createStreamer:(NSString*)path
-{
-	if (streamer)
-	{
-		return;
-	}
-	
-	[self destroyStreamer];
-	
-	NSString *escapedValue =
-	[(NSString *)CFURLCreateStringByAddingPercentEscapes(
-														 nil,
-														 (CFStringRef)path,
-														 NULL,
-														 NULL,
-														 kCFStringEncodingUTF8)
-	 autorelease];
-	
-	NSURL *url = [NSURL URLWithString:escapedValue];
-	streamer = [[AudioStreamer alloc] initWithURL:url];
-	streamer.delegate = self;
-}
-*/
 //
 // destroyStreamer
 //
@@ -156,6 +162,7 @@ int currentSegment;
 //
 - (void)destroyStreamer
 {
+	[avAudioPlayer release];
 	if (streamer)
 	{
 		[streamer stop];
