@@ -18,6 +18,7 @@
 @synthesize pub;
 @synthesize visible;
 @synthesize heading;
+@synthesize distance;
 @synthesize delegate;
 
 - (id)init
@@ -110,12 +111,64 @@
 	self.center = CGPointMake(x, y);
 }
 
+- (void)setSize:(float)theWidth height:(float)theHeight {
+	self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, theWidth, theHeight);
+}
+
 - (void)setHeading:(float)theHeading {
 	heading = theHeading;
 }
 
 - (float)getHeading {
 	return heading;
+}
+
+- (void)setDistance:(double)theDistance {
+	distance = theDistance;
+	
+	// Scale our view based on the distance from the user
+	// Round to one kilometre
+	NSString *strDistance = [NSString stringWithFormat:@"%f", distance];
+	double firstNumber = [[strDistance substringToIndex:1] doubleValue];
+	double secondNumber = [[strDistance substringWithRange:NSMakeRange(1, 1)] doubleValue];
+	
+	if(secondNumber >= 5) { 
+		[self updateSize:(firstNumber + 1)];
+	} else {
+		[self updateSize:firstNumber];
+	}
+	
+}
+
+- (double)getDistance {
+	return distance;
+}
+
+- (void)updateSize:(double)distanceInKm {
+	// assuming we rescale the entire view
+	// max size = 300, 135
+	// base size = 200, 90
+	// min size = 100, 45 
+	// 5 kilometres = base size
+	
+	if (distanceInKm == 5) {
+		[self setSize:200 height:90];
+	} else {
+		float newWidth = 0;
+		float newHeight = 0;
+		if(distanceInKm > 5) {
+			newWidth = 200 + ((distanceInKm - 5) * 20);
+			newHeight = 90 + ((distanceInKm - 5) * 9);
+		} else if(distanceInKm < 5) {
+			newWidth = 200 - (distanceInKm * 20);
+			newHeight = 90 - (distanceInKm * 9);
+		}
+		[self setSize:newWidth height:newHeight];
+	}
+	
+	// assuming we rescale the icon only
+	// base size = 59, 60
+	// 5 kilometres = base size
 }
 
 - (void)button_clicked:(id)sender {

@@ -85,6 +85,6 @@
 - (void) repeatSearchWithPub:(Pub *)pub;
 - (void) btnPubs_clicked:(id)sender;
 - (void) btnMusic_clicked:(id)sender;
-- (void) loadPubView;
+- (void) loadPubVisitView;
 - (IBAction) capturedToggleChanged:(id)sender;
 @end

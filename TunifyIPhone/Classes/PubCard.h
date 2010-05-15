@@ -26,6 +26,7 @@
 	Pub *pub;
 	BOOL visible;
 	float heading;
+	double distance;
 }
 
 
@@ -37,11 +38,16 @@
 @property (nonatomic, retain) Pub *pub;
 @property (assign) BOOL visible;
 @property (assign) float heading;
+@property (assign) double distance;
 
 
 - (id)initWithPub:(Pub *)pub;
 - (void)setPosition:(float)x y:(float)y;
+- (void)setSize:(float)theWidth height:(float)theHeight;
 - (void)setHeading:(float)theHeading;
 - (float)getHeading;
+- (void)setDistance:(double)theDistance;
+- (double)getDistance;
+- (void)updateSize:(double)distanceInKm;
 - (void)button_clicked:(id)sender;
 @end

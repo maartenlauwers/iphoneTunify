@@ -36,9 +36,6 @@
 		visitorsLabel.textAlignment = UITextAlignmentLeft;
 		visitorsLabel.font = [UIFont systemFontOfSize:16];
 		
-
-		
-		
 		stars = [[StarView alloc] initWithFrame:CGRectMake(30 ,60, 90, 17.3)];
 		[stars setBackgroundColor:[UIColor whiteColor]];
 		

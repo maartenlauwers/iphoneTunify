@@ -126,7 +126,6 @@
 		F6D748A8114BDF37002A3AA2 /* twitter2.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D748A2114BDF37002A3AA2 /* twitter2.png */; };
 		F6EAC2C911511F9600150BE6 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6EAC2C811511F9600150BE6 /* OpenGLES.framework */; };
 		F6EAC3FE11513CA700150BE6 /* GLView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6EAC3FA11513CA700150BE6 /* GLView.m */; };
-		F6F13F35116E5B84001E5BA8 /* urban.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F6F13F34116E5B84001E5BA8 /* urban.jpg */; };
 		F6FAB4EE117A539100487EF8 /* OverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = F6FAB4ED117A539100487EF8 /* OverlayView.m */; };
 		F6FAB503117A55B400487EF8 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F6FAB502117A55B400487EF8 /* Settings.bundle */; };
 /* End PBXBuildFile section */
@@ -309,7 +308,6 @@
 		F6EAC3F911513CA700150BE6 /* GLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLView.h; sourceTree = "<group>"; };
 		F6EAC3FA11513CA700150BE6 /* GLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLView.m; sourceTree = "<group>"; };
 		F6EAC3FD11513CA700150BE6 /* OpenGLCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLCommon.h; sourceTree = "<group>"; };
-		F6F13F34116E5B84001E5BA8 /* urban.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = urban.jpg; sourceTree = "<group>"; };
 		F6FAB4EC117A539100487EF8 /* OverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayView.h; sourceTree = "<group>"; };
 		F6FAB4ED117A539100487EF8 /* OverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverlayView.m; sourceTree = "<group>"; };
 		F6FAB502117A55B400487EF8 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
@@ -401,7 +399,6 @@
 				4E94ABA4117F2CB400AB90A1 /* play3.png */,
 				4E129FAF117895D700BC353F /* 3DMapsIcon.png */,
 				4E129FB0117895D700BC353F /* 3DPlayIcon.png */,
-				F6F13F34116E5B84001E5BA8 /* urban.jpg */,
 				4EFB704B11566FB500876197 /* pauze2.png */,
 				4EFB704C11566FB500876197 /* play2.png */,
 				F6C2F53F114E99970029EC57 /* star_light_small.png */,
@@ -766,7 +763,6 @@
 				F6C2F542114E99970029EC57 /* star_small.png in Resources */,
 				4EFB704D11566FB500876197 /* pauze2.png in Resources */,
 				4EFB704E11566FB500876197 /* play2.png in Resources */,
-				F6F13F35116E5B84001E5BA8 /* urban.jpg in Resources */,
 				4E129FB1117895D700BC353F /* 3DMapsIcon.png in Resources */,
 				4E129FB2117895D700BC353F /* 3DPlayIcon.png in Resources */,
 				F6FAB503117A55B400487EF8 /* Settings.bundle in Resources */,

@@ -38,7 +38,7 @@
 								 delegate:self
 								 cancelButtonTitle:@"Cancel"
 								 destructiveButtonTitle:nil
-								 otherButtonTitles:@"By genre",@"By song",@"By rating", @"By visitors",nil];
+								 otherButtonTitles:@"By genre",@"By song",@"By rating", @"By visitors", @"By distance", nil];
 	
     popupQuery.actionSheetStyle = UIActionSheetStyleAutomatic;
     [popupQuery showInView:self.tabBarController.view];
@@ -127,6 +127,76 @@
 		[tableData addObjectsFromArray:dataSource];
 		[tableView reloadData];
 		// Sort by visitors
+	} else if (buttonIndex == 4) {
+		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+		
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+		for(Pub *pub in dataSource) {
+			NSLog(@"Pub: %@", [pub name]);
+			
+			CLLocationDegrees longitude= [[pub longitude] doubleValue];
+			CLLocationDegrees latitude = [[pub latitude] doubleValue];
+			CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+			CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+			[pubLocation release];
+			
+			NSLog(@"Distance: %f", distance);
+			
+			// Initial entry
+			if ([sortedArray count] == 0) {
+				[sortedArray addObject:pub];
+			} else {
+				// Further entries
+				CLLocationDegrees longitude= [[[sortedArray lastObject] longitude] doubleValue];
+				CLLocationDegrees latitude = [[[sortedArray lastObject] latitude] doubleValue];
+				CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+				CLLocationDistance lastPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+				[pubLocation release];
+				
+				longitude= [[[sortedArray objectAtIndex:0] longitude] doubleValue];
+				latitude = [[[sortedArray objectAtIndex:0] latitude] doubleValue];
+				pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+				CLLocationDistance firstPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+				[pubLocation release];
+				
+				if (distance >= lastPubDistance) {
+					[sortedArray addObject:pub];
+				} else if (distance <= firstPubDistance) {
+					[sortedArray insertObject:pub atIndex:0];
+				} else {
+					for(int i=0; i<[sortedArray count]; i++) {
+						
+						CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i] longitude] doubleValue];
+						CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i] latitude] doubleValue];
+						CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+						CLLocationDistance otherPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+						[pubLocation release];
+						
+						if (distance == otherPubDistance) {
+							[sortedArray insertObject:pub atIndex:i];
+							break;
+						} else { 
+							CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i+1] longitude] doubleValue];
+							CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i+1] latitude] doubleValue];
+							CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+							CLLocationDistance nextPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+							[pubLocation release];
+							
+							if (distance > otherPubDistance && distance < nextPubDistance) {
+								[sortedArray insertObject:pub atIndex:i+1];
+								break;
+							}
+						}
+					} // end for loop
+				}				
+			}
+		} // end for loop
+		
+		[dataSource removeAllObjects];
+		dataSource = sortedArray;
+		[tableData removeAllObjects];
+		[tableData addObjectsFromArray:dataSource];
+		[tableView reloadData];
 	}
 }
 
@@ -225,8 +295,9 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-	NSLog(@"VIEWDIDAPPEAR");
 
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
 	
 	self.rowPlayingIndexPath = nil;
 	
@@ -374,46 +445,6 @@
 	Pub *pub = (Pub *)[dataSource objectAtIndex:indexPath.row];
 	[self pubCell_clicked:theTableView pub:pub];
 }
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {

@@ -50,7 +50,7 @@
 								 delegate:self
 								 cancelButtonTitle:@"Cancel"
 								 destructiveButtonTitle:nil
-								 otherButtonTitles:@"By genre",@"By song",@"By rating", @"By visitors",nil];
+								 otherButtonTitles:@"By genre",@"By song",@"By rating", @"By visitors", @"By distance", nil];
 	
     popupQuery.actionSheetStyle = UIActionSheetStyleAutomatic;
     [popupQuery showInView:self.tabBarController.view];
@@ -139,6 +139,76 @@
 		[tableData addObjectsFromArray:dataSource];
 		[tableView reloadData];
 		
+	} else if (buttonIndex == 4) {
+		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+		
+		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+		for(Pub *pub in dataSource) {
+			NSLog(@"Pub: %@", [pub name]);
+			
+			CLLocationDegrees longitude= [[pub longitude] doubleValue];
+			CLLocationDegrees latitude = [[pub latitude] doubleValue];
+			CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+			CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+			[pubLocation release];
+			
+			NSLog(@"Distance: %f", distance);
+			
+			// Initial entry
+			if ([sortedArray count] == 0) {
+				[sortedArray addObject:pub];
+			} else {
+				// Further entries
+				CLLocationDegrees longitude= [[[sortedArray lastObject] longitude] doubleValue];
+				CLLocationDegrees latitude = [[[sortedArray lastObject] latitude] doubleValue];
+				CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+				CLLocationDistance lastPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+				[pubLocation release];
+				
+				longitude= [[[sortedArray objectAtIndex:0] longitude] doubleValue];
+				latitude = [[[sortedArray objectAtIndex:0] latitude] doubleValue];
+				pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+				CLLocationDistance firstPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+				[pubLocation release];
+				
+				if (distance >= lastPubDistance) {
+					[sortedArray addObject:pub];
+				} else if (distance <= firstPubDistance) {
+					[sortedArray insertObject:pub atIndex:0];
+				} else {
+					for(int i=0; i<[sortedArray count]; i++) {
+						
+						CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i] longitude] doubleValue];
+						CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i] latitude] doubleValue];
+						CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+						CLLocationDistance otherPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+						[pubLocation release];
+						
+						if (distance == otherPubDistance) {
+							[sortedArray insertObject:pub atIndex:i];
+							break;
+						} else { 
+							CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i+1] longitude] doubleValue];
+							CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i+1] latitude] doubleValue];
+							CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+							CLLocationDistance nextPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+							[pubLocation release];
+							
+							if (distance > otherPubDistance && distance < nextPubDistance) {
+								[sortedArray insertObject:pub atIndex:i+1];
+								break;
+							}
+						}
+					} // end for loop
+				}				
+			}
+		} // end for loop
+		
+		[dataSource removeAllObjects];
+		dataSource = sortedArray;
+		[tableData removeAllObjects];
+		[tableData addObjectsFromArray:dataSource];
+		[tableView reloadData];
 	}
 }
 
@@ -155,7 +225,23 @@
 	[controller release];
 	controller = nil;
 	*/
-	[self show3DList];
+	
+	if(! [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+		NSLog(@"error with picker");
+		self.picker = nil;
+		
+		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No Camera Found"
+															message:@"You need an iPhone with a camera to use this feature."
+														   delegate:self
+												  cancelButtonTitle:@"Ok"
+												  otherButtonTitles:nil];
+		
+		[alertView show];
+		[alertView release];
+	} else {
+		[self show3DList];
+	}	
+
 }
 
 - (void) pubCell_clicked:(id)sender row:(NSInteger)theRow {
@@ -310,6 +396,7 @@
 	
 	self.rowPlayingIndexPath = nil;
 	NSLog(@"End viewdidload");
+	
 	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 	//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 	
@@ -317,14 +404,16 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	NSLog(@"View did appear");
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
-	NSLog(@"VIEWDIDAPPEAR REINIT");
+	
 	ct.delegate = self;
 	[ct fetchUserLocation];
-	NSLog(@"end of viewdidappear method");
+	
 	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateCurrentLocation) userInfo:nil repeats: YES];
 }
 
@@ -474,8 +563,15 @@
 	
 	if (in3DView == TRUE) {
 		for(PubCard *pubCard in self.cardSource) {
+			// Update heading
 			float heading = [self calculatePubHeading:[pubCard pub]];
 			[pubCard setHeading:heading];
+			
+			// Update distance
+			CLLocation *myPubLocation = [[CLLocation alloc] initWithLatitude:[[pubCard.pub latitude] floatValue] longitude:[[pubCard.pub longitude] floatValue]];		
+			double distance = [ct fetchDistance:self.userLocation locationB:myPubLocation];
+			[pubCard setDistance:distance];
+			
 			NSLog(@"CARD HEADING: %f", heading);
 		}
 	} else {
@@ -886,11 +982,18 @@
 	NSLog(@"Creating pub cards");
 	self.cardSource = [[NSMutableArray alloc] init];
 	int i = 0;
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	for(Pub *pub in self.dataSource) {
 		PubCard *card =  [[PubCard alloc] initWithPub:pub];
 		[card setPosition:-500 y:-500];
 		card.visible = FALSE;
 		[card setHeading:-1];
+		
+		// Get our distance from the pub
+		CLLocation *myPubLocation = [[CLLocation alloc] initWithLatitude:[[pub latitude] floatValue] longitude:[[pub longitude] floatValue]];		
+		double distance = [ct fetchDistance:self.userLocation locationB:myPubLocation];
+		[card setDistance:distance];
+		
 		card.delegate = self;
 		[self.overlayView insertSubview:card atIndex:i];
 		[self.cardSource addObject:card];
@@ -902,8 +1005,8 @@
 	//[request release];
 	
 	in3DView = TRUE;
-		
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	
+	
 	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
@@ -921,27 +1024,28 @@
 		self.picker.navigationBar.barStyle = UIBarStyleBlackOpaque;
 		[self presentModalViewController:self.picker animated:YES];
 		
+		// Enable the accelerometer
+		UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
+		accel.delegate = self;
+		accel.updateInterval = 1.0f/20.0f;
+		
 	} else {
 		NSLog(@"error with picker");
 		self.picker = nil;
 		
 		UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No Camera Found"
-															message:@"You need an iPhone with a camera to use this application."
+															message:@"You need an iPhone with a camera to use this feature."
 														   delegate:self
-												  cancelButtonTitle:@"Cancel"
-												  otherButtonTitles:@"Ok", nil];
+												  cancelButtonTitle:@"Ok"
+												  otherButtonTitles:nil];
 		
 		[alertView show];
 		[alertView release];
+		
+		[self hide3DList];
 	}
 	
 	NSLog(@"end 3d view did load");
-	
-	// Enable the accelerometer
-	
-	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
-	accel.delegate = self;
-	accel.updateInterval = 1.0f/20.0f;
 }
 
 - (void)hide3DList {
@@ -996,13 +1100,8 @@
 				} else {
 					localHeadingOffset = newHeading + validIntervalInDegrees/2;
 				}
-				//NSLog(@"LOCALHEADINGOFFSET: %d", localHeadingOffset);
-				// iphone width = 320 px;
-				// card width = 200 px;
-				// width of each degree on screen = 520/(validIntervalInDegrees)
-				
+
 				// Show the pub
-				//NSLog(@"VALID INTERVAL");
 				pubCard.visible = TRUE;
 				[pubCard setPosition:(localHeadingOffset*6.5 - 100) y:[[yValues objectAtIndex:cardScreenIndex] floatValue]];
 				cardScreenIndex++;
@@ -1030,15 +1129,10 @@
 }
 
 - (float)calculatePubHeading:(Pub *)pub {
-	float u2 = userLocation.coordinate.latitude;					//Our position.
+	float u2 = userLocation.coordinate.latitude;
 	float u1 = userLocation.coordinate.longitude;
-	//u2 = 50.8728119;
-	//u1 = 4.6644344;
 	float v2 = [[pub latitude] floatValue];		
 	float v1 = [[pub longitude] floatValue];
-	//NSLog(@"u1: %f, u2: %f, v1: %f, v2: %f", u1, u2, v1, v2);
-	//float result;						//The resulting bearing.
-	
 	
 	// Base vector
 	float b1 = 0;
@@ -1049,21 +1143,13 @@
 	float normV2 = v2 - u2;	
 	
 	// Calculate the angle between the base vector (pointing north) and the pub location
-	//float uv = (normalizedX2*bx) + (normalizedY2*by);
 	float uv = (b1*normV1) + (b2*normV2);
-	//NSLog(@"uv: %f", uv);
 	float normU = sqrt(b1*b1 + b2*b2);
-	//NSLog(@"normU: %f", normU);
 	float normV = sqrt(normV1*normV1 + normV2*normV2);
-	//NSLog(@"normV: %f", normV);
 	float normMultiplication = normU * normV;
-	//NSLog(@"normMultiplication: %f", normMultiplication);
 	float division = uv/normMultiplication;
-	//NSLog(@"division: %f", division);
 	float resultRad = acos(division);
-	//NSLog(@"resultRad: %f", resultRad);
 	float resultDeg = resultRad * (180/M_PI);
-	//NSLog(@"resultDeg: %f", resultDeg);
 	
 	// If our pub's longitude is smaller than the users, then the angle will be larger than 180 degrees.
 	// However, the above method only returns angles smaller than or equal to 180, so we'll need to fix this ourselves.

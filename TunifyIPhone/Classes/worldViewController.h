@@ -25,6 +25,7 @@
 	GLView *glView;
 	
 	CLLocation *userLocation;
+	CLLocation *lastUserLocation;
 	CLLocation *pubLocation;
 	CLLocationDistance distance;
 	
@@ -43,6 +44,7 @@
 @property (nonatomic, retain) GLView *glView;
 
 @property (nonatomic, retain) CLLocation *userLocation;
+@property (nonatomic, retain) CLLocation *lastUserLocation;
 @property (nonatomic, retain) CLLocation *pubLocation;
 @property (assign) CLLocationDistance distance;
 
@@ -55,5 +57,6 @@
 - (IBAction) capturedToggleChanged:(id)sender;
 - (GLfloat *)getArrowHeading;
 - (void)showPickerView:(UIImagePickerController *)controller;
+- (void) updateMusicPlayback:(CLLocation *)oldLocation currentLocation:(CLLocation *)currentLocation;
 
 @end

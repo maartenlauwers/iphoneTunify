@@ -71,6 +71,9 @@
 - (void) repeatSearchWithPub:(Pub *)thePub {
 	NSLog(@"Other pub selected");
 	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[locationTimer invalidate];
 	[ct stop];
@@ -81,6 +84,7 @@
 	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
 	[rv addPub:thePub];
 	
+	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateLocation) userInfo:nil repeats: YES];
 	self.pub = thePub;
 	[self initAll];
 	
@@ -101,9 +105,6 @@
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[locationTimer invalidate];
 	[ct stop];
-	
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer stopTest];
 		
 	[self.navigationController popToRootViewControllerAnimated:YES];
 }
@@ -112,9 +113,6 @@
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[locationTimer invalidate];
 	[ct stop];
-
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer stopTest];
 	
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
@@ -124,7 +122,8 @@
 	controller = nil;
 }
 
-- (void)loadPubView {
+
+- (void)loadPubVisitView {
 	// Show the tab bar (because the pubs view needs it)
 	if ( self.tabBarController.view.subviews.count >= 2 )
 	{
@@ -150,15 +149,29 @@
 	
 	if(capturedToggle.selectedSegmentIndex == 1) {
 		
-		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-		[locationTimer invalidate];
-		[ct stop];
-		
-		worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
-		controller.pub = self.pub;
-		[self.navigationController pushViewController:controller animated:YES];
-		[controller release];
-		controller = nil;
+		if(! [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+			NSLog(@"error with picker");
+			
+			self.capturedToggle.selectedSegmentIndex = 0;
+			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"No Camera Found"
+																message:@"You need an iPhone with a camera to use this feature."
+															   delegate:self
+													  cancelButtonTitle:@"Ok"
+													  otherButtonTitles:nil];
+			
+			[alertView show];
+			[alertView release];
+		} else {
+			CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+			[locationTimer invalidate];
+			[ct stop];
+			
+			worldViewController *controller = [[worldViewController alloc] initWithNibName:@"worldView" bundle:[NSBundle mainBundle]];
+			controller.pub = self.pub;
+			[self.navigationController pushViewController:controller animated:YES];
+			[controller release];
+			controller = nil;
+		}	
 	}
 }
 
@@ -170,7 +183,7 @@
 		[locationTimer invalidate];
 		[ct stop];
 		
-		[self loadPubView];
+		[self loadPubVisitView];
 	}
 }
 
@@ -220,6 +233,7 @@
 	 Also, if we didn't get our location previously, we need to fix this now.
 	*/
 	[self initAll];
+	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateLocation) userInfo:nil repeats: YES];
 } 
 
 - (void)initAll {
@@ -285,7 +299,10 @@
 			// If we arrive here it is either the first time or it is because we've come closer to our destination. In te latter case we must
 			// adapt the music playback.
 		
-			[self updateMusicPlayback:self.lastUserLocation currentLocation:sender.userLocation];
+			if(self.lastUserLocation != nil) {
+				[self updateMusicPlayback:self.lastUserLocation currentLocation:sender.userLocation];
+			}
+		
 			self.lastUserLocation = sender.userLocation;
 	}
 	
@@ -565,7 +582,6 @@
 	self.distanceFromDestination = totalDistance;
 	NSLog(@"TotalDistance: %d", self.distanceFromDestination);
 	
-	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateLocation) userInfo:nil repeats: YES];
 	[ct stop];
 
 	NSLog(@"MAPVIEW ANNOTATION COUNT: %d", [[mapView annotations] count]);
@@ -713,21 +729,11 @@
 
 - (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
 {
-	CSImageAnnotationView* imageAnnotationView = (CSImageAnnotationView*) view;
 	CSPubAnnotation* annotation = (CSPubAnnotation*)[view annotation];
 	
 	NSLog(@"Clicked pub: %@", annotation.pub.name);
+	
 	[self repeatSearchWithPub:[annotation pub]];
-	/*
-	if(annotation.url != nil)
-	{
-		if(nil == _detailsVC)	
-			_detailsVC = [[CSWebDetailsViewController alloc] initWithNibName:@"CSWebDetailsViewController" bundle:nil];
-		
-		_detailsVC.url = annotation.url;
-		[self.view addSubview:_detailsVC.view];
-	}
-	 */
 }
  
 

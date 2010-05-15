@@ -21,6 +21,7 @@
 @synthesize capturedToggle;
 @synthesize pubLocation;
 @synthesize userLocation;
+@synthesize lastUserLocation;
 @synthesize distance;
 @synthesize lblDistanceToDestination;
 @synthesize picker;
@@ -152,6 +153,32 @@ Color3D colors[] = {
 - (void)loadView {
 }
 */
+
+
+/* NOTE: This method allows the volume to range from the minimum to the maximum available. The maximum might be too loud for the user.
+ Also, the current distance at which the volume changes is 25 meters. This might be too much or too little.
+ */
+- (void) updateMusicPlayback:(CLLocation *)oldLocation currentLocation:(CLLocation *)currentLocation {	
+	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	CLLocationDistance oldDistance = [ct fetchDistance:self.pubLocation locationB:oldLocation];
+	CLLocationDistance newDistance = [ct fetchDistance:self.pubLocation locationB:currentLocation];
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	if (newDistance < oldDistance) {
+		double difference = oldDistance - newDistance;
+		while(difference > 0) {
+			[audioPlayer decreaseVolume];
+			difference -= 25;
+		}
+	} else if (newDistance > oldDistance) {
+		double difference = newDistance - oldDistance;
+		while(difference > 0) {
+			[audioPlayer increaseVolume];
+			difference -= 25;
+		}
+	} 
+}
 
 - (void) btnPubs_clicked:(id)sender {
 	
@@ -366,10 +393,11 @@ Color3D colors[] = {
 	self.glView.animationInterval = 1.0 / kRenderingFrequency;
 	[self.glView startAnimation];
 	
-	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(updateDistance) userInfo:nil repeats: YES];
+	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateLocation) userInfo:nil repeats: YES];
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
+	/*
 	NSLog(@"User Location Found");
 	self.userLocation = sender.userLocation;
 	
@@ -384,6 +412,24 @@ Color3D colors[] = {
 		//[self updateDistance];
 
 	NSLog(@"End user location found");
+	 */
+	
+	if(self.userLocation == nil ||
+	   (self.userLocation.coordinate.latitude != self.lastUserLocation.coordinate.latitude) || 
+	   (self.userLocation.coordinate.longitude != self.lastUserLocation.coordinate.longitude)) {
+		self.userLocation = sender.userLocation;
+		
+		CLLocation *myPubLocation = [[CLLocation alloc] initWithLatitude:[[self.pub latitude] floatValue] longitude:[[self.pub longitude] floatValue]];		
+		self.distance = [sender fetchDistance:self.userLocation locationB:myPubLocation];		
+		[myPubLocation release];
+		self.lblDistanceToDestination.text = [NSString stringWithFormat:@"Destination at %.0f meters.", self.distance];
+		
+		// If we arrive here it is either the first time or it is because we've come closer to our destination. In te latter case we must
+		// adapt the music playback.
+		
+		[self updateMusicPlayback:self.lastUserLocation currentLocation:sender.userLocation];
+		self.lastUserLocation = sender.userLocation;
+	}
 }
 
 - (void)userLocationError:(CoordinatesTool *)sender {
@@ -425,11 +471,15 @@ Color3D colors[] = {
 	NSLog(@"heading updated done");
 }
 
-- (void)updateDistance {
+- (void)updateLocation {
 	NSLog(@"UPDATING DISTANCE");
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	[ct reInit];
+	ct.delegate = self;
 	[ct fetchUserLocation];
+	//NSLog(@"self.pubAddress: %@", self.pubAddress);
+	//[ct fetchPubLocation:self.pub];
 }
 /*
 - (GLfloat *)getArrowHeading {
@@ -633,6 +683,7 @@ Color3D colors[] = {
 	[pub release];
 	[lblDistanceToDestination release];
 	[userLocation release];
+	[lastUserLocation release];
 	[pubLocation release];
 	[pubAddress release];
 	[capturedToggle release];
