@@ -223,6 +223,7 @@ Color3D colors[] = {
 	[self dismissModalViewControllerAnimated:YES];
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
+	controller.source = 1;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
 	controller = nil;

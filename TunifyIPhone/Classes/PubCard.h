@@ -27,6 +27,8 @@
 	BOOL visible;
 	float heading;
 	double distance;
+	
+	UIButton *iconButton;
 }
 
 
@@ -40,14 +42,22 @@
 @property (assign) float heading;
 @property (assign) double distance;
 
+@property (nonatomic, retain) UIButton *iconButton;
 
 - (id)initWithPub:(Pub *)pub;
 - (void)setPosition:(float)x y:(float)y;
+- (float)getX;
 - (void)setSize:(float)theWidth height:(float)theHeight;
+- (float)getWidth;
+- (float)getHeight;
 - (void)setHeading:(float)theHeading;
 - (float)getHeading;
 - (void)setDistance:(double)theDistance;
 - (double)getDistance;
-- (void)updateSize:(double)distanceInKm;
+
 - (void)button_clicked:(id)sender;
+
+- (void)updateSizeByDistance;
+- (void)updateSizeByVisitors:(double)maxVisitors;
+- (void)updateSizeByRating;
 @end

@@ -22,17 +22,22 @@
 @synthesize xmlParser;
 @synthesize webData;
 @synthesize buttonPlaying;
-@synthesize rowPlayingIndexPath;
+@synthesize rowPlaying;
 @synthesize userLocation;
 @synthesize fetchedResultsController;
 @synthesize managedObjectContext;
 
 @synthesize picker;
-@synthesize cardSource;
 @synthesize overlayView;
-@synthesize cardView;
-@synthesize lblCo;
-@synthesize selectedPub;
+
+// test stuff
+@synthesize previousDate;
+@synthesize nrReadings;
+@synthesize averageZ;
+@synthesize averageX;
+@synthesize velX;
+@synthesize distX;
+
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -45,171 +50,198 @@
 
 - (IBAction)btnFilter_clicked:(id)sender {
 	
-	UIActionSheet *popupQuery = [[UIActionSheet alloc]
-								 initWithTitle:nil
-								 delegate:self
-								 cancelButtonTitle:@"Cancel"
-								 destructiveButtonTitle:nil
-								 otherButtonTitles:@"By genre",@"By song",@"By rating", @"By visitors", @"By distance", nil];
+	if(in3DView) {
+		UIActionSheet *popupQuery = [[UIActionSheet alloc]
+									 initWithTitle:nil
+									 delegate:self
+									 cancelButtonTitle:@"Cancel"
+									 destructiveButtonTitle:nil
+									 otherButtonTitles:@"By genre", @"By rating", @"By visitors", @"By distance", nil];
+		
+		popupQuery.actionSheetStyle = UIActionSheetStyleAutomatic;
+		[popupQuery showInView:self.tabBarController.view];
+		[popupQuery release];
+	} else {
+		UIActionSheet *popupQuery = [[UIActionSheet alloc]
+									 initWithTitle:nil
+									 delegate:self
+									 cancelButtonTitle:@"Cancel"
+									 destructiveButtonTitle:nil
+									 otherButtonTitles:@"By genre", @"By rating", @"By visitors", @"By distance", nil];
+		
+		popupQuery.actionSheetStyle = UIActionSheetStyleAutomatic;
+		[popupQuery showInView:self.tabBarController.view];
+		[popupQuery release];
+	}
 	
-    popupQuery.actionSheetStyle = UIActionSheetStyleAutomatic;
-    [popupQuery showInView:self.tabBarController.view];
-    [popupQuery release];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 0) {
-		// Sort by genre
-		genreViewController *gvc = [[genreViewController alloc] initWithNibName:@"genreView" bundle:[NSBundle mainBundle]];
-		gvc.sourceView = self;
-		gvc.sourceId = 1;
-		[self.navigationController pushViewController:gvc animated:YES];
-		[gvc release];
-		gvc = nil;
-		
-    } else if (buttonIndex == 1) {
-		// Sort by song similarity
-    } else if (buttonIndex == 2) {
-		// Sort by rating
-		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
-		
-		for(Pub *pub in dataSource) {
-			// Initial entry
-			if ([sortedArray count] == 0) {
-				[sortedArray addObject:pub];
-			} else {
-				// Further entries
-				if ([[pub rating] intValue] <= [[[sortedArray lastObject] rating] intValue]) {
-					[sortedArray addObject:pub];
-				} else if ([[pub rating] intValue] >= [[[sortedArray objectAtIndex:0] rating] intValue]) {
-					[sortedArray insertObject:pub atIndex:0];
-				} else {
-					for(int i=0; i<[sortedArray count]; i++) {
-						if ([[pub rating] intValue] == [[[sortedArray objectAtIndex:i] rating] intValue]) {
-							[sortedArray insertObject:pub atIndex:i];
-							break;
-						} else if ([[pub rating] intValue] < [[[sortedArray objectAtIndex:i] rating] intValue] && [[pub rating] intValue] > [[[sortedArray objectAtIndex:i+1] rating] intValue]) {
-							[sortedArray insertObject:pub atIndex:i+1];
-							break;
-						}
-					} // end for loop
-				}				
-			}
-		} // end for loop
-		
-		[dataSource removeAllObjects];
-		dataSource = sortedArray;
-		[tableData removeAllObjects];
-		[tableData addObjectsFromArray:dataSource];
-		[tableView reloadData];
-		
-	} else if (buttonIndex == 3) {
-		// Sort by visitors
-		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
-		
-		for(Pub *pub in dataSource) {
-			NSLog(@"Pub: %@", [pub name]);
-			NSLog(@"Visitors: %@", [pub visitors]);
-			// Initial entry
-			if ([sortedArray count] == 0) {
-				[sortedArray addObject:pub];
-			} else {
-				// Further entries
-				if ([[pub visitors] intValue] <= [[[sortedArray lastObject] visitors] intValue]) {
-					[sortedArray addObject:pub];
-				} else if ([[pub visitors] intValue] >= [[[sortedArray objectAtIndex:0] visitors] intValue]) {
-					[sortedArray insertObject:pub atIndex:0];
-				} else {
-					for(int i=0; i<[sortedArray count]; i++) {
-						if ([[pub visitors] intValue] == [[[sortedArray objectAtIndex:i] visitors] intValue]) {
-							[sortedArray insertObject:pub atIndex:i];
-							break;
-						} else if ([[pub visitors] intValue] < [[[sortedArray objectAtIndex:i] visitors] intValue] && [[pub visitors] intValue] > [[[sortedArray objectAtIndex:i+1] visitors] intValue]) {
-							[sortedArray insertObject:pub atIndex:i+1];
-							break;
-						}
-					} // end for loop
-				}				
-			}
-		} // end for loop
-		
-		[dataSource removeAllObjects];
-		dataSource = sortedArray;
-		[tableData removeAllObjects];
-		[tableData addObjectsFromArray:dataSource];
-		[tableView reloadData];
-		
-	} else if (buttonIndex == 4) {
-		NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
-		
-		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-		for(Pub *pub in dataSource) {
-			NSLog(@"Pub: %@", [pub name]);
+	
+	if (in3DView) {
+		if (buttonIndex == 0) {
+		} else if (buttonIndex == 1) {
+			// sort by rating
+			[self.overlayView filterByRating];
+		} else if (buttonIndex == 2) {
+			[self.overlayView filterByVisitors];
+		} else if (buttonIndex == 3) {
+			[self.overlayView filterByDistance];
+		}
+	} else {
+		if (buttonIndex == 0) {
+			// Sort by genre
+			genreViewController *gvc = [[genreViewController alloc] initWithNibName:@"genreView" bundle:[NSBundle mainBundle]];
+			gvc.sourceView = self;
+			gvc.sourceId = 1;
+			[self.navigationController pushViewController:gvc animated:YES];
+			[gvc release];
+			gvc = nil;
 			
-			CLLocationDegrees longitude= [[pub longitude] doubleValue];
-			CLLocationDegrees latitude = [[pub latitude] doubleValue];
-			CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-			CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
-			[pubLocation release];
+		} else if (buttonIndex == 1) {
+			// Sort by rating
+			NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
 			
-			NSLog(@"Distance: %f", distance);
-			
-			// Initial entry
-			if ([sortedArray count] == 0) {
-				[sortedArray addObject:pub];
-			} else {
-				// Further entries
-				CLLocationDegrees longitude= [[[sortedArray lastObject] longitude] doubleValue];
-				CLLocationDegrees latitude = [[[sortedArray lastObject] latitude] doubleValue];
-				CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-				CLLocationDistance lastPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
-				[pubLocation release];
-				
-				longitude= [[[sortedArray objectAtIndex:0] longitude] doubleValue];
-				latitude = [[[sortedArray objectAtIndex:0] latitude] doubleValue];
-				pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-				CLLocationDistance firstPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
-				[pubLocation release];
-				
-				if (distance >= lastPubDistance) {
+			for(Pub *pub in dataSource) {
+				// Initial entry
+				if ([sortedArray count] == 0) {
 					[sortedArray addObject:pub];
-				} else if (distance <= firstPubDistance) {
-					[sortedArray insertObject:pub atIndex:0];
 				} else {
-					for(int i=0; i<[sortedArray count]; i++) {
-						
-						CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i] longitude] doubleValue];
-						CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i] latitude] doubleValue];
-						CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-						CLLocationDistance otherPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
-						[pubLocation release];
-						
-						if (distance == otherPubDistance) {
-							[sortedArray insertObject:pub atIndex:i];
-							break;
-						} else { 
-							CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i+1] longitude] doubleValue];
-							CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i+1] latitude] doubleValue];
-							CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-							CLLocationDistance nextPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
-							[pubLocation release];
-							
-							if (distance > otherPubDistance && distance < nextPubDistance) {
+					// Further entries
+					if ([[pub rating] intValue] <= [[[sortedArray lastObject] rating] intValue]) {
+						[sortedArray addObject:pub];
+					} else if ([[pub rating] intValue] >= [[[sortedArray objectAtIndex:0] rating] intValue]) {
+						[sortedArray insertObject:pub atIndex:0];
+					} else {
+						for(int i=0; i<[sortedArray count]; i++) {
+							if ([[pub rating] intValue] == [[[sortedArray objectAtIndex:i] rating] intValue]) {
+								[sortedArray insertObject:pub atIndex:i];
+								break;
+							} else if ([[pub rating] intValue] < [[[sortedArray objectAtIndex:i] rating] intValue] && [[pub rating] intValue] > [[[sortedArray objectAtIndex:i+1] rating] intValue]) {
 								[sortedArray insertObject:pub atIndex:i+1];
 								break;
 							}
-						}
-					} // end for loop
-				}				
-			}
-		} // end for loop
+						} // end for loop
+					}				
+				}
+			} // end for loop
+			
+			[dataSource removeAllObjects];
+			dataSource = sortedArray;
+			[tableData removeAllObjects];
+			[tableData addObjectsFromArray:dataSource];
+			[tableView reloadData];
+			
+		} else if (buttonIndex == 2) {
+			// Sort by visitors
+			NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+			
+			for(Pub *pub in dataSource) {
+				NSLog(@"Pub: %@", [pub name]);
+				NSLog(@"Visitors: %@", [pub visitors]);
+				// Initial entry
+				if ([sortedArray count] == 0) {
+					[sortedArray addObject:pub];
+				} else {
+					// Further entries
+					if ([[pub visitors] intValue] <= [[[sortedArray lastObject] visitors] intValue]) {
+						[sortedArray addObject:pub];
+					} else if ([[pub visitors] intValue] >= [[[sortedArray objectAtIndex:0] visitors] intValue]) {
+						[sortedArray insertObject:pub atIndex:0];
+					} else {
+						for(int i=0; i<[sortedArray count]; i++) {
+							if ([[pub visitors] intValue] == [[[sortedArray objectAtIndex:i] visitors] intValue]) {
+								[sortedArray insertObject:pub atIndex:i];
+								break;
+							} else if ([[pub visitors] intValue] < [[[sortedArray objectAtIndex:i] visitors] intValue] && [[pub visitors] intValue] > [[[sortedArray objectAtIndex:i+1] visitors] intValue]) {
+								[sortedArray insertObject:pub atIndex:i+1];
+								break;
+							}
+						} // end for loop
+					}				
+				}
+			} // end for loop
+			
+			[dataSource removeAllObjects];
+			dataSource = sortedArray;
+			[tableData removeAllObjects];
+			[tableData addObjectsFromArray:dataSource];
+			[tableView reloadData];
+			
+		} else if (buttonIndex == 3) {
+			NSMutableArray *sortedArray = [[NSMutableArray alloc] init];
+			
+			CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+			for(Pub *pub in dataSource) {
+				NSLog(@"Pub: %@", [pub name]);
+				
+				CLLocationDegrees longitude= [[pub longitude] doubleValue];
+				CLLocationDegrees latitude = [[pub latitude] doubleValue];
+				CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+				CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+				[pubLocation release];
+				
+				NSLog(@"Distance: %f", distance);
+				
+				// Initial entry
+				if ([sortedArray count] == 0) {
+					[sortedArray addObject:pub];
+				} else {
+					// Further entries
+					CLLocationDegrees longitude= [[[sortedArray lastObject] longitude] doubleValue];
+					CLLocationDegrees latitude = [[[sortedArray lastObject] latitude] doubleValue];
+					CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+					CLLocationDistance lastPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+					[pubLocation release];
+					
+					longitude= [[[sortedArray objectAtIndex:0] longitude] doubleValue];
+					latitude = [[[sortedArray objectAtIndex:0] latitude] doubleValue];
+					pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+					CLLocationDistance firstPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+					[pubLocation release];
+					
+					if (distance >= lastPubDistance) {
+						[sortedArray addObject:pub];
+					} else if (distance <= firstPubDistance) {
+						[sortedArray insertObject:pub atIndex:0];
+					} else {
+						for(int i=0; i<[sortedArray count]; i++) {
+							
+							CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i] longitude] doubleValue];
+							CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i] latitude] doubleValue];
+							CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+							CLLocationDistance otherPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+							[pubLocation release];
+							
+							if (distance == otherPubDistance) {
+								[sortedArray insertObject:pub atIndex:i];
+								break;
+							} else { 
+								CLLocationDegrees longitude= [[[sortedArray objectAtIndex:i+1] longitude] doubleValue];
+								CLLocationDegrees latitude = [[[sortedArray objectAtIndex:i+1] latitude] doubleValue];
+								CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+								CLLocationDistance nextPubDistance = [ct fetchDistance:self.userLocation locationB:pubLocation]/1000;
+								[pubLocation release];
+								
+								if (distance > otherPubDistance && distance < nextPubDistance) {
+									[sortedArray insertObject:pub atIndex:i+1];
+									break;
+								}
+							}
+						} // end for loop
+					}				
+				}
+			} // end for loop
+			
+			[dataSource removeAllObjects];
+			dataSource = sortedArray;
+			[tableData removeAllObjects];
+			[tableData addObjectsFromArray:dataSource];
+			[tableView reloadData];
+		}
 		
-		[dataSource removeAllObjects];
-		dataSource = sortedArray;
-		[tableData removeAllObjects];
-		[tableData addObjectsFromArray:dataSource];
-		[tableView reloadData];
 	}
+
 }
 
 
@@ -269,37 +301,66 @@
 	CellButton *button = (CellButton *)sender;
 	self.buttonPlaying = button;
 	
-	if (self.rowPlayingIndexPath == nil ) {
+	if (self.rowPlaying == -1) {
 		// Nothing is playing yet
-		self.rowPlayingIndexPath = button.indexPath;
+		self.rowPlaying = button.row;
 		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 
+		//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		//audioPlayer.delegate = self;
+		//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+		
 		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-		audioPlayer.delegate = self;
-		[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+		[audioPlayer playTest];
 	} else {
-		if (self.rowPlayingIndexPath.row == button.indexPath.row) {
+		if (self.rowPlaying == button.row) {
 			// Our current cell is playing
-			self.rowPlayingIndexPath = nil;
+			self.rowPlaying = -1;
 			[button setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 			
+			//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			//[audioPlayer stop];
+			
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-			[audioPlayer stop];
+			[audioPlayer stopTest];
 		} else {
-			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:self.rowPlayingIndexPath];
+			NSLog(@"a");
+			NSLog(@"row playing: %d", self.rowPlaying);
+			//NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndex:self.rowPlaying];
+			NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
+			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 			pubCell *c = (pubCell *)cell;
+			NSLog(@"b");
 			[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 
 			// Now update our current cell
-			self.rowPlayingIndexPath = button.indexPath;
+			self.rowPlaying = button.row;
 			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
 		
+			//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			//audioPlayer.delegate = self;
+			//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-			audioPlayer.delegate = self;
-			[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+			[audioPlayer stopTest];
+			[audioPlayer playTest];
 			
+			[indexPath release];
 		}
 	}
+	
+}
+
+- (void) showMusic:(id)sender {
+	CellButton *button = (CellButton *)sender;
+	Pub *thePub = (Pub*)[self.dataSource objectAtIndex:button.row];
+	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
+	controller.pub = thePub;
+	controller.source = 1;
+	
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
 	
 }
 
@@ -394,7 +455,7 @@
 	
 	[self tunify_login];
 	
-	self.rowPlayingIndexPath = nil;
+	self.rowPlaying = -1;
 	NSLog(@"End viewdidload");
 	
 	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
@@ -404,6 +465,8 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+	NSLog(@"publistcontroller view did appear");
+	self.rowPlaying = -1;
 	
 	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 	[audioPlayer stopTest];
@@ -414,7 +477,8 @@
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	
-	//locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateCurrentLocation) userInfo:nil repeats: YES];
+	locationTimer = [NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(updateCurrentLocation) userInfo:nil repeats: YES];
+	NSLog(@"end publistcontroller view did appear");
 }
 
 
@@ -559,21 +623,8 @@
 		NSLog(@"Pub name: %@", pub.name);
 	}
 	
-	[tableView reloadData];
-	
 	if (in3DView == TRUE) {
-		for(PubCard *pubCard in self.cardSource) {
-			// Update heading
-			float heading = [self calculatePubHeading:[pubCard pub]];
-			[pubCard setHeading:heading];
-			
-			// Update distance
-			CLLocation *myPubLocation = [[CLLocation alloc] initWithLatitude:[[pubCard.pub latitude] floatValue] longitude:[[pubCard.pub longitude] floatValue]];		
-			double distance = [ct fetchDistance:self.userLocation locationB:myPubLocation];
-			[pubCard setDistance:distance];
-			
-			NSLog(@"CARD HEADING: %f", heading);
-		}
+		[self.overlayView updateAllHeadings];
 	} else {
 		[tableView reloadData];
 	}
@@ -811,9 +862,18 @@
 	// Set visitor amount
 	cell.visitorsLabel.text = pub.visitors;
 		
+	
+	
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
-	cell.playButton.indexPath = indexPath;
+	//cell.playButton.indexPath = indexPath;
+	NSLog(@"Playbutton row: %d", cell.playButton.row);
+	cell.playButton.row = indexPath.row;
+	
+	//[cell.infoButton setButtonType:UIButtonTypeInfoDark];
+	[cell.infoButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	[cell.infoButton addTarget:self action:@selector(showMusic:) forControlEvents:UIControlEventTouchUpInside];
+	cell.infoButton.row = indexPath.row;
 	
     return cell;
 	
@@ -941,15 +1001,6 @@
 	self.overlayView.opaque = NO;
 	self.overlayView.backgroundColor = [UIColor clearColor];
 	self.overlayView.delegate = self;
-
-	lblCo = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 25)];
-	lblCo.text = @"";
-	lblCo.textAlignment = UITextAlignmentLeft;
-	lblCo.font = [UIFont systemFontOfSize:14];
-	lblCo.adjustsFontSizeToFitWidth = NO;
-	lblCo.textColor = [UIColor blackColor];
-	lblCo.backgroundColor = [UIColor lightGrayColor];
-	[self.overlayView insertSubview:lblCo atIndex:10];
 	
 	// Create the navigation bar
 	UINavigationBar *navBar = [[UINavigationBar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
@@ -979,6 +1030,9 @@
 	
 	
 	//Create the required pub 'cards'
+	[self.overlayView createPubCards:self.dataSource];
+	
+	/*
 	NSLog(@"Creating pub cards");
 	self.cardSource = [[NSMutableArray alloc] init];
 	int i = 0;
@@ -1003,14 +1057,24 @@
 	NSLog(@"Pub cards created");
 	//[mutableFetchResults release];
 	//[request release];
+	*/
 	
 	in3DView = TRUE;
 	
-	
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	[ct fetchHeading];
+	
+	// test stuff
+	self.previousDate = [NSDate date];
+	NSLog(@"%@", self.previousDate);
+	self.nrReadings = 0;
+	self.averageX = 0;
+	self.averageZ = 0;
+	self.velX = 0;
+	self.distX = 0;
 	
 	if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		
@@ -1046,6 +1110,7 @@
 	}
 	
 	NSLog(@"end 3d view did load");
+	
 }
 
 - (void)hide3DList {
@@ -1064,196 +1129,112 @@
 	in3DView = FALSE;
 }
 
-
-- (void)updateCards {
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	NSLog(@"Our heading: %f", [ct getHeading]);
-	
-	NSArray *yValues = [[NSArray alloc] initWithObjects:[NSNumber numberWithInt:310],[NSNumber numberWithInt:200],[NSNumber numberWithInt:420],[NSNumber numberWithInt:90],nil]; 
-	int cardScreenIndex = 0;
-	int validIntervalInDegrees = 80;
-	NSLog(@"CARDS: %d", [self.cardSource count]);
-	for(PubCard *pubCard in self.cardSource) {
-		float heading = [pubCard getHeading]; //[self calculatePubHeading:[pubCard pub]];
-		
-		// Check if a correct heading was initialized
-		if(heading != -1) {
-			float newHeading = heading - [ct getHeading];
-			
-			BOOL isValidHeading = FALSE;
-			if(heading < 40) {
-				if((360 - [ct getHeading]) <= heading) {
-					isValidHeading = TRUE;
-				}
-			} else if (heading > 320) {
-				if(((360 - heading) + [ct getHeading]) <= 40) {
-					isValidHeading = TRUE;
-				}
-			}
-			
-			if( ((newHeading <= validIntervalInDegrees/2) && (newHeading >= -(validIntervalInDegrees/2))) || (isValidHeading == TRUE)) {
-				//NSLog(@"Card heading: %f", heading);
-				//NSLog(@"new Heading: %f", newHeading);
-				int localHeadingOffset = 0;
-				if (newHeading < 0) {
-					localHeadingOffset = validIntervalInDegrees/2 - (newHeading * -1);
-				} else {
-					localHeadingOffset = newHeading + validIntervalInDegrees/2;
-				}
-
-				// Show the pub
-				pubCard.visible = TRUE;
-				[pubCard setPosition:(localHeadingOffset*6.5 - 100) y:[[yValues objectAtIndex:cardScreenIndex] floatValue]];
-				cardScreenIndex++;
-				//NOTE: When we have more than 4 pubs on the screen, the yValues array will run out of bounds.
-				
-				
-			} else {
-				if(pubCard.visible == TRUE) {
-					[pubCard setPosition:-500 y:-500];
-				}
-				pubCard.visible = FALSE;
-				
-			}
-		}
-	}
-	
-	[yValues release];
-}
-
 - (void)headingUpdated:(CoordinatesTool *)sender {
-	[self updateCards];
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	lblCo.text = [NSString stringWithFormat:@"%f", [ct getHeading]];
-	
+	[self.overlayView updateCards];
 }
 
-- (float)calculatePubHeading:(Pub *)pub {
-	float u2 = userLocation.coordinate.latitude;
-	float u1 = userLocation.coordinate.longitude;
-	float v2 = [[pub latitude] floatValue];		
-	float v1 = [[pub longitude] floatValue];
-	
-	// Base vector
-	float b1 = 0;
-	float b2 = 1;
-	
-	// Normalize V
-	float normV1 = v1 - u1;
-	float normV2 = v2 - u2;	
-	
-	// Calculate the angle between the base vector (pointing north) and the pub location
-	float uv = (b1*normV1) + (b2*normV2);
-	float normU = sqrt(b1*b1 + b2*b2);
-	float normV = sqrt(normV1*normV1 + normV2*normV2);
-	float normMultiplication = normU * normV;
-	float division = uv/normMultiplication;
-	float resultRad = acos(division);
-	float resultDeg = resultRad * (180/M_PI);
-	
-	// If our pub's longitude is smaller than the users, then the angle will be larger than 180 degrees.
-	// However, the above method only returns angles smaller than or equal to 180, so we'll need to fix this ourselves.
-	if (v1 < u1) {
-		resultDeg = (180 - resultDeg) + 180;
-	} 
-	
-	return resultDeg;
-}
-
-- (void)cardClicked:(id)sender {
-	
-	PubCard *card = (PubCard *)sender;
-	self.selectedPub = [card pub];
-	
-	// Remove any already existing cardviews
-	if(self.cardView != nil) {
-		[self.cardView removeFromSuperview];
-	}
-	
-	self.cardView = [[UIView alloc] initWithFrame:CGRectMake(0, 400, 320, 100)];
-	self.cardView.opaque = YES;
-	self.cardView.backgroundColor = [UIColor lightGrayColor];
-
-	UIButton *directionsButton = [[UIButton alloc] init];
-	[directionsButton setImage:[UIImage imageNamed:@"3DMapsIcon.png"] forState:UIControlStateNormal];
-	[directionsButton addTarget:self action:@selector(buttonDirectionClicked:) forControlEvents:UIControlEventTouchUpInside];
-	directionsButton.frame = CGRectMake(250, 10, 59, 60);	
-						
-	
-	UIButton *playMusicButton = [[UIButton alloc] init];
-	[playMusicButton setImage:[UIImage imageNamed:@"3DPlayIcon.png"] forState:UIControlStateNormal];
-	[playMusicButton addTarget:self action:@selector(buttonPlayMusicClicked:) forControlEvents:UIControlEventTouchUpInside];
-	playMusicButton.frame = CGRectMake(10, 10, 59, 60);	
-	
-
-	UILabel* nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(73, 0, 180, 25)];
-	nameLabel.text = [[card pub] name];
-	nameLabel.textAlignment = UITextAlignmentCenter;
-	nameLabel.font = [UIFont systemFontOfSize:14];
-	nameLabel.adjustsFontSizeToFitWidth = NO;
-	nameLabel.textColor = [UIColor blackColor];
-	nameLabel.opaque = FALSE;
-	nameLabel.backgroundColor = [UIColor clearColor];
-	
-	UILabel *address1Label = [[UILabel alloc] initWithFrame:CGRectMake(73, 20, 180, 25)];
-	address1Label.text = [NSString stringWithFormat:@"%@ %@", [[card pub] street], [[card pub] number]];
-	address1Label.textAlignment = UITextAlignmentCenter;
-	address1Label.font = [UIFont systemFontOfSize:12];
-	address1Label.adjustsFontSizeToFitWidth = NO;
-	address1Label.textColor = [UIColor blackColor];
-	address1Label.opaque = FALSE;
-	address1Label.backgroundColor = [UIColor clearColor];
-	
-	UILabel *address2Label = [[UILabel alloc] initWithFrame:CGRectMake(73, 40, 180, 25)];
-	address2Label.text = [NSString stringWithFormat:@"%@ %@", [[card pub] zipcode], [[card pub] city]];
-	address2Label.textAlignment = UITextAlignmentCenter;
-	address2Label.font = [UIFont systemFontOfSize:12];
-	address2Label.adjustsFontSizeToFitWidth = NO;
-	address2Label.textColor = [UIColor blackColor];
-	address2Label.opaque = FALSE;
-	address2Label.backgroundColor = [UIColor clearColor];
-	
-	UILabel *visitorsLabel = [[UILabel alloc] initWithFrame:CGRectMake(60, 60, 200, 25)];
-	visitorsLabel.text = [NSString stringWithFormat:@"Visitors: %@", [[card pub] visitors]];
-	visitorsLabel.textAlignment = UITextAlignmentCenter;
-	visitorsLabel.font = [UIFont systemFontOfSize:12];
-	visitorsLabel.adjustsFontSizeToFitWidth = NO;
-	visitorsLabel.textColor = [UIColor blackColor];
-	visitorsLabel.opaque = FALSE;
-	visitorsLabel.backgroundColor = [UIColor clearColor];
+- (void)accelerometer:(UIAccelerometer *)acel didAccelerate:(UIAcceleration *)acceleration {
+	//NSLog([[NSString alloc] initWithFormat:@"x: %g\ty:%g\tz:%g", acceleration.x, acceleration.y, acceleration.z]);
 	
 	
-	[self.cardView insertSubview:playMusicButton atIndex:0];
-	[self.cardView insertSubview:directionsButton atIndex:1];
-	[self.cardView insertSubview:address1Label atIndex:2];
-	[self.cardView insertSubview:address2Label atIndex:3];
-	[self.cardView insertSubview:visitorsLabel atIndex:4];
-	[self.cardView insertSubview:nameLabel atIndex:5];
-	
-	[self.overlayView insertSubview:self.cardView atIndex:20];
-}
-
-#pragma mark OverlayViewDelegateHandlers
-
-- (void)viewClicked:(OverlayView *)sender {
-	
-	[self.cardView removeFromSuperview];
-}
-
-
-#pragma mark popUpScreenButotnHandlers
--(void)buttonPlayMusicClicked:(id)sender {
-	//Pub *pub = self.selectedPub;
-	if (pubPlaying == TRUE) {
-		// stop the music
-		pubPlaying = FALSE;
+	if ((acceleration.x >= 0.7 && acceleration.x <= 1.0) || (acceleration.x <= -0.7 && acceleration.x >= -1.0)) {
+		//[self.overlayView setLandscapeMode];
 	} else {
-		// start the music
-		pubPlaying = TRUE;
+		//[self.overlayView setPortraitMode];
 	}
+	
+	self.averageX += acceleration.x;
+	self.averageZ += acceleration.z;
+	self.nrReadings += 1;
+	
+	/*
+	NSTimeInterval interval = 0;
+	NSDate *currentDate = [NSDate date];
+	if (self.previousDate != nil) {
+		interval = [currentDate timeIntervalSinceDate:self.previousDate];
+	}
+	self.previousDate = currentDate;
+	*/
+	
+	//NSLog(@"readings: %f", self.nrReadings);
+	//NSLog(@"averageZ: %f", self.averageZ);
+	if(nrReadings >= 10) {
+		//float avgAccelerationX = self.averageX / self.nrReadings;
+		float avgAccelerationZ = self.averageZ / self.nrReadings;
+
+		//NSLog(@"AvgAccelerationX: %f", avgAccelerationX);
+		//NSLog(@"AvgAccelerationZ: %f", avgAccelerationZ);
+
+		
+		//float angle = atan2(acceleration.x, -acceleration.y);
+		//NSLog(@"ANGLE: %f", angle);
+		//[self.overlayView updateRotation:(-angle *(180/M_PI))];
+		//[self.overlayView updateRotation:(-angle)];
+		//[self.overlayView updateRotation:-(avgAccelerationX * 1.57079633)];
+		
+		
+		
+		[self.overlayView updateHorizon:(avgAccelerationZ * 250)];
+		[self.overlayView updateCards];
+		
+		self.averageX = 0;
+		self.averageZ = 0;
+		self.nrReadings = 0;
+	}
+	
+	/*
+	if (acceleration.z >= -0.2 && acceleration.z <= 0.2) {
+		[self.overlayView updateHorizon:0];
+	} else {file://localhost/Users/thesis/Desktop/TunifyIPhone/MainWindow.xib
+		[self.overlayView updateHorizon:(acceleration.z * 250)];
+	}
+	 */
+	
+	/*
+	if (acceleration.x >= -0.1 && acceleration.x <= 0.1) {
+		[self.overlayView updateRotation:0];
+	} else {
+		[self.overlayView updateRotation:(-(acceleration.x * 1.57079633))];	
+	}
+	
+	NSLog(@"Starting date stuff");
+	NSTimeInterval interval = 0;
+	NSLog(@"a");
+	NSDate *currentDate = [NSDate date];
+	NSLog(@"b");
+	NSLog(@"%@", self.previousDate);
+	if (self.previousDate != nil)
+	{
+		NSLog(@"c");
+		interval = [currentDate timeIntervalSinceDate:self.previousDate];
+	}
+	NSLog(@"d");
+	self.previousDate = currentDate;	
+	
+	velX += (acceleration.x * interval);
+	distX += (velX * interval);
+	//do other axis here too
+	
+	// setup for next UIAccelerometer event
+	
+	NSLog(@"VELOCITY X: %f", velX);
+	NSLog(@"DISTANCE X: %f", distX);
+	*/
 }
 
--(void)buttonDirectionClicked:(id)sender {
+// Override to allow orientations other than the default portrait orientation.
+/*
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+	NSLog(@"rotating");
+	//return (interfaceOrientation == UIInterfaceOrientationLandscapeLeft);
+	return YES;
+}
+ */
+
+- (void)buttonDirectionClicked:(OverlayView *)sender {
+	
+	Pub *pub = sender.selectedPub;
+	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct stop];
 	NSLog(@"Buttondirectionclicked");
@@ -1261,21 +1242,10 @@
 	UIAccelerometer *accel = [UIAccelerometer sharedAccelerometer];
 	accel.delegate = nil;
 	
-	//[ct release];
-	
-	//[lblCo release];
-	//[genre release];
-	//[searchBar release];
-	//[overlayView release];
-	
 	[self dismissModalViewControllerAnimated:YES];
-	//picker = nil;
-	//[picker release];
-	//NSLog(@"picker released");
 	
-
+	
 	// Add the pub to the recently visited pub list
-	Pub *pub = self.selectedPub;
 	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
 	[rv addPub:pub];
 	
@@ -1287,27 +1257,23 @@
 	
 }
 
-- (void)accelerometer:(UIAccelerometer *)acel didAccelerate:(UIAcceleration *)acceleration {
-	//NSLog([[NSString alloc] initWithFormat:@"x: %g\ty:%g\tz:%g", acceleration.x, acceleration.y, acceleration.z]);
+-(void)buttonPlayMusicClicked:(OverlayView *)sender {
 	
-	
-	if (fabsf(acceleration.x) > 1.5 || fabsf(acceleration.y) > 1.5 || fabsf(acceleration.z) > 1.5)
-	{
-		//NSLog([[NSString alloc] initWithFormat:@"x: %g\ty:%g\tz:%g", acceleration.x, acceleration.y, acceleration.z]);
+	Pub *pub = sender.selectedPub;
+	//Pub *pub = self.selectedPub;
+	if (pubPlaying == TRUE) {
+		// stop the music
+		pubPlaying = FALSE;
+	} else {
+		// start the music
+		pubPlaying = TRUE;
 	}
-	
 }
 
-
 - (void)dealloc {
-	[lblCo release];
-	[cardView release];
 	[overlayView release];
 	[picker release];
 	[genre release];
-	[selectedPub release];
-	[rowPlayingIndexPath release];
-	[cardSource release];
 	[dataSource release];
 	[buttonPlaying release];
 	[tableView release];
@@ -1315,6 +1281,7 @@
 	[xmlParser release];
 	[webData release];
 	[userLocation release];
+	[previousDate release];
 	
 	[fetchedResultsController release];
 	[managedObjectContext release];

@@ -583,12 +583,12 @@
 	[cell.inviteButton setImage:[UIImage imageNamed:@"beermug.png"] forState:UIControlStateNormal];
 	[cell.inviteButton setImage:[UIImage imageNamed:@"beermug.png"] forState:UIControlStateHighlighted];
 	[cell.inviteButton addTarget:self action:@selector(inviteButton_clicked:) forControlEvents:UIControlEventTouchUpInside];
-	cell.inviteButton.indexPath = indexPath;
+	cell.inviteButton.row = indexPath.row;
 	
 	[cell.achievementsButton setImage:[UIImage imageNamed:@"trophy.png"] forState:UIControlStateNormal];
 	[cell.achievementsButton setImage:[UIImage imageNamed:@"trophy.png"] forState:UIControlStateHighlighted];
 	[cell.achievementsButton addTarget:self action:@selector(achievementsButton_clicked:) forControlEvents:UIControlEventTouchUpInside];
-	cell.achievementsButton.indexPath = indexPath;
+	cell.achievementsButton.row = indexPath.row;
 	
     return cell;
 }
@@ -624,6 +624,7 @@
 
 
 - (void)dealloc {
+	NSLog(@"ra");
 	[pub release];
 	[achievementLabel release];
 	[achievementNameLabel release];
@@ -634,10 +635,12 @@
 	[twitterButton release];
 	[facebookButton release];
 	
-	[tableView release];
+	
 	[rateView release];
 	
 	[achievementReached release];
+	//[tableView release];
+	NSLog(@"rb");
     [super dealloc];
 }
 

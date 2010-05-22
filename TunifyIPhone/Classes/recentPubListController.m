@@ -17,7 +17,7 @@
 @synthesize genre;
 @synthesize dataSource;
 @synthesize tableView;
-@synthesize rowPlayingIndexPath;
+@synthesize rowPlaying;
 @synthesize userLocation;
 @synthesize buttonPlaying;
 
@@ -201,6 +201,53 @@
 }
 
 - (void) playMusic:(id)sender {
+	CellButton *button = (CellButton *)sender;
+	self.buttonPlaying = button;
+	
+	if (self.rowPlaying == -1) {
+		// Nothing is playing yet
+		self.rowPlaying = button.row;
+		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+		
+		//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		//audioPlayer.delegate = self;
+		//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+		
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer playTest];
+	} else {
+		if (self.rowPlaying == button.row) {
+			// Our current cell is playing
+			self.rowPlaying = -1;
+			[button setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+			
+			//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			//[audioPlayer stop];
+			
+			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			[audioPlayer stopTest];
+		} else {
+			NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndex:self.rowPlaying];
+			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+			pubCell *c = (pubCell *)cell;
+			[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+			
+			// Now update our current cell
+			self.rowPlaying = button.row;
+			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+			
+			//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			//audioPlayer.delegate = self;
+			//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+			
+			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			[audioPlayer playTest];
+			
+			[indexPath release];
+		}
+	}
+	
+	/*
 	NSLog(@"Playing the sound of the pub");
 	
 	CellButton *button = (CellButton *)sender;
@@ -240,6 +287,7 @@
 			
 		}
 	}
+	 */
 	
 }
 
@@ -299,7 +347,7 @@
 	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 	[audioPlayer stopTest];
 	
-	self.rowPlayingIndexPath = nil;
+	self.rowPlaying = -1;
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
@@ -435,7 +483,7 @@
 
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
-	cell.playButton.indexPath = indexPath;
+	cell.playButton.row = indexPath.row;
 	
     return cell;	
 }
@@ -518,7 +566,6 @@
 
 - (void)dealloc {
 	[genre release];
-	[rowPlayingIndexPath release];
 	[dataSource release];
 	[buttonPlaying release];
 	[tableView release];

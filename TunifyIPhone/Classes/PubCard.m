@@ -20,6 +20,7 @@
 @synthesize heading;
 @synthesize distance;
 @synthesize delegate;
+@synthesize iconButton;
 
 - (id)init
 {
@@ -52,54 +53,19 @@
 		self.visitors = [[pub visitors] intValue];
 		self.rating = [[pub rating] intValue];
 		
-		self.frame = CGRectMake(0, 0, 200, 90);
-		self.center = CGPointMake(160, 250);
+		self.frame = CGRectMake(0, 0, 60, 60);
+		//self.center = CGPointMake(160, 250);
 		self.opaque = FALSE;
 		self.backgroundColor = [UIColor clearColor];
-
 		
-		UIButton *iconButton = [[UIButton buttonWithType:UIButtonTypeCustom] init];
-		[iconButton setImage:[UIImage imageNamed:@"achievement5.png"] forState:UIControlStateNormal];
-		[iconButton addTarget:self	action:@selector(button_clicked:) forControlEvents:UIControlEventTouchUpInside];
-		iconButton.frame = CGRectMake(71, 5, 59, 60);
-		
-		//UILabel* pubName = [[UILabel alloc] initWithFrame:CGRectMake(5, 5, 190, 25)];
-		UILabel* pubName = [[UILabel alloc] initWithFrame:CGRectMake(5, 64, 190, 25)];
-		pubName.text = self.name;
-		pubName.textAlignment = UITextAlignmentCenter;
-		pubName.font = [UIFont systemFontOfSize:14];
-		pubName.adjustsFontSizeToFitWidth = NO;
-		pubName.textColor = [UIColor blackColor];
-		pubName.opaque = FALSE;
-		pubName.backgroundColor = [UIColor clearColor];
-		
-		/*
-		UILabel* pubAddress = [[UILabel alloc] initWithFrame:CGRectMake(5, 26, 190, 25)];
-		pubAddress.text = self.address;
-		pubAddress.textAlignment = UITextAlignmentLeft;
-		pubAddress.font = [UIFont systemFontOfSize:12];
-		pubAddress.adjustsFontSizeToFitWidth = NO;
-		pubAddress.textColor = [UIColor blackColor];
-		pubAddress.backgroundColor = [UIColor lightGrayColor];
-		
-		UILabel* pubVisitors = [[UILabel alloc] initWithFrame:CGRectMake(5, 45, 190, 25)];
-		pubVisitors.text = [NSString stringWithFormat:@"Visitors: %d", self.visitors];
-		pubVisitors.textAlignment = UITextAlignmentLeft;
-		pubVisitors.font = [UIFont systemFontOfSize:12];
-		pubVisitors.adjustsFontSizeToFitWidth = NO;
-		pubVisitors.textColor = [UIColor blackColor];
-		pubVisitors.backgroundColor = [UIColor lightGrayColor];
-		*/
-		//StarView *stars = [[StarView alloc] initWithRating:CGRectMake(60, 65, 80, 25) rating:self.rating];
-		StarView *stars = [[StarView alloc] initWithRating:CGRectMake(60, 80, 80, 25) rating:self.rating];
-		stars.opaque = FALSE;
-		stars.backgroundColor = [UIColor clearColor];
+		iconButton = [[UIButton buttonWithType:UIButtonTypeCustom] init];
+		iconButton.contentMode = UIViewContentModeScaleToFill;
+		[iconButton setBackgroundImage:[UIImage imageNamed:@"Settler.png"] forState:UIControlStateNormal];
+		[iconButton addTarget:self action:@selector(button_clicked:) forControlEvents:UIControlEventTouchUpInside];
+		iconButton.frame = CGRectMake(0, 0, 60, 60);
 		
 		[self addSubview:iconButton];
-		[self addSubview:pubName];	
-		//[self addSubview:pubAddress];
-		//[self addSubview:pubVisitors];
-		[self addSubview:stars];
+
 	}
 	
 	//[self addTarget:self action:@selector(button_clicked:) forControlEvents:UIControlEventTouchUpInside];
@@ -111,8 +77,26 @@
 	self.center = CGPointMake(x, y);
 }
 
+- (float)getX {
+	return self.center.x;
+}
+
+
 - (void)setSize:(float)theWidth height:(float)theHeight {
-	self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, theWidth, theHeight);
+	
+	if (theWidth > 60 || theHeight > 60) {
+		iconButton.frame = CGRectMake((theWidth - 60)/2, (theHeight - 60), theWidth, theHeight);
+	} else {
+		iconButton.frame = CGRectMake((60 - theWidth)/2, (60 - theHeight), theWidth, theHeight);
+	}
+}
+
+- (float)getWidth {
+	return iconButton.frame.size.width;
+}
+
+- (float)getHeight {
+	return iconButton.frame.size.height;
 }
 
 - (void)setHeading:(float)theHeading {
@@ -125,50 +109,94 @@
 
 - (void)setDistance:(double)theDistance {
 	distance = theDistance;
-	
-	// Scale our view based on the distance from the user
-	// Round to one kilometre
-	NSString *strDistance = [NSString stringWithFormat:@"%f", distance];
-	double firstNumber = [[strDistance substringToIndex:1] doubleValue];
-	double secondNumber = [[strDistance substringWithRange:NSMakeRange(1, 1)] doubleValue];
-	
-	if(secondNumber >= 5) { 
-		[self updateSize:(firstNumber + 1)];
-	} else {
-		[self updateSize:firstNumber];
-	}
-	
 }
 
 - (double)getDistance {
 	return distance;
 }
 
-- (void)updateSize:(double)distanceInKm {
-	// assuming we rescale the entire view
-	// max size = 300, 135
-	// base size = 200, 90
-	// min size = 100, 45 
-	// 5 kilometres = base size
+- (void)updateSizeByDistance {
 	
-	if (distanceInKm == 5) {
-		[self setSize:200 height:90];
+	// Scale our view based on the distance from the user
+	// Round to one kilometre
+	NSString *strDistance = [NSString stringWithFormat:@"%f", self.distance];
+	double firstNumber = [[strDistance substringToIndex:1] doubleValue];
+	double secondNumber = [[strDistance substringWithRange:NSMakeRange(1, 1)] doubleValue];
+
+	double distanceInKm = 0;
+	if(secondNumber >= 5) { 
+		distanceInKm = firstNumber + 1;
 	} else {
+		distanceInKm = firstNumber;
+	}
+	
+	NSLog(@"Distance in km: %f", distanceInKm);
+	if (distanceInKm == 5) {
+		[self setSize:60 height:60];
+	} else {
+		NSLog(@"UPDATING SIZE");
 		float newWidth = 0;
 		float newHeight = 0;
 		if(distanceInKm > 5) {
-			newWidth = 200 + ((distanceInKm - 5) * 20);
-			newHeight = 90 + ((distanceInKm - 5) * 9);
+			newWidth = 60 - ((distanceInKm - 5) * 5);
+			newHeight = 60 - ((distanceInKm - 5) * 5);
 		} else if(distanceInKm < 5) {
-			newWidth = 200 - (distanceInKm * 20);
-			newHeight = 90 - (distanceInKm * 9);
+			newWidth = 60 + ((5 - distanceInKm) * 5);
+			newHeight = 60 + ((5 - distanceInKm) * 5);
 		}
+		NSLog(@"width: %f", newWidth);
+		NSLog(@"height: %f", newHeight);
 		[self setSize:newWidth height:newHeight];
 	}
 	
-	// assuming we rescale the icon only
-	// base size = 59, 60
-	// 5 kilometres = base size
+}
+
+- (void)updateSizeByRating {
+	if (self.rating == 2.5) {
+		[self setSize:60 height:60];
+	} else {
+		NSLog(@"UPDATING SIZE");
+		float newWidth = 0;
+		float newHeight = 0;
+		if(self.rating > 2.5) {
+			newWidth = 60 + ((self.rating - 2.5) * 5);
+			newHeight = 60 + ((self.rating - 2.5) * 5);
+		} else if(self.rating < 2.5) {
+			newWidth = 60 - ((2.5 - self.rating) * 5);
+			newHeight = 60 - ((2.5 - self.rating) * 5);
+		}
+		NSLog(@"width: %f", newWidth);
+		NSLog(@"height: %f", newHeight);
+		[self setSize:newWidth height:newHeight];
+	}
+}
+
+- (void)updateSizeByVisitors:(double)maxVisitors {
+
+	
+	if (self.visitors == maxVisitors/2) {
+		[self setSize:60 height:60];
+	} else {
+		NSLog(@"UPDATING SIZE");
+		float newWidth = 0;
+		float newHeight = 0;
+		if(self.visitors > maxVisitors/2) {
+			newWidth = 85;
+			newHeight = 85;
+			//newWidth = 60 - ((distanceInKm - 5) * 5);
+			//newHeight = 60 - ((distanceInKm - 5) * 5);
+		} else if(self.visitors < maxVisitors/2) {
+			newWidth = 35;
+			newHeight = 35;
+			//newWidth = 60 + ((5 - distanceInKm) * 5);
+			//newHeight = 60 + ((5 - distanceInKm) * 5);
+		}
+		NSLog(@"width: %f", newWidth);
+		NSLog(@"height: %f", newHeight);
+		[self setSize:newWidth height:newHeight];
+	}
+	
+	
 }
 
 - (void)button_clicked:(id)sender {

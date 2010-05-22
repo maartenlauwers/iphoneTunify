@@ -10,17 +10,17 @@
 
 
 @implementation CellButton
-@synthesize indexPath;
+@synthesize row;
 
 - (id)init {
     if (self = [super init]) {
+		self.row = -1;
     }
     return self;
 }
 
 - (void) dealloc {
-	[indexPath release];
-	//[super dealloc]; // If we do this, the dealloc causes a crash. Still need to figure out why.
+	[super dealloc]; // If we do this, the dealloc causes a crash. Still need to figure out why.
 }
 
 @end

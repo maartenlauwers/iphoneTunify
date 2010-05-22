@@ -35,7 +35,7 @@
 	
 	NSString *genre;
 	
-	NSIndexPath *rowPlayingIndexPath;
+	NSInteger rowPlaying;
 	CellButton *buttonPlaying;
 	
 	CLLocation *userLocation;
@@ -46,13 +46,18 @@
 	
 	// 3D variables
 	UIImagePickerController *picker;
-	NSMutableArray *cardSource;
 	BOOL in3DView;
 	OverlayView *overlayView;
-	UIView *cardView;
-	UILabel* lblCo;
-	Pub *selectedPub;
 	BOOL pubPlaying;
+	
+	// Test stuff
+	NSDate *previousDate;
+	float nrReadings;
+	float averageZ;
+	float averageX;
+	float velX;
+	float distX;
+	
 }
 
 @property (nonatomic, retain) NSMutableData *webData;
@@ -62,18 +67,22 @@
 @property (nonatomic, retain) NSMutableString *soapResults;
 @property (nonatomic, retain) NSXMLParser *xmlParser;
 @property (nonatomic, retain) CellButton *buttonPlaying;
-@property (assign) NSIndexPath *rowPlayingIndexPath;
+@property (assign) NSInteger rowPlaying;
 @property (nonatomic, retain) CLLocation *userLocation;
 
 @property (nonatomic, retain) NSFetchedResultsController *fetchedResultsController;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
 
 @property (nonatomic, retain) UIImagePickerController *picker;
-@property (nonatomic, retain) NSMutableArray *cardSource;
 @property (nonatomic, retain) OverlayView *overlayView;
-@property (nonatomic, retain) UIView *cardView;
-@property (nonatomic, retain) UILabel *lblCo;
-@property (nonatomic, retain) Pub *selectedPub;
+
+// test stuff
+@property (nonatomic, retain) NSDate *previousDate;
+@property (assign) float nrReadings;
+@property (assign) float averageZ;
+@property (assign) float averageX;
+@property (assign) float velX;
+@property (assign) float distX;
 
 - (void) tunify_login;
 - (void) btnFilter_clicked:(id)sender;
@@ -89,6 +98,7 @@
 
 - (void)show3DList;
 - (void)hide3DList;
-- (float)calculatePubHeading:(Pub *)pub;
+- (void)buttonDirectionClicked:(OverlayView *)sender card:(Pub *)pub;
+- (void)buttonPlayMusicClicked:(id)sender pub:(Pub *)pub;
 
 @end

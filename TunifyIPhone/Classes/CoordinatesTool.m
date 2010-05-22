@@ -97,7 +97,17 @@ static CoordinatesTool *sharedInstance = nil;
 	longitude = 4.6644344; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
 	latitude = 50.8728119; //[userLatitude doubleValue];
 
+	//CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	//NSLog(@"%f", newLocation.coordinate.latitude);
+	//NSLog(@"%f", newLocation.coordinate.longitude);
+	
+	// ENABLE THE LINE BENEATH FOR ACTUAL IPHONE
+	//CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:newLocation.coordinate.latitude longitude:newLocation.coordinate.longitude];
+	
+	// DISABLE THE LINE BENEATH FOR ACTUAL IPHONE
 	CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	
+	
 	self.userLocation = [currentLocation copy]; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
 	[currentLocation release];
 	self.userLocationOK = TRUE;	
@@ -173,16 +183,13 @@ static CoordinatesTool *sharedInstance = nil;
 }
 
 - (void)fetchHeading {
-	NSLog(@"fetching heading");
-	//locationManager = [[CLLocationManager alloc] init]; 
 	locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters; 
 	locationManager.delegate = self; 
-	locationManager.headingFilter = 1;
+	locationManager.headingFilter = 2;
 	[locationManager startUpdatingHeading]; 
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
-	NSLog(@"DID UPDATE HEADING");
 	heading = [[NSString stringWithFormat:@"%.0f", [newHeading trueHeading]] floatValue];
 	if (self.delegate != nil && [self.delegate respondsToSelector:@selector(headingUpdated:)]) {
 		[delegate headingUpdated:self];

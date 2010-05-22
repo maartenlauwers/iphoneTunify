@@ -37,6 +37,7 @@
 }
 
 - (void) btnRoute_clicked:(id)sender {
+	NSLog(@"self source: %d", self.source);
 	if (self.source == 1) {
 		// We come from the pub visit view, so we'll need the tab bar back
 		if ( self.tabBarController.view.subviews.count >= 2 )
@@ -47,9 +48,29 @@
 			[view sizeToFit];
 			tabBar.hidden = FALSE;
 		}
+		
+		[self.navigationController popViewControllerAnimated:YES];
+
+	} else if (self.source == 2) {
+		
+		
+		[self.navigationController popViewControllerAnimated:YES];
+		
+		/*
+		// Add the pub to the recently visited pub list
+		RecentlyVisited *rv = [RecentlyVisited sharedInstance];
+		[rv addPub:self.pub];
+		
+		mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
+		controller.pub = self.pub;
+		[self.navigationController pushViewController:controller animated:YES];
+		[controller release];
+		controller = nil;
+		 */
 	}
 	
-	[self.navigationController popViewControllerAnimated:YES];
+	
+	
 }
 
 - (void) buySong:(id)sender {
@@ -84,12 +105,7 @@
 	
 	// Create the right bar button item
 	UIBarButtonItem *routeBarButtonItem = [[UIBarButtonItem alloc] init];
-	if(self.source == 1) {
-		// We come from the pub visit view, so 'close' is a better button name
-		routeBarButtonItem.title = @"Close";
-	} else {
-		routeBarButtonItem.title = @"Route";
-	}
+	routeBarButtonItem.title = @"Close";
 	
 	routeBarButtonItem.target = self;
 	routeBarButtonItem.action = @selector(btnRoute_clicked:);

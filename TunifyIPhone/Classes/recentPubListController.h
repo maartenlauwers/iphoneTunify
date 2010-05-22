@@ -25,7 +25,8 @@
 	
 	NSString *genre;
 	
-	NSIndexPath *rowPlayingIndexPath;
+	//NSIndexPath *rowPlayingIndexPath;
+	NSInteger rowPlaying;
 	CellButton *buttonPlaying;
 	
 	CLLocation *userLocation;
@@ -34,7 +35,7 @@
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) NSString *genre;
-@property (assign) NSIndexPath *rowPlayingIndexPath;
+@property (assign) NSInteger rowPlaying;
 @property (nonatomic, retain) CellButton *buttonPlaying;
 @property (nonatomic, retain) CLLocation *userLocation;
 

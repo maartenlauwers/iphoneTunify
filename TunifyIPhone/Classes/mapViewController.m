@@ -116,6 +116,7 @@
 	
 	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
 	controller.pub = self.pub;
+	controller.source = 2;
 	controller.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
 	[self.navigationController pushViewController:controller animated:YES];
 	[controller release];
@@ -135,7 +136,10 @@
 	}
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
-	[locationTimer invalidate];
+	
+	//[locationTimer invalidate]; //TODO: Why doesn't this work?
+	
+	
 	[ct stop];
 	
 	pubVisitViewController *controller = [[pubVisitViewController alloc] initWithNibName:@"pubVisitView" bundle:[NSBundle mainBundle]];

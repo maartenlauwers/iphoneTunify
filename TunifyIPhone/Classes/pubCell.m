@@ -40,7 +40,7 @@
 		[stars setBackgroundColor:[UIColor whiteColor]];
 		
 		playButton = [[CellButton buttonWithType:UIButtonTypeCustom] init];
-		infoButton = [[CellButton buttonWithType:UIButtonTypeInfoDark] init];
+		infoButton = [[CellButton buttonWithType:UIButtonTypeCustom] init];
 		
 		[self.contentView addSubview:nameLabel];
 		[self.contentView addSubview:distanceLabel];

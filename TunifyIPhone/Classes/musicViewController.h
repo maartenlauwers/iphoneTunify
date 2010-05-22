@@ -11,6 +11,8 @@
 #import <AVFoundation/AVFoundation.h> 
 #import "AudioPlayer.h"
 #import "Pub.h"
+#import "RecentlyVisited.h"
+#import "mapViewController.h"
 
 @interface musicViewController : UIViewController <AVAudioPlayerDelegate> {
 	NSMutableArray *dataSource;		// stores all data

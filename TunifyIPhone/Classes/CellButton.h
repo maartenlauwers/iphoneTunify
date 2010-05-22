@@ -10,9 +10,10 @@
 
 
 @interface CellButton : UIButton {
-	NSIndexPath *indexPath;
+	
+	NSInteger row;
 }
 
-@property (nonatomic, retain) NSIndexPath *indexPath;
+@property (assign) NSInteger row;
 
 @end
