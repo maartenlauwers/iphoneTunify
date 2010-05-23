@@ -226,15 +226,6 @@
 	
 }
 
-
--(IBAction) volumeChanged {
-	float volume = volumeSlider.value;
-	
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer setVolumeTest:volume];
-	//[audioPlayer setVolume:volume];
-}
-
 /*
 - (void) audioPlayerDidFinishPlaying: (AVAudioPlayer *) theplayer successfully:(BOOL)flag { 
 	NSLog(@"Song played");

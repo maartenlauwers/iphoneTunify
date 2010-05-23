@@ -22,6 +22,7 @@ static AudioPlayer *sharedInstance = nil;
 @synthesize playlist;
 @synthesize delegate;
 @synthesize avAudioPlayer;
+@synthesize currentVolume;
 
 int currentSegment;
 
@@ -85,25 +86,31 @@ int currentSegment;
 		NSString *audioFilePath = [[NSBundle mainBundle] pathForResource:song ofType:@"mp3"];
 		NSURL *audioFileURL = [NSURL fileURLWithPath:audioFilePath];
 		self.avAudioPlayer = [[[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil] autorelease];
-		//[self.avAudioPlayer setVolume:1.0];
 		[self.avAudioPlayer prepareToPlay];
+		[self.avAudioPlayer setVolume:self.currentVolume];
 		[self.avAudioPlayer play];
+		NSLog(@"playing with volume: %f", self.avAudioPlayer.volume);
 	}
 }
 
 - (void)setVolumeTest:(float)volume {
+	NSLog(@"Setting volume");
 	[self.avAudioPlayer setVolume:volume];
+	self.currentVolume = volume;
+	NSLog(@"volume set at: %f", self.avAudioPlayer.volume);
 }
 
 - (void)decreaseVolume {
 	if([self.avAudioPlayer volume] > 0) {
 		[self.avAudioPlayer setVolume:([self.avAudioPlayer volume] - 0.1)];
+		self.currentVolume -= 0.1;
 	}
 }
 
 - (void)increaseVolume {
 	if([self.avAudioPlayer volume] < 1.0) {
 		[self.avAudioPlayer setVolume:([self.avAudioPlayer volume] + 0.1)];
+		self.currentVolume += 0.1;
 	}
 }
 

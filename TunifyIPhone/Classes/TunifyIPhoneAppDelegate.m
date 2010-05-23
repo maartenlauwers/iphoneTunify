@@ -14,6 +14,7 @@
 @synthesize tabController;
 @synthesize audioPlayer;
 @synthesize fbSession;
+@synthesize radius;
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -27,7 +28,7 @@
 	if (lastRead == nil)     // App first run: set up user defaults.
 	{
 		NSDictionary *appDefaults  = [NSDictionary dictionaryWithObjectsAndKeys:[[NSNumber alloc] initWithInt:5], @"radius", nil];
-		
+		self.radius = 5;
 		// do any other initialization you want to do here - e.g. the starting default values.    
 		// [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"should_play_sounds"];
 		
@@ -176,6 +177,11 @@
 	} 
 	*/
 	//self.audioPlayer = [[AudioPlayer alloc] init];
+	
+	// Set the default audioplayer volume
+	self.audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer setVolumeTest:0.5];
+	
     [window addSubview:tabController.view];
     [window makeKeyAndVisible];
 }

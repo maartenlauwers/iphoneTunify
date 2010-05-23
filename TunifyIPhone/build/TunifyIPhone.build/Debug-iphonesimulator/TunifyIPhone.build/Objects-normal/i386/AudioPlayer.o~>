@@ -1,3 +1,0 @@
-/Users/Elegia/Desktop/TunifyIPhone/Classes/AudioPlayer.m: In function '-[AudioPlayer setVolumeTest:]':
-/Users/Elegia/Desktop/TunifyIPhone/Classes/AudioPlayer.m:94: warning: conflicting types for '-(void)setVolumeTest:(float)volume'
-/Users/Elegia/Desktop/TunifyIPhone/Classes/AudioPlayer.h:44: warning: previous declaration of '-(void)setVolumeTest:(NSInteger)volume'

@@ -27,6 +27,7 @@
 	NSString *baseUrl;
 	M3U8Playlist *playlist;
 	float lastUsedVolume;
+	float currentVolume;
 	
 	AVAudioPlayer *avAudioPlayer;
 }
@@ -36,6 +37,7 @@
 @property (nonatomic, retain) NSString *baseUrl;
 @property (nonatomic, retain) M3U8Playlist *playlist;
 @property (nonatomic, retain) AVAudioPlayer *avAudioPlayer;
+@property (assign) float currentVolume;
 
 + (AudioPlayer*)sharedInstance;
 

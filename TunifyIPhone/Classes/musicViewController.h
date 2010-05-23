@@ -21,7 +21,6 @@
 	
 	IBOutlet UILabel *titleLabel;
 	IBOutlet UILabel *artistLabel;
-	IBOutlet UISlider *volumeSlider;
 	
 	NSInteger rowPlaying;
 	NSInteger source;
@@ -37,7 +36,6 @@
 @property (assign) NSInteger rowPlaying;
 @property (nonatomic, retain) IBOutlet UITableView *tableView;
 
--(IBAction) volumeChanged;
 - (void) playMusic:(id)sender;
 
 @end

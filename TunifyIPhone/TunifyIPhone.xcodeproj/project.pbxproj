@@ -101,6 +101,10 @@
 		F60C0879114BC9D300ABAD7A /* FBConnect.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F60C086F114BC9D300ABAD7A /* FBConnect.bundle */; };
 		F60C088E114BCC6600ABAD7A /* beermug.png in Resources */ = {isa = PBXBuildFile; fileRef = F60C088D114BCC6600ABAD7A /* beermug.png */; };
 		F618F28E1160D9D900DE4720 /* AudioStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = F618F28D1160D9D900DE4720 /* AudioStreamer.m */; };
+		F63DF1C311A9C208004696F9 /* 1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F63DF1C111A9C208004696F9 /* 1.jpg */; };
+		F63DF1C411A9C208004696F9 /* 10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F63DF1C211A9C208004696F9 /* 10.jpg */; };
+		F63DF1C811A9C25C004696F9 /* SettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = F63DF1C711A9C25C004696F9 /* SettingsController.m */; };
+		F63DF26711A9C843004696F9 /* equalizer.png in Resources */ = {isa = PBXBuildFile; fileRef = F63DF26611A9C843004696F9 /* equalizer.png */; };
 		F648282B1169C968005C1E7A /* RecentlyVisited.m in Sources */ = {isa = PBXBuildFile; fileRef = F648282A1169C968005C1E7A /* RecentlyVisited.m */; };
 		F672E69311524F43003DA448 /* CoordinatesTool.m in Sources */ = {isa = PBXBuildFile; fileRef = F672E69211524F43003DA448 /* CoordinatesTool.m */; };
 		F6983204119C3BD2001F049E /* RateStar.m in Sources */ = {isa = PBXBuildFile; fileRef = F6983203119C3BD2001F049E /* RateStar.m */; };
@@ -273,6 +277,11 @@
 		F60C088D114BCC6600ABAD7A /* beermug.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = beermug.png; sourceTree = "<group>"; };
 		F618F28C1160D9D900DE4720 /* AudioStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioStreamer.h; sourceTree = "<group>"; };
 		F618F28D1160D9D900DE4720 /* AudioStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioStreamer.m; sourceTree = "<group>"; };
+		F63DF1C111A9C208004696F9 /* 1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1.jpg; sourceTree = "<group>"; };
+		F63DF1C211A9C208004696F9 /* 10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 10.jpg; sourceTree = "<group>"; };
+		F63DF1C611A9C25C004696F9 /* SettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsController.h; sourceTree = "<group>"; };
+		F63DF1C711A9C25C004696F9 /* SettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsController.m; sourceTree = "<group>"; };
+		F63DF26611A9C843004696F9 /* equalizer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = equalizer.png; sourceTree = "<group>"; };
 		F64828291169C968005C1E7A /* RecentlyVisited.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyVisited.h; sourceTree = "<group>"; };
 		F648282A1169C968005C1E7A /* RecentlyVisited.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentlyVisited.m; sourceTree = "<group>"; };
 		F672E69111524F43003DA448 /* CoordinatesTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoordinatesTool.h; sourceTree = "<group>"; };
@@ -397,6 +406,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F63DF26611A9C843004696F9 /* equalizer.png */,
+				F63DF1C111A9C208004696F9 /* 1.jpg */,
+				F63DF1C211A9C208004696F9 /* 10.jpg */,
 				F6D338A511A974BB00EFFC0F /* song2.mp3 */,
 				F6D338A211A9746000EFFC0F /* song1.mp3 */,
 				F6D3389E11A9737A00EFFC0F /* infoButton.png */,
@@ -510,6 +522,7 @@
 		4E63839D112D9E6700596D03 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				F63DF1C511A9C24F004696F9 /* Settings */,
 				4E728E531155461B00A3EDA4 /* Visit */,
 				4E61C4E51147EADE000379C8 /* Achievements */,
 				4EDDF3EF1132BE7B00D1EAF5 /* Social */,
@@ -630,6 +643,15 @@
 				F60C086F114BC9D300ABAD7A /* FBConnect.bundle */,
 			);
 			name = FBConnect;
+			sourceTree = "<group>";
+		};
+		F63DF1C511A9C24F004696F9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F63DF1C611A9C25C004696F9 /* SettingsController.h */,
+				F63DF1C711A9C25C004696F9 /* SettingsController.m */,
+			);
+			name = Settings;
 			sourceTree = "<group>";
 		};
 		F672E68A11524EE2003DA448 /* RouteOverlay */ = {
@@ -779,6 +801,9 @@
 				F6D3389F11A9737A00EFFC0F /* infoButton.png in Resources */,
 				F6D338A311A9746000EFFC0F /* song1.mp3 in Resources */,
 				F6D338A611A974BB00EFFC0F /* song2.mp3 in Resources */,
+				F63DF1C311A9C208004696F9 /* 1.jpg in Resources */,
+				F63DF1C411A9C208004696F9 /* 10.jpg in Resources */,
+				F63DF26711A9C843004696F9 /* equalizer.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -844,6 +869,7 @@
 				F69E691B11999A1400D8DAF9 /* visitCell.m in Sources */,
 				F6983204119C3BD2001F049E /* RateStar.m in Sources */,
 				F6B96970119D8BFE0078E71E /* CSPubAnnotation.m in Sources */,
+				F63DF1C811A9C25C004696F9 /* SettingsController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

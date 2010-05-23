@@ -21,6 +21,8 @@
 	UITabBarController *tabController;
 	AudioPlayer *audioPlayer;
 	FBSession *fbSession;
+	
+	float radius;
 }
 
 @property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
@@ -31,6 +33,8 @@
 @property (nonatomic, retain) IBOutlet UITabBarController *tabController;
 @property (nonatomic, retain) AudioPlayer *audioPlayer;
 @property (nonatomic, retain) FBSession *fbSession;
+
+@property (assign) float radius;
 
 - (NSString *)applicationDocumentsDirectory;
 

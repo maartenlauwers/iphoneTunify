@@ -623,11 +623,16 @@
 	} 
 	
 	// Now that we know our location, we can filter the discoverd pubs based on their distance from us.
+	float radius = appDelegate.radius;
+	
+	/*
 	NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];  
 	NSString *radius = [userDefaults stringForKey:@"radius"];
 	//int radius = [[userDefaults stringForKey:@"radius"] intValue];
 	//NSLog(@"Radius: %d", [radius doubleValue]);
-	NSLog(@"Radius: %@", radius);
+	*/
+	//NSLog(@"Radius: %d", [radius doubleValue]);
+	//NSLog(@"Radius: %@", radius);
 	NSLog(@"PUBS: %d", [mutableFetchResults count]);
 	self.dataSource = [[NSMutableArray alloc] init];
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
@@ -638,8 +643,9 @@
 		CLLocation* pubLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
 		CLLocationDistance distance = [ct fetchDistance:self.userLocation locationB:pubLocation];
 		NSLog(@"distance: %f", distance);	
-		NSLog(@"Radius: %f", [radius doubleValue] * 1000);
-		if (distance <= ([radius doubleValue] * 1000)) {
+		//NSLog(@"Radius: %f", [radius doubleValue] * 1000);
+		NSLog(@"Radius: %f", radius * 1000);
+		if (distance <= (radius * 1000)) {
 
 			[self.dataSource addObject:pub];
 		}
@@ -1295,7 +1301,7 @@
 
 -(void)buttonPlayMusicClicked:(OverlayView *)sender {
 	
-	Pub *pub = sender.selectedPub;
+	//Pub *pub = sender.selectedPub;
 	//Pub *pub = self.selectedPub;
 	if (pubPlaying == TRUE) {
 		// stop the music

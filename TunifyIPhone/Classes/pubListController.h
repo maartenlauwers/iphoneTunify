@@ -98,7 +98,7 @@
 
 - (void)show3DList;
 - (void)hide3DList;
-- (void)buttonDirectionClicked:(OverlayView *)sender card:(Pub *)pub;
-- (void)buttonPlayMusicClicked:(id)sender pub:(Pub *)pub;
+- (void)buttonDirectionClicked:(OverlayView *)sender;
+- (void)buttonPlayMusicClicked:(OverlayView *)sender;
 
 @end
