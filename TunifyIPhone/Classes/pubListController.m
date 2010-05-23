@@ -247,6 +247,11 @@
 
 - (IBAction)btnList_clicked:(id)sender {
 	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	self.rowPlaying = -1;
+	pubPlaying = FALSE;
+	
 	[self hide3DList];
 }
 
@@ -257,6 +262,10 @@
 	[controller release];
 	controller = nil;
 	*/
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	
 	
 	if(! [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		NSLog(@"error with picker");
@@ -283,6 +292,10 @@
 	// Add the pub to the recently visited pub list
 	RecentlyVisited *rv = [RecentlyVisited sharedInstance];
 	[rv addPub:pub];
+	
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	
 	
 	mapViewController *controller = [[mapViewController alloc] initWithNibName:@"mapView" bundle:[NSBundle mainBundle]];
 	controller.pub = pub;
@@ -311,7 +324,7 @@
 		//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 		
 		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-		[audioPlayer playTest];
+		[audioPlayer playTest:@"song1"];
 	} else {
 		if (self.rowPlaying == button.row) {
 			// Our current cell is playing
@@ -343,7 +356,7 @@
 
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 			[audioPlayer stopTest];
-			[audioPlayer playTest];
+			[audioPlayer playTest:@"song1"];
 			
 			[indexPath release];
 		}
@@ -466,10 +479,13 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 	NSLog(@"publistcontroller view did appear");
-	self.rowPlaying = -1;
 	
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer stopTest];
+	
+	if(rowPlaying == -1 && pubPlaying == FALSE) {
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer stopTest];
+	} 
+
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
@@ -484,6 +500,19 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+	
+	// Stop the music and reset all play buttons to the play icon
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	if (rowPlaying > -1) {
+		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
+		UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+		pubCell *c = (pubCell *)cell;
+		[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	}
+	self.rowPlaying = -1;
+	pubPlaying = FALSE;
+	
 	if(in3DView == FALSE) {
 		CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 		[ct stop];
@@ -627,6 +656,14 @@
 		[self.overlayView updateAllHeadings];
 	} else {
 		[tableView reloadData];
+		
+		// Reset the playbuttons (because a pauze button will be reset to a play button after reloadData was called)
+		if (rowPlaying > -1) {
+			NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
+			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+			pubCell *c = (pubCell *)cell;
+			[c.playButton setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+		}
 	}
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
@@ -870,8 +907,7 @@
 	NSLog(@"Playbutton row: %d", cell.playButton.row);
 	cell.playButton.row = indexPath.row;
 	
-	//[cell.infoButton setButtonType:UIButtonTypeInfoDark];
-	[cell.infoButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	[cell.infoButton setImage:[UIImage imageNamed:@"infoButton.png"] forState:UIControlStateNormal];
 	[cell.infoButton addTarget:self action:@selector(showMusic:) forControlEvents:UIControlEventTouchUpInside];
 	cell.infoButton.row = indexPath.row;
 	
@@ -1263,9 +1299,15 @@
 	//Pub *pub = self.selectedPub;
 	if (pubPlaying == TRUE) {
 		// stop the music
+		NSLog(@"Stopping the music in buttonPlayMusicClicked in pubListController");
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer stopTest];
 		pubPlaying = FALSE;
 	} else {
 		// start the music
+		NSLog(@"Starting the music in buttonPlayMusicClicked in pubListController");
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer playTest:@"song1"];
 		pubPlaying = TRUE;
 	}
 }

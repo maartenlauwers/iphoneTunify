@@ -137,13 +137,23 @@
 			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 			abort();
 		}
-	}
+	} 
 	
 	 for(Achievement *achievement in mutableFetchResults) {
 		 NSLog(@"Achievement: %@", [achievement name]);
  		 NSLog(@"Achievement: %@", [achievement location]);
   		 NSLog(@"Achievement: %@", [achievement date]);
    		 NSLog(@"Achievement: %@", [achievement info]);
+		 
+		 if ([achievement.name isEqualToString:@"Settler"]) {
+			 double completion = 75;
+			 [achievement setCompletion:[NSString stringWithFormat:@"%f", completion]];
+			 NSError *error = nil;
+			 if (![managedObjectContext save:&error]) {
+				 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+				 abort();
+			 }
+		 }
 	 }
 	
 	[mutableFetchResults release];

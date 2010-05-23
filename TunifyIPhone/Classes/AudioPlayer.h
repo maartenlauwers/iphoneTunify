@@ -40,7 +40,8 @@
 + (AudioPlayer*)sharedInstance;
 
 // Usability test methods
-- (void)playTest;
+- (void)playTest:(NSString *)song;
+- (void)setVolumeTest:(float)volume;
 - (void)decreaseVolume;
 - (void)increaseVolume;
 - (void)stopTest;

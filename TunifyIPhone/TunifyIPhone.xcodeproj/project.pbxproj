@@ -53,7 +53,6 @@
 		4E341E1B1136C6BF0001A7C5 /* facebookMessageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E341E1A1136C6BF0001A7C5 /* facebookMessageView.xib */; };
 		4E341EA81136D44E0001A7C5 /* achievementsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E341EA71136D44E0001A7C5 /* achievementsCell.m */; };
 		4E341F101136D9EB0001A7C5 /* rateView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E341F0F1136D9EB0001A7C5 /* rateView.xib */; };
-		4E581F4A118ACBE900108C86 /* Fluke.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4E581F49118ACBE900108C86 /* Fluke.mp3 */; };
 		4E5D75D211941F17001D7653 /* visitors.png in Resources */ = {isa = PBXBuildFile; fileRef = 4E5D75D111941F17001D7653 /* visitors.png */; };
 		4E61C4EE1147EB05000379C8 /* achievementsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E61C4ED1147EB05000379C8 /* achievementsView.xib */; };
 		4E61C4F81147EB2B000379C8 /* selectedAchievementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E61C4F71147EB2B000379C8 /* selectedAchievementViewController.m */; };
@@ -118,6 +117,9 @@
 		F6C2F542114E99970029EC57 /* star_small.png in Resources */ = {isa = PBXBuildFile; fileRef = F6C2F540114E99970029EC57 /* star_small.png */; };
 		F6C2F578114EB5790029EC57 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C2F577114EB5790029EC57 /* AVFoundation.framework */; };
 		F6C2F57C114EB5E00029EC57 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C2F57B114EB5E00029EC57 /* AudioToolbox.framework */; };
+		F6D3389F11A9737A00EFFC0F /* infoButton.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D3389E11A9737A00EFFC0F /* infoButton.png */; };
+		F6D338A311A9746000EFFC0F /* song1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F6D338A211A9746000EFFC0F /* song1.mp3 */; };
+		F6D338A611A974BB00EFFC0F /* song2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F6D338A511A974BB00EFFC0F /* song2.mp3 */; };
 		F6D748A3114BDF37002A3AA2 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D7489D114BDF37002A3AA2 /* play.png */; };
 		F6D748A4114BDF37002A3AA2 /* testicon64x64.jpg in Resources */ = {isa = PBXBuildFile; fileRef = F6D7489E114BDF37002A3AA2 /* testicon64x64.jpg */; };
 		F6D748A5114BDF37002A3AA2 /* pauze.png in Resources */ = {isa = PBXBuildFile; fileRef = F6D7489F114BDF37002A3AA2 /* pauze.png */; };
@@ -184,7 +186,6 @@
 		4E341EA61136D44E0001A7C5 /* achievementsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = achievementsCell.h; sourceTree = "<group>"; };
 		4E341EA71136D44E0001A7C5 /* achievementsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = achievementsCell.m; sourceTree = "<group>"; };
 		4E341F0F1136D9EB0001A7C5 /* rateView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = rateView.xib; sourceTree = "<group>"; };
-		4E581F49118ACBE900108C86 /* Fluke.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Fluke.mp3; sourceTree = "<group>"; };
 		4E5D75D111941F17001D7653 /* visitors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = visitors.png; sourceTree = "<group>"; };
 		4E61C4ED1147EB05000379C8 /* achievementsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = achievementsView.xib; sourceTree = "<group>"; };
 		4E61C4F61147EB2B000379C8 /* selectedAchievementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = selectedAchievementViewController.h; sourceTree = "<group>"; };
@@ -297,6 +298,9 @@
 		F6C2F540114E99970029EC57 /* star_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star_small.png; sourceTree = "<group>"; };
 		F6C2F577114EB5790029EC57 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		F6C2F57B114EB5E00029EC57 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		F6D3389E11A9737A00EFFC0F /* infoButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = infoButton.png; sourceTree = "<group>"; };
+		F6D338A211A9746000EFFC0F /* song1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = song1.mp3; sourceTree = "<group>"; };
+		F6D338A511A974BB00EFFC0F /* song2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = song2.mp3; sourceTree = "<group>"; };
 		F6D7489D114BDF37002A3AA2 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		F6D7489E114BDF37002A3AA2 /* testicon64x64.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = testicon64x64.jpg; sourceTree = "<group>"; };
 		F6D7489F114BDF37002A3AA2 /* pauze.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pauze.png; sourceTree = "<group>"; };
@@ -393,8 +397,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F6D338A511A974BB00EFFC0F /* song2.mp3 */,
+				F6D338A211A9746000EFFC0F /* song1.mp3 */,
+				F6D3389E11A9737A00EFFC0F /* infoButton.png */,
 				4E5D75D111941F17001D7653 /* visitors.png */,
-				4E581F49118ACBE900108C86 /* Fluke.mp3 */,
 				4E94ABA3117F2CB400AB90A1 /* pauze3.png */,
 				4E94ABA4117F2CB400AB90A1 /* play3.png */,
 				4E129FAF117895D700BC353F /* 3DMapsIcon.png */,
@@ -769,8 +775,10 @@
 				4E94ABA5117F2CB400AB90A1 /* pauze3.png in Resources */,
 				4E94ABA6117F2CB400AB90A1 /* play3.png in Resources */,
 				4E94AC84117F40A600AB90A1 /* Default.png in Resources */,
-				4E581F4A118ACBE900108C86 /* Fluke.mp3 in Resources */,
 				4E5D75D211941F17001D7653 /* visitors.png in Resources */,
+				F6D3389F11A9737A00EFFC0F /* infoButton.png in Resources */,
+				F6D338A311A9746000EFFC0F /* song1.mp3 in Resources */,
+				F6D338A611A974BB00EFFC0F /* song2.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

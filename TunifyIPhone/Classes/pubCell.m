@@ -73,7 +73,7 @@
 
 	frame = CGRectMake(boundsX+230 ,30, 30, 30);
 	playButton.frame = frame;
-	frame = CGRectMake(boundsX+280 ,31, 25, 25);
+	frame = CGRectMake(boundsX+280 ,32, 24, 24);
 	infoButton.frame = frame;
 	
 }

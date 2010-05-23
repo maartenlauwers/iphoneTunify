@@ -14,6 +14,8 @@
 @synthesize pub;
 @synthesize source;
 @synthesize dataSource;
+@synthesize tableView;
+@synthesize rowPlaying;
 
 /*
 - (id)initWithStyle:(UITableViewStyle)style {
@@ -73,6 +75,64 @@
 	
 }
 
+
+- (void) playMusic:(id)sender {
+	
+	NSLog(@"Playing music: %d", self.rowPlaying);
+	CellButton *button = (CellButton *)sender;
+	
+	if (self.rowPlaying == -1) {
+		// Nothing is playing yet
+		self.rowPlaying = button.row;
+		[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+		
+		//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		//audioPlayer.delegate = self;
+		//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+		
+		NSLog(@"PLAYING");
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer playTest:@"song2"];
+	} else {
+		if (self.rowPlaying == button.row) {
+			// Our current cell is playing
+			self.rowPlaying = -1;
+			[button setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+			
+			//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			//[audioPlayer stop];
+			
+			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			[audioPlayer stopTest];
+		} else {
+			NSLog(@"a");
+			NSLog(@"row playing: %d", self.rowPlaying);
+			//NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndex:self.rowPlaying];
+			NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
+			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+			songCell *c = (songCell *)cell;
+			NSLog(@"b");
+			[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+			
+			// Now update our current cell
+			self.rowPlaying = button.row;
+			[button setImage:[UIImage imageNamed:@"pauze2.png"] forState:UIControlStateNormal];
+			
+			//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			//audioPlayer.delegate = self;
+			//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
+			
+			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+			[audioPlayer stopTest];
+			[audioPlayer playTest:@"song2"];
+			
+			[indexPath release];
+		}
+	}
+	
+}
+
+
 - (void) buySong:(id)sender {
 	NSLog(@"buying song");
 }
@@ -116,7 +176,7 @@
 	// Create some test data for the table
 	dataSource = [[NSMutableArray alloc] init];
 	
-	NSArray *song1 = [NSArray arrayWithObjects:@"Over You", @"Lasgo", nil];
+	NSArray *song1 = [NSArray arrayWithObjects:@"Kitten moon", @"Fluke", nil];
 	NSArray *song2 = [NSArray arrayWithObjects:@"Kingdom of Rust", @"Doves", nil];
 	NSArray *song3 = [NSArray arrayWithObjects:@"Rain", @"Mika", nil];
 	
@@ -124,17 +184,55 @@
 	[dataSource addObject:song2];
 	[dataSource addObject:song3];
 	
+	self.rowPlaying = -1;
 	
 	//AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 	//[audioPlayer play:@"http://localhost:1935/live/mp3:LethalIndustry.mp3/playlist.m3u8"];
 	
 }
 
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+	NSLog(@"music view controller view did appear");
+	
+	
+	if(rowPlaying == -1) {
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer stopTest];
+	} 
+	
+	NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+	UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+	songCell *c = (songCell *)cell;
+	[self playMusic:c.playButton];
+	
+}
+
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+	
+	// Stop the music and reset all play buttons to the play icon
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	if (rowPlaying > -1) {
+		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
+		UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+		songCell *c = (songCell *)cell;
+		[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	}
+	self.rowPlaying = -1;
+	
+}
+
+
 -(IBAction) volumeChanged {
 	float volume = volumeSlider.value;
 	
 	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer setVolume:volume];
+	[audioPlayer setVolumeTest:volume];
+	//[audioPlayer setVolume:volume];
 }
 
 /*
@@ -202,11 +300,11 @@
 
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)theTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
     
-    songCell *cell = (songCell*)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    songCell *cell = (songCell*)[theTableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[songCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
@@ -215,8 +313,11 @@
 	NSArray *infoArray = [dataSource objectAtIndex:[indexPath row]];
 	cell.songTitle.text = [infoArray objectAtIndex:0];
 	cell.songArtist.text = [infoArray objectAtIndex:1];
-	[cell.buyButton addTarget:self	action:@selector(buySong:) forControlEvents:UIControlEventTouchUpInside];
-	[cell.buyButton setTitle:@"Buy" forState:UIControlStateHighlighted];
+	
+	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
+	cell.playButton.row = indexPath.row;	
+	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	
 	
     return cell;
 }
@@ -278,6 +379,8 @@
 - (void)dealloc {
 	[pub release];
 	[dataSource release];
+	//[tableView release];
+	
     [super dealloc];
 }
 

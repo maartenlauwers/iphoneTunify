@@ -13,6 +13,7 @@
 #import "Pub.h"
 #import "RecentlyVisited.h"
 #import "mapViewController.h"
+#import "CellButton.h"
 
 @interface musicViewController : UIViewController <AVAudioPlayerDelegate> {
 	NSMutableArray *dataSource;		// stores all data
@@ -22,7 +23,9 @@
 	IBOutlet UILabel *artistLabel;
 	IBOutlet UISlider *volumeSlider;
 	
+	NSInteger rowPlaying;
 	NSInteger source;
+	IBOutlet UITableView *tableView;
 	
 	//AVAudioPlayer *player; 
 
@@ -31,7 +34,10 @@
 @property (nonatomic, retain) NSMutableArray *dataSource;
 @property (nonatomic, retain) Pub *pub;
 @property (assign) NSInteger source;
+@property (assign) NSInteger rowPlaying;
+@property (nonatomic, retain) IBOutlet UITableView *tableView;
 
 -(IBAction) volumeChanged;
+- (void) playMusic:(id)sender;
 
 @end

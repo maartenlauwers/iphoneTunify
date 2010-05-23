@@ -45,6 +45,8 @@
 	if ([self.achievement.completion doubleValue] >= 100) {
 		twitterController *controller = [[twitterController alloc] initWithNibName:@"twitterMessageView" bundle:[NSBundle mainBundle]];
 		controller.strAchievementName = self.achievement.name;
+		controller.strAchievementDesc = self.achievement.info;
+		controller.strAchievementLocation = self.achievement.location;
 		[self.navigationController pushViewController:controller animated:YES];
 		[controller release];
 		controller = nil;

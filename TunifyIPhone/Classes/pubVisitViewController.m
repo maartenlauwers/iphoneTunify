@@ -463,6 +463,7 @@
 	// Check for gained achievements (currently we only check for the settler achievement)
 	for (Achievement *achievement in mutableFetchResults) {
 		if ([achievement.name isEqualToString:@"Settler"]) {
+			NSLog(@"Achievement completion: %@", [achievement completion]);
 			if (([achievement.completion doubleValue] + 25) >= 100) {
 				
 				if ([achievement.completion doubleValue] < 100) {

@@ -214,7 +214,7 @@
 		//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 		
 		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-		[audioPlayer playTest];
+		[audioPlayer playTest:@"song1"];
 	} else {
 		if (self.rowPlaying == button.row) {
 			// Our current cell is playing
@@ -227,9 +227,13 @@
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
 			[audioPlayer stopTest];
 		} else {
-			NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndex:self.rowPlaying];
+			NSLog(@"a");
+			NSLog(@"row playing: %d", self.rowPlaying);
+			//NSIndexPath *indexPath = [[NSIndexPath alloc] initWithIndex:self.rowPlaying];
+			NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
 			UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
 			pubCell *c = (pubCell *)cell;
+			NSLog(@"b");
 			[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 			
 			// Now update our current cell
@@ -241,7 +245,8 @@
 			//[audioPlayer play:@"http://localhost:1935/live/mp3:NoRain.mp3/playlist.m3u8"];
 			
 			AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-			[audioPlayer playTest];
+			[audioPlayer stopTest];
+			[audioPlayer playTest:@"song1"];
 			
 			[indexPath release];
 		}
@@ -288,6 +293,20 @@
 		}
 	}
 	 */
+	
+}
+
+
+- (void) showMusic:(id)sender {
+	CellButton *button = (CellButton *)sender;
+	Pub *thePub = (Pub*)[self.dataSource objectAtIndex:button.row];
+	musicViewController *controller = [[musicViewController alloc] initWithNibName:@"musicView" bundle:[NSBundle mainBundle]];
+	controller.pub = thePub;
+	controller.source = 1;
+	
+	[self.navigationController pushViewController:controller animated:YES];
+	[controller release];
+	controller = nil;
 	
 }
 
@@ -344,10 +363,11 @@
 
 - (void)viewDidAppear:(BOOL)animated {
 
-	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer stopTest];
+	if(rowPlaying == -1) {
+		AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+		[audioPlayer stopTest];
+	} 
 	
-	self.rowPlaying = -1;
 	
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
@@ -358,6 +378,23 @@
 	
 	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
+
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+	
+	// Stop the music and reset all play buttons to the play icon
+	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
+	[audioPlayer stopTest];
+	if (rowPlaying > -1) {
+		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:self.rowPlaying inSection:0];
+		UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+		pubCell *c = (pubCell *)cell;
+		[c.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
+	}
+	self.rowPlaying = -1;
+}
+
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	self.userLocation = sender.userLocation;
@@ -484,6 +521,10 @@
 	[cell.playButton setImage:[UIImage imageNamed:@"play2.png"] forState:UIControlStateNormal];
 	[cell.playButton addTarget:self	action:@selector(playMusic:) forControlEvents:UIControlEventTouchUpInside];
 	cell.playButton.row = indexPath.row;
+	
+	[cell.infoButton setImage:[UIImage imageNamed:@"infoButton.png"] forState:UIControlStateNormal];
+	[cell.infoButton addTarget:self action:@selector(showMusic:) forControlEvents:UIControlEventTouchUpInside];
+	cell.infoButton.row = indexPath.row;
 	
     return cell;	
 }

@@ -272,7 +272,7 @@
 	
 	// Play the pub's music
 	AudioPlayer *audioPlayer = [AudioPlayer sharedInstance];
-	[audioPlayer playTest];
+	[audioPlayer playTest:@"song2"];
 	
 	// TODO: The following alert view should only show up when we've reached our destination
 	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 

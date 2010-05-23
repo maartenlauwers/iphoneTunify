@@ -1,0 +1,7 @@
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m:17: error: no declaration of property 'strAchievementLocation' found in the interface
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m: In function '-[twitterController viewDidLoad]':
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m:188: error: request for member 'strAchievementLocation' in something not a structure or union
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m: In function '-[twitterController dealloc]':
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m:223: error: 'strAchievementLocation' undeclared (first use in this function)
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m:223: error: (Each undeclared identifier is reported only once
+/Users/Elegia/Desktop/TunifyIPhone/Classes/twitterController.m:223: error: for each function it appears in.)

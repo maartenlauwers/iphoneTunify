@@ -7,16 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "CellButton.h"
 
 @interface songCell : UITableViewCell {
 	UILabel *songTitle;
 	UILabel *songArtist;
-	UIButton *buyButton;
+	CellButton *playButton;
 }
 
 @property (nonatomic, retain) UILabel *songTitle;
 @property (nonatomic, retain) UILabel *songArtist;
-@property (nonatomic, retain) UIButton *buyButton;
+@property (nonatomic, retain) CellButton *playButton;
 
 @end

@@ -1,12 +1,3 @@
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m: In function '+[AudioPlayer sharedInstance]':
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:34: warning: instance variable 'lastUsedVolume' accessed in class method
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m: In function '-[AudioPlayer playlistAvailable:]':
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:91: warning: passing argument 1 of 'getSegment:' makes pointer from integer without a cast
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:98: warning: 'AudioStreamer' may not respond to '-startWithVolume:'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:98: warning: (Messages without a matching method signature
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:98: warning: will be assumed to return 'id' and accept
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:98: warning: '...' as arguments.)
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:91: warning: unused variable 'segment'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m: At top level:
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:156: warning: incomplete implementation of class 'AudioPlayer'
-/Users/Elegia/Dropbox/TunifyIphoneGit/iphoneTunify/TunifyIPhone/Classes/AudioPlayer.m:156: warning: method definition for '-createStreamer:' not found
+/Users/Elegia/Desktop/TunifyIPhone/Classes/AudioPlayer.m: In function '-[AudioPlayer setVolumeTest:]':
+/Users/Elegia/Desktop/TunifyIPhone/Classes/AudioPlayer.m:94: warning: conflicting types for '-(void)setVolumeTest:(float)volume'
+/Users/Elegia/Desktop/TunifyIPhone/Classes/AudioPlayer.h:44: warning: previous declaration of '-(void)setVolumeTest:(NSInteger)volume'

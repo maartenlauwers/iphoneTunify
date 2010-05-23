@@ -80,15 +80,19 @@ int currentSegment;
 #pragma mark -
 #pragma mark Local playing methods for usability testing
 
-- (void)playTest {
+- (void)playTest:(NSString *)song {
 	if (! [self.avAudioPlayer isPlaying]) {
-		NSString *audioFilePath = [[NSBundle mainBundle] pathForResource:@"Fluke" ofType:@"mp3"];
+		NSString *audioFilePath = [[NSBundle mainBundle] pathForResource:song ofType:@"mp3"];
 		NSURL *audioFileURL = [NSURL fileURLWithPath:audioFilePath];
 		self.avAudioPlayer = [[[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil] autorelease];
 		[self.avAudioPlayer setVolume:1.0];
 		[self.avAudioPlayer prepareToPlay];
 		[self.avAudioPlayer play];
 	}
+}
+
+- (void)setVolumeTest:(float)volume {
+	[self.avAudioPlayer setVolume:volume];
 }
 
 - (void)decreaseVolume {

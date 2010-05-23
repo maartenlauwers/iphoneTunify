@@ -13,7 +13,7 @@
 
 @synthesize songTitle;
 @synthesize songArtist;
-@synthesize buyButton;
+@synthesize playButton;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -24,14 +24,11 @@
 		songArtist.textAlignment = UITextAlignmentLeft;
 		songArtist.font = [UIFont systemFontOfSize:14];
 
-		buyButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
-		buyButton.titleLabel.textAlignment = UITextAlignmentCenter;
-		buyButton.titleLabel.font = [UIFont systemFontOfSize:14];
-		[buyButton setTitle:@"Buy" forState:UIControlStateNormal];
+		playButton = [[CellButton buttonWithType:UIButtonTypeCustom] init];
 		
 		[self.contentView addSubview:songTitle];
 		[self.contentView addSubview:songArtist];
-		[self.contentView addSubview:buyButton];
+		[self.contentView addSubview:playButton];
     }
     return self;
 }
@@ -47,8 +44,8 @@
 	songTitle.frame = frame;
 	frame = CGRectMake(boundsX+10 ,30, 200, 25);
 	songArtist.frame = frame;
-	frame = CGRectMake(boundsX+240 ,15, 60, 30);
-	buyButton.frame = frame;
+	frame = CGRectMake(boundsX+230 ,12, 30, 30);
+	playButton.frame = frame;
 }
 
 
@@ -61,6 +58,9 @@
 
 
 - (void)dealloc {
+	[songTitle release];
+	[songArtist release];
+	[playButton release];
     [super dealloc];
 }
 

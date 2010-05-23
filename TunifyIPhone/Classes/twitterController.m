@@ -13,6 +13,8 @@
 
 @synthesize pub;
 @synthesize strAchievementName;
+@synthesize strAchievementDesc;
+@synthesize strAchievementLocation;
 @synthesize charactersLeft;
 @synthesize charactersLeftLabel;
 @synthesize twitterMessageView;
@@ -181,7 +183,10 @@
 	if ([[self.pub name] length] > 0) {
 		[self.twitterMessageView setText:[[@"Going to '" stringByAppendingString:[self.pub name]] stringByAppendingString:@"'."]];
 	} else if ([strAchievementName length] > 0) {
-		[self.twitterMessageView setText:[[@"Achievement '" stringByAppendingString:self.strAchievementName] stringByAppendingString:@"' reached!"]];
+		[self.twitterMessageView setText:[[[[[@"Achievement '" stringByAppendingString:self.strAchievementName] 
+											stringByAppendingString:@"' reached @ "]
+											stringByAppendingString:self.strAchievementLocation] stringByAppendingString:@": "]
+											stringByAppendingString:self.strAchievementDesc]];
 	}
 	
 	[self.twitterMessageView becomeFirstResponder];
@@ -214,6 +219,8 @@
 - (void)dealloc {
 	[pub release];
 	[strAchievementName release];
+	[strAchievementDesc release];
+	[strAchievementLocation release];
 	[charactersLeftLabel release];
 	[twitterMessageView release];
     [super dealloc];
