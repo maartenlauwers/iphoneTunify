@@ -85,7 +85,7 @@ int currentSegment;
 		NSString *audioFilePath = [[NSBundle mainBundle] pathForResource:song ofType:@"mp3"];
 		NSURL *audioFileURL = [NSURL fileURLWithPath:audioFilePath];
 		self.avAudioPlayer = [[[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil] autorelease];
-		[self.avAudioPlayer setVolume:1.0];
+		//[self.avAudioPlayer setVolume:1.0];
 		[self.avAudioPlayer prepareToPlay];
 		[self.avAudioPlayer play];
 	}

@@ -292,42 +292,6 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-
-	/*
-	 First we create a copy of the current pubListController.
-	 Then we update that copy with the genre data.
-	 Then we remove all active controllers on the navigation stack and push the updated pubListController copy and the
-	 current controller on the stack (the current controller is required to create a smooth transitation animation)
-	 Then we show the tabbar again and pop to the root view controller (which is the updated pubListcontroller copy)
-	 */
-	
-	/*
-	pubListController *pvc = (pubListController *)[self.navigationController.viewControllers objectAtIndex:0];
-	pvc.genre = [dataSource objectAtIndex:[indexPath row]];	
-	
-	[[self retain] autorelease];
-	NSMutableArray *controllers = [[self.navigationController.viewControllers mutableCopy] autorelease];
-	[controllers removeAllObjects];
-	[controllers insertObject:pvc atIndex:0];
-	[controllers insertObject:self atIndex:1];
-	
-	self.navigationController.viewControllers = controllers;
-	
-	// Show the tab bar (because the pubs view needs it)
-	if ( self.tabBarController.view.subviews.count >= 2 )
-    {
-        UIView *view = [self.tabBarController.view.subviews objectAtIndex:0];
-        UIView *tabBar = [self.tabBarController.view.subviews objectAtIndex:1];
-		
-		[view sizeToFit];
-		tabBar.hidden = FALSE;
-	}
-	
-	[self.navigationController popToRootViewControllerAnimated:YES];
-	*/
-	
-	
-	
 	
 	// Show the tab bar (because the pubs view needs it)
 	if ( self.tabBarController.view.subviews.count >= 2 )
@@ -399,11 +363,11 @@
 - (void)dealloc {
 	[sourceView release];
 	[dataSource release];
-	[tableView release];
+	//[tableView release];
 	[webData release];
 	
 	[soapResults release];
-	[xmlParser release];
+	//[xmlParser release];
     [super dealloc];
 }
 
