@@ -56,13 +56,13 @@
 	if (newDistance < oldDistance) {
 		double difference = oldDistance - newDistance;
 		while(difference > 0) {
-			[audioPlayer decreaseVolume];
+			[audioPlayer increaseVolume];
 			difference -= 25;
 		}
 	} else if (newDistance > oldDistance) {
 		double difference = newDistance - oldDistance;
 		while(difference > 0) {
-			[audioPlayer increaseVolume];
+			[audioPlayer decreaseVolume];
 			difference -= 25;
 		}
 	} 
@@ -262,6 +262,8 @@
 	// Fetch the user location and the pub's location
 	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	[ct reInit];
+	//ct.lastIndex = 0;
+	//ct.inMapView = TRUE;
 	ct.delegate = self;
 	[ct fetchUserLocation];
 	[ct fetchPubLocation:self.pub];
@@ -283,17 +285,24 @@
 											  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
 							  nil]; 
 	[alertView show]; 
+	
 }
 
 - (void)userLocationFound:(CoordinatesTool *)sender {
 	NSLog(@"maps: userLocationFound");
 
+	NSLog(@"lastUserLocation: %@",[NSString stringWithFormat:@"%f,%f", self.lastUserLocation.coordinate.latitude, self.lastUserLocation.coordinate.longitude]);
+	NSLog(@"newUserLocation: %@",[NSString stringWithFormat:@"%f,%f", self.lastUserLocation.coordinate.latitude, self.lastUserLocation.coordinate.longitude]);
+	
+	self.userLocation = sender.userLocation;
+	self.userCoordinates = sender.userCoordinates;
+	
 	if(self.userLocation == nil ||
 	(self.userLocation.coordinate.latitude != self.lastUserLocation.coordinate.latitude) || 
 	(self.userLocation.coordinate.longitude != self.lastUserLocation.coordinate.longitude)) {
-			self.userLocation = sender.userLocation;
-			self.userCoordinates = sender.userCoordinates;
 			
+			
+			NSLog(@"updating user location");
 			
 			if (sender.userLocationOK == TRUE && sender.pubLocationOK == TRUE && self.webViewDidFinishLoading == TRUE) {
 				NSLog(@"evaluating javascript");
@@ -305,6 +314,22 @@
 		
 			if(self.lastUserLocation != nil) {
 				[self updateMusicPlayback:self.lastUserLocation currentLocation:sender.userLocation];
+			}
+		
+			// Check if we reached our destination
+			CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+			CLLocationDistance distanceToDestination = [ct fetchDistance:self.pubLocation locationB:self.userLocation];
+			if(distanceToDestination <= 25) {
+		
+				// TODO: The following alert view should only show up when we've reached our destination
+				UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Destination reached",@"title") 
+																	message:NSLocalizedString(@"What do you want to do?",  
+																							  @"message") 
+																   delegate:self 
+														  cancelButtonTitle:NSLocalizedString(@"Keep walking", @"cancel") 
+														  otherButtonTitles:NSLocalizedString(@"Grab a drink", @"checkin"), 
+										  nil]; 
+				[alertView show]; 
 			}
 		
 			self.lastUserLocation = sender.userLocation;
@@ -433,6 +458,7 @@
 
 -(void)parseCoordinatesHtml:(NSString *)html {
 	
+	NSLog(@"Parsing coordinates");
 	pointsArray = [[NSMutableArray alloc] init];
 	
 	NSString *remainingSubString = html;
@@ -568,14 +594,21 @@
 	
 	
 	// center and size the map view on the region computed by our route annotation. 
-	[mapView setRegion:routeAnnotation.region];
+	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
+	CLLocationDistance distanceToDestination = [ct fetchDistance:self.pubLocation locationB:self.userLocation];
+	if(distanceToDestination <= 100) {		
+		MKCoordinateRegion theRegion = {{self.pubLocation.coordinate.latitude, self.pubLocation.coordinate.longitude}, {0.006, 0.006} };
+		[mapView setRegion:theRegion];
+	} else {
+		[mapView setRegion:routeAnnotation.region];
+	}
+	
 	
 	[self.activityIndicator stopAnimating];
 	NSLog(@"end setupMap");
 	
 	
 	// Get the total distance to the destination
-	CoordinatesTool *ct = [CoordinatesTool sharedInstance];
 	int totalDistance = 0;
 	int i = 0;
 	for(i=1; i<[pointsArray count]; i++) {

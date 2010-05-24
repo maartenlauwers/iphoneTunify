@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect
+END
+FBSession.h
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBSession.h
+END
+FBLoginButton.h
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBLoginButton.h
+END
+FBLoginDialog.h
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBLoginDialog.h
+END
+FBPermissionDialog.h
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBPermissionDialog.h
+END
+FBRequest.h
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBRequest.h
+END
+FBConnect.h
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBConnect.h
+END
+FBConnectGlobal.h
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBConnectGlobal.h
+END
+FBStreamDialog.h
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBStreamDialog.h
+END
+FBDialog.h
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/TunifyIphone/!svn/ver/3/TunifyIPhone/facebook-facebook-iphone-sdk-5382dcd/src/FBConnect/FBDialog.h
+END

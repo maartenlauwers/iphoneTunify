@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tun="http://www.tunify.com">
+<soapenv:Header/>
+	<soapenv:Body>
+		<tun:loginUser>
+		<userName>Maarten</userName>
+		<userPassword>iphonethesis</userPassword>
+		<appID>7</appID>
+		<appPassword>m4rc3llu5w4ll4c3</appPassword>
+		</tun:loginUser>
+	</soapenv:Body>
+</soapenv:Envelope>

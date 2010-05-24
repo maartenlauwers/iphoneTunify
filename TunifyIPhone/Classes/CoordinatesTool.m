@@ -16,6 +16,11 @@
 //@synthesize heading;
 @synthesize userLocationOK;
 @synthesize pubLocationOK;
+//@synthesize lastIndex;
+//@synthesize inMapView;
+
+// route testing
+//@synthesize coords;
 
 static CoordinatesTool *sharedInstance = nil;
 
@@ -72,6 +77,45 @@ static CoordinatesTool *sharedInstance = nil;
 	[self stop];
 	self.userLocationOK = nil;
 	self.pubLocationOK = nil;
+	
+	// Route test
+	/*
+	NSLog(@"COORDINATESTOOL REINIT EXECUTED");
+	coords = [[NSMutableArray alloc] init];
+	
+	CLLocation *currentLocation = nil;
+	
+	// Tervuursesteenweg 433, 3001 Heverlee
+	CLLocationDegrees longitude = 4.6644344; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	CLLocationDegrees latitude = 50.8728119; //[userLatitude doubleValue];
+	currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	[coords addObject:currentLocation];
+	
+	// Tervuursesteenweg 300, 3001 Heverlee
+	longitude = 4.66181; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	latitude = 50.87212; //[userLatitude doubleValue];
+	currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	[coords addObject:currentLocation];
+	
+	// Celestijnenlaan 20, 3001 Heverlee
+	longitude = 4.67347; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	latitude = 50.87247; //[userLatitude doubleValue];
+	currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	[coords addObject:currentLocation];
+	
+	// Celestijnenlaan 100, 3001 Heverlee
+	longitude = 4.67848; //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	latitude = 50.86772; //[userLatitude doubleValue];
+	currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	[coords addObject:currentLocation];
+	
+	// Celestijnenlaan 200, 3001 Heverlee
+	longitude = 4.67857; //8 //[userLongitude doubleValue]; // Lat and long op basis van tervuursesteenweg 433
+	latitude = 50.86312; //1 //[userLatitude doubleValue];
+	currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+	[coords addObject:currentLocation];
+	*/
+	
 }
 
 - (void) fetchUserLocation {
@@ -106,9 +150,22 @@ static CoordinatesTool *sharedInstance = nil;
 	
 	// DISABLE THE LINE BENEATH FOR ACTUAL IPHONE
 	CLLocation* currentLocation = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-	
-	
+	/*
+	if(self.inMapView) {
+		NSLog(@"last index: %d", self.lastIndex);
+		CLLocation *newLocation = [self.coords objectAtIndex:self.lastIndex];
+		self.userLocation = newLocation;
+		self.userCoordinates = [NSString stringWithFormat:@"%f,%f", newLocation.coordinate.latitude, newLocation.coordinate.longitude];
+		if (lastIndex < [coords count] - 1) {
+			self.lastIndex += 1;
+		}
+
+	} else {
+		self.userLocation = [currentLocation copy]; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
+	}
+	 */
 	self.userLocation = [currentLocation copy]; // [[[CLLocation alloc] initWithLatitude:locationManager.location.coordinate.latitude longitude:locationManager.location.coordinate.longitude] autorelease];
+	
 	[currentLocation release];
 	self.userLocationOK = TRUE;	
 	[locationManager stopUpdatingLocation];

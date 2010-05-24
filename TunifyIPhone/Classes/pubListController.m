@@ -427,6 +427,7 @@
 	} 
 	NSLog(@"MutableFetchResults: %d", [mutableFetchResults count]);
 	if (mutableFetchResults == nil || [mutableFetchResults count] <= 0) {
+		NSLog(@"INserting new pubs");
 		[self insertNewObject:@"De zoete bron" andStreet:@"M.Noestraat" andNumber:@"15" andZipCode:@"3050" andCity:@"Oud heverlee" 
 					andUserID:@"418090" andRating:@"4" andLatitude:@"50.8236691" andLongitude:@"4.6626304" andVisitors:@"87"];
 		
@@ -447,6 +448,12 @@
 		
 		[self insertNewObject:@"Cafe de Zappa" andStreet:@"Emile Carelsstraat" andNumber:@"1" andZipCode:@"3090" andCity:@"Overijse" 
 					andUserID:@"413875" andRating:@"3" andLatitude:@"50.7709673" andLongitude:@"4.5401609" andVisitors:@"9"];
+		
+		// Route test location
+		/*
+		[self insertNewObject:@"Campus" andStreet:@"Celestijnenlaan" andNumber:@"200" andZipCode:@"3001" andCity:@"Heverlee" 
+					andUserID:@"23423" andRating:@"5" andLatitude:@"50.86311" andLongitude:@"4.67858" andVisitors:@"1000"];
+		*/
 		
 		if (![self.managedObjectContext save:&error]) {
 			NSLog(@"Unresolved error %@, %@", error, [error userInfo]);

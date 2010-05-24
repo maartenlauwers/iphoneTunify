@@ -32,6 +32,11 @@
 	BOOL pubLocationOK;
 	BOOL userLocationOK;
 	
+	// Route testing
+	//NSMutableArray *coords;
+	//NSInteger lastIndex;
+	//BOOL inMapView;
+	
 }
 
 @property (nonatomic, assign) id <CoordinatesToolDelegate> delegate;
@@ -41,6 +46,9 @@
 @property (nonatomic, retain) CLLocation *userLocation;
 @property (nonatomic, assign) BOOL pubLocationOK;
 @property (nonatomic, assign) BOOL userLocationOK;
+//@property (nonatomic, assign) NSMutableArray *coords;
+//@property (assign) NSInteger lastIndex;
+//@property (assign) BOOL inMapView;
 
 + (CoordinatesTool *)sharedInstance;
 - (void)reInit;
